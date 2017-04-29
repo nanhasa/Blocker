@@ -1,7 +1,12 @@
-#pragma once
+
+#include "GameManager\gamemanager.h"
 
 #include <iostream>
 
-int main() {
-	std::cout << "Hello world!" << std::endl;
+int main()
+{
+	GameManager gm;
+	if (!gm.start())
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }
