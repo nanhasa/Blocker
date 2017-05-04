@@ -87,6 +87,9 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(SolutionDir)..\..\Libs\Debug\;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86</LibraryPath>
+    <OutDir>$(SolutionDir)..\..\Test\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

@@ -1,0 +1,1 @@
+Folder to store static libraries built used in building the software.

@@ -1,0 +1,1 @@
+Folder to store the output of files of the game and the config files used. In short this folder holds everything needed to run the software.

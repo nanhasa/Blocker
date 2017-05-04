@@ -62,6 +62,8 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 
 void Renderer::render()
 {
+	REQUIRE(m_window != nullptr);
+
 	while (!glfwWindowShouldClose(m_window))
 	{
 		glfwPollEvents();

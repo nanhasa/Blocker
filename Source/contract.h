@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-
 extern void abort_program(const char* file, const int line, const char* condition, const char* type);
 
 #ifdef _DEBUG
@@ -14,7 +12,6 @@ extern void abort_program(const char* file, const int line, const char* conditio
 #else
 
 #define ASSERT(ignore) ((void) 0)
-#define IS_VALID(ignore) ((void) 0) 
 #define REQUIRE(ignore) ((void) 0)
 #define ENSURE(ignore) ((void) 0)
 #define INVARIANT(ignore) ((void) 0)

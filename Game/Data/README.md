@@ -1,0 +1,1 @@
+Folder to store config files and assets needed to run the software.

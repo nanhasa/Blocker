@@ -1,0 +1,1 @@
+Folder to store the original formats of the assets used.

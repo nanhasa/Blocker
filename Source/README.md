@@ -1,0 +1,1 @@
+Folder for the source files of the solution. Sources are grouped to folders based on which sub-system they belong. 3rd party include files are stored in folder 3rdParty.

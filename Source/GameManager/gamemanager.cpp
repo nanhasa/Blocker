@@ -4,16 +4,12 @@
 
 #include <iostream>
 
-GameManager::GameManager()
-{
+GameManager::GameManager() {
 }
 
-GameManager::~GameManager()
-{
-}
+GameManager::~GameManager() {} 
 
-bool GameManager::start()
-{
+bool GameManager::start() { 
 	m_renderer = std::make_unique<Renderer>();
 	if (m_renderer->init("Blocker", 800, 600, std::bind(&GameManager::onUpdate, this)))
 	{
@@ -23,7 +19,7 @@ bool GameManager::start()
 	return false;
 }
 
-void GameManager::onUpdate()
+void GameManager::onUpdate() 
 {
-	//std::cout << "gamemanager onUpdate called" << std::endl;
+	std::cout << "gamemanager onUpdate called" << std::endl;
 }
