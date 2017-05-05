@@ -344,26 +344,27 @@ def processHeaderFile(filename):
 #Script entry point
 #
 ###########################################
-path = ''
-if (len(sys.argv) > 1):
-    print('Entered path: ' + sys.argv[1])
-    path = sys.argv[1]
-while True:
-    if (len(path) == 0):
-        path = input("Enter path to folder: ")
-    else:
-        print(path)
-    try:
-        os.chdir(path)
-        break
-    except (WindowsError, OSError):
-        print('Oops, no such folder found')
-        path = ''
+if (__name__ == "__main__"):
+	path = ''
+	if (len(sys.argv) > 1):
+		print('Entered path: ' + sys.argv[1])
+		path = sys.argv[1]
+	while True:
+		if (len(path) == 0):
+			path = input("Enter path to folder: ")
+		else:
+			print(path)
+		try:
+			os.chdir(path)
+			break
+		except (WindowsError, OSError):
+			print('Oops, no such folder found')
+			path = ''
 
-#Process contents of working directory
-headerFiles = searchFilesRecursively()
-updatedFilesCount = 0
-for file in headerFiles:
-    if (processHeaderFile(file)):
-        updatedFilesCount += 1
-print('Total of ', updatedFilesCount, ' files were updated')
+	#Process contents of working directory
+	headerFiles = searchFilesRecursively()
+	updatedFilesCount = 0
+	for file in headerFiles:
+		if (processHeaderFile(file)):
+			updatedFilesCount += 1
+	print('Total of ', updatedFilesCount, ' files were updated')
