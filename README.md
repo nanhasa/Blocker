@@ -2,7 +2,7 @@
 
 Sampo Siltanen 2017
 
-Blocker is Minecraft-like game that is built with my own game engine based on OpenGL 3. 
+Blocker is Minecraft-like game that is built with my own game engine based on OpenGL 3.3. 
 
 The main purpose of this project is for me to learn to use OpenGL. The secondary objective is to produce a project with professional standards. To achieve these standards, I intend to pay close attention to code quality, efficiency, architecture, project management, branching, testing, documenting, DRY principle, and Design by Contract principle.
 

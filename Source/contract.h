@@ -1,5 +1,12 @@
 #pragma once
 
+/**
+ * \brief abort_program
+ * \param file
+ * \param line
+ * \param condition
+ * \param type
+ */
 extern void abort_program(const char* file, const int line, const char* condition, const char* type);
 
 #ifdef _DEBUG
