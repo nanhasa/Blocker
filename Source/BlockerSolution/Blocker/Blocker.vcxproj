@@ -166,6 +166,10 @@
     <ClInclude Include="..\..\GameManager\gamemanager.h" />
     <ClInclude Include="..\..\Renderer\renderer.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag" />
+    <None Include="..\..\..\Game\Data\Shaders\vertex_basic.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -13,7 +13,7 @@ bool GameManager::start() {
 	m_renderer = std::make_unique<Renderer>();
 	if (m_renderer->init("Blocker", 800, 600, std::bind(&GameManager::onUpdate, this)))
 	{
-		m_renderer->render();
+		m_renderer->render(); //Start main loop
 		return true;
 	}
 	return false;
@@ -21,5 +21,5 @@ bool GameManager::start() {
 
 void GameManager::onUpdate() 
 {
-	std::cout << "gamemanager onUpdate called" << std::endl;
+	//std::cout << "gamemanager onUpdate called" << std::endl;
 }

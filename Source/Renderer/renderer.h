@@ -57,5 +57,15 @@ private:
 	GLFWwindow* m_window;
 	int m_width, m_height;
 	int m_frameBufferWidth, m_frameBufferHeight;
+	GLuint m_shaderProgram;
+
+	GLuint m_VBO; //vertex buffer object
+	GLuint m_VAO; //vertex array object
+	GLfloat m_vertices[9];
+
 	std::function<void()> m_gameLogic;
+
+	bool attachShader(GLuint shaderProgram, std::string filename, GLenum shaderType) const;
+	bool loadShader(std::string name, std::string& shaderSource) const;
+	bool validateShaderObject(GLuint object, GLenum paramType) const;
 };
