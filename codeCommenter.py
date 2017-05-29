@@ -250,14 +250,31 @@ def processFunctions(functions):
     return processedFuncs
 
 
-#Searches the values of list for a substring
-#returns the full string from list if found
-#otherwise returns empty string
-def getLineFromListBySubstring(lst, substr):
-    for s in lst:
+#Searches oldComments list to find comment section based on substr
+#Appends outputList with reorganizes comments
+def getUpdatedCommentSection(oldComments, outputList, indent, substr):
+    oldCommentSection = list()
+    found = False
+    for s in oldComments:
+        #Append multiline comment
+        if (found and '\\' not in s):
+            oldCommentSection.append(s)
+        #Next comment section started
+        if (found and '\\' in s):
+            break
+        #Comment section by keyword found
         if (substr in s):
-            return s
-    return ''
+            oldCommentSection.append(s)
+            found = True
+
+    #Append output list with either new comment row or with existing comments
+    if(len(oldCommentSection) == 0):
+        outputList.append(indent + substr)
+    else:
+        for l in oldCommentSection:
+            if (len(l.strip()) > 0):
+                outputList.append(indent + l.strip())
+
 
 #Adds comment templates to functions in header file if:
 #   There is a cpp file for the header
@@ -330,26 +347,25 @@ def processHeaderFile(filename, backupPath):
 
                         #Update existing comments if there were any
                         if(len(existingComments) > 0):
-                            commentLine = getLineFromListBySubstring(existingComments, '* \\brief')
-                            newLines.append(indent + (commentLine.strip() if len(commentLine) > 0 else '* \\brief ' + f.name))
+                            #Brief comment section
+                            getUpdatedCommentSection(existingComments, newLines, indent, '* \\brief')
 
+                            #Parameter comment sections
                             for p in f.parameterNames:
-                                commentLine = getLineFromListBySubstring(existingComments, '* \\param ' + p)
-                                newLines.append(indent + (commentLine.strip() if len(commentLine) > 0 else '* \\param ' + p))
+                                getUpdatedCommentSection(existingComments, newLines, indent, '* \\param ' + p)
 
+                            #Preconditions comment sections
                             for pre in f.preconditions:
-                                commentLine = getLineFromListBySubstring(existingComments, '* \\pre ' + pre)
-                                newLines.append(indent + (commentLine.strip() if len(commentLine) > 0 else '* \\pre ' + pre))
+                                getUpdatedCommentSection(existingComments, newLines, indent, '* \\pre ' + pre)
 
+                            #Postconditions comments sections
                             for post in f.postconditions:
-                                commentLine = getLineFromListBySubstring(existingComments, '* \\post ' + post)
-                                newLines.append(indent + (commentLine.strip() if len(commentLine) > 0 else '* \\post ' + post))
+                                getUpdatedCommentSection(existingComments, newLines, indent, '* \\post ' + post)
 
+                            #Return value comment section
                             if(f.returnValue != 'void' and f.returnValue != ''):
-                                commentLine = getLineFromListBySubstring(existingComments, '* \\return')
-                                newLines.append(indent + (commentLine.strip() if len(commentLine) > 0 else '* \\return '))
+                                getUpdatedCommentSection(existingComments, newLines, indent, '* \\return')
 
-                            del existingComments[:]
                         #No existing comments, create new ones
                         else:
                             newLines.append(indent + '* \\brief ' + f.name)
@@ -366,8 +382,11 @@ def processHeaderFile(filename, backupPath):
                             if (f.returnValue != 'void' and f.returnValue != ''):
                                 newLines.append(indent + '* \\return ')
 
+                        #Comment ending characters
                         newLines.append(indent + '*/')
+                        #Delete processed data
                         processedFuncs.remove(f)
+                        del existingComments[:]
 
             #If new comment lines were formed, append them before the current line
             if (len(newLines) > 0):
