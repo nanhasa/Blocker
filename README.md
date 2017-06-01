@@ -2,11 +2,11 @@
 
 Sampo Siltanen 2017
 
-Blocker is Minecraft-like game that is built with my own game engine based on OpenGL 3.3. 
+Blocker sets out to become Minecraft-like game that is built with my own game engine based on OpenGL 3.3. 
 
-The main purpose of this project is for me to learn to use OpenGL. The secondary objective is to produce a project with professional standards. To achieve these standards, I intend to pay close attention to code quality, efficiency, architecture, project management, branching, testing, documenting, DRY principle, and Design by Contract principle.
+The main purpose of this project is for me to learn to use OpenGL. The secondary objective is to produce a project with professional standards. To achieve these standards, I intend to pay close attention to code quality, efficiency, architecture, project management, branching, testing, documenting, DRY principle, and Design by Contract principle. Because C++ does not support DbC, I implemented my own contract enforcment logic.
 
-In order to keep documentation up-to-date, it is automatized with doxygen. Unfortunately, C++ doesn't support Design by Contract which is why I had to implement my own support for it. To keep function contracts also up-to-date with the rest of the documentation, I created a python script that creates a doxygen notation of off them. The script also creates the commenting template for functions that does not already have comments.
+In order to keep documentation up-to-date, it is automatized with doxygen. In the spirit of DRY, contract and function documentation is kept up-to-date by using CodeCommenter script ( https://github.com/nanhasa/CodeCommenter ) that creates documentation based on the actual code and contracts in it.
 
 Contents:
 - Assets: 	Holds the original formats of assets used in this project   

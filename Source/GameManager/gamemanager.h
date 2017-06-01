@@ -18,13 +18,13 @@ public:
 	~GameManager();
 
 	/**
-	 * \brief start
-	 * \return
+	 * \brief Initialize game and start main loop
+	 * \return Operation successful
 	 */
 	bool start();
 
 	/**
-	 * \brief onUpdate
+	 * \brief Function called on every frame to update game logic
 	 */
 	void onUpdate();
 

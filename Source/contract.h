@@ -1,11 +1,11 @@
 #pragma once
 
 /**
- * \brief abort_program
- * \param file
- * \param line
- * \param condition
- * \param type
+ * \brief Prints error details and exits program
+ * \param file Filepath and name of the file where the error occured
+ * \param line Line number in the file where the error occured
+ * \param condition The condition that failed
+ * \param type Contract type that failed
  */
 extern void abort_program(const char* file, const int line, const char* condition, const char* type);
 

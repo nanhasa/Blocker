@@ -16,18 +16,17 @@ Renderer::~Renderer()
 	glfwTerminate();
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_EBO);
 }
 
 bool Renderer::init(std::string && windowName, int width, int height, std::function<void()>&& gameLogic)
 {
 	REQUIRE(!windowName.empty());
-	REQUIRE(width > 0);
-	REQUIRE(height > 0);
+	REQUIRE(width >= 0);
+	REQUIRE(height >= 0);
 
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
 
-	m_width = width;
-	m_height = height;
 	m_gameLogic = gameLogic;
 
 	// Init GLFW and set the required options
@@ -35,11 +34,11 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	// Create a GLFWwindow object to for GLFW's functions
 	// TODO - read the size from config file
-	m_window = glfwCreateWindow(m_width, m_height, std::move(windowName.c_str()), nullptr, nullptr);
+	m_window = glfwCreateWindow(width, height, std::move(windowName.c_str()), nullptr, nullptr);
 	if (m_window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -53,11 +52,12 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 		std::cout << "Failed to initialize GLEW" << std::endl;
 		return false;
 	}
-
-	glfwGetFramebufferSize(m_window, &m_frameBufferWidth, &m_frameBufferHeight);
-	glfwSetKeyCallback(m_window, Renderer::key_callback);
-
-	glViewport(0, 0, m_frameBufferWidth, m_frameBufferHeight);
+	int frameBufferWidth = 0;
+	int frameBufferHeight = 0;
+	glfwGetFramebufferSize(m_window, &frameBufferWidth, &frameBufferHeight);
+	glfwSetKeyCallback(m_window, Renderer::keyCallback); // Set callback for key pressing
+	glViewport(0, 0, frameBufferWidth, frameBufferHeight);
+	glfwSetFramebufferSizeCallback(m_window, Renderer::framebufferSizeCallback); // Set callback for window resize
 
 	// Create shader program by attaching and linking shaders to it
 	m_shaderProgram = glCreateProgram();
@@ -69,16 +69,23 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 
 
 	// Triangle vertices: left, right, top
-	GLfloat triangle[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f
+	GLfloat square[] = {
+		0.5f,  0.5f, 0.0f,  // top right
+		0.5f, -0.5f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f,  // bottom left
+		-0.5f,  0.5f, 0.0f   // top left 
 	};
-	std::copy(triangle, triangle + 9, m_vertices);
+	std::copy(square, square + 12, m_vertices);
+
+	unsigned int indices[] = { // note that we start from 0!
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
+	};
 
 	// Generate vertex management objects
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);
+	glGenBuffers(1, &m_EBO);
 
 	// Bind vertex array object
 	glBindVertexArray(m_VAO);
@@ -87,6 +94,10 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 
 	// Copy vertices array to a vertex buffer object for OpenGL
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices, GL_STATIC_DRAW);
+
+	// Bind element buffer object
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Set the vertex attribute pointers
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
@@ -97,7 +108,7 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
 	glBindVertexArray(0); // Unbind VAO
 
-	ENSURE(m_shaderProgram != 0);
+	ENSURE(glIsProgram(m_shaderProgram));
 	ENSURE(validateShaderObject(m_shaderProgram, GL_LINK_STATUS));
 	ENSURE(m_window != nullptr);
 	std::cout << "OpenGL initialized succesfully" << std::endl;
@@ -108,7 +119,7 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 void Renderer::render()
 {
 	REQUIRE(m_window != nullptr);
-	REQUIRE(m_shaderProgram != 0);
+	REQUIRE(glIsProgram(m_shaderProgram));
 	REQUIRE(validateShaderObject(m_shaderProgram, GL_LINK_STATUS));
 
 	while (!glfwWindowShouldClose(m_window))
@@ -124,7 +135,7 @@ void Renderer::render()
 		glUseProgram(m_shaderProgram);
 		glBindVertexArray(m_VAO);
 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
 
@@ -132,21 +143,39 @@ void Renderer::render()
 	}
 }
 
-void Renderer::key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
+void Renderer::keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
 	REQUIRE(window != nullptr);
-
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
 
 	// Unused variables
 	(void)mode;
 	(void)scancode;
+
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE); // Close window on ESC
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode on W
+	if (key == GLFW_KEY_N && action == GLFW_PRESS)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Normal mode on N
+}
+
+void Renderer::framebufferSizeCallback(GLFWwindow * window, int width, int height)
+{
+	REQUIRE(width >= 0);
+	REQUIRE(height >= 0);
+
+	// Adjust viewport for window changes
+	glViewport(0, 0, width, height);
+	int framebufferWidth = 0, framebufferHeight = 0;
+	glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
+
+	ENSURE(framebufferWidth == width);
+	ENSURE(framebufferHeight == height);
 }
 
 bool Renderer::attachShader(GLuint shaderProgram, std::string filename, GLenum shaderType) const 
 {
-	REQUIRE(shaderProgram != 0);
+	REQUIRE(glIsProgram(shaderProgram));
 	REQUIRE(!filename.empty());
 	REQUIRE(shaderType != NULL);
 
