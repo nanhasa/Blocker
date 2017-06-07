@@ -1,8 +1,8 @@
-#include "gamemanager.h"
-#include "..\Renderer\renderer.h"
-#include "..\contract.h"
-
 #include <iostream>
+
+#include "gamemanager.h"
+#include "Renderer\renderer.h"
+#include "contract.h"
 
 GameManager::GameManager() {
 }

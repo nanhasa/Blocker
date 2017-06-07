@@ -1,14 +1,10 @@
-#include "renderer.h"
-#include "..\contract.h"
-
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
 
-Renderer::Renderer()
+#include "renderer.h"
+#include "contract.h"
+
+Renderer::Renderer() : m_window(nullptr), m_shaderProgram(nullptr)
 {
-	m_window = nullptr;
 }
 
 Renderer::~Renderer()
@@ -39,7 +35,7 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	// Create a GLFWwindow object to for GLFW's functions
 	// TODO - read the size from config file
 	m_window = glfwCreateWindow(width, height, std::move(windowName.c_str()), nullptr, nullptr);
-	if (m_window == nullptr)
+	if (m_window == nullptr) 
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		return false;
@@ -60,13 +56,11 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	glfwSetFramebufferSizeCallback(m_window, Renderer::framebufferSizeCallback); // Set callback for window resize
 
 	// Create shader program by attaching and linking shaders to it
-	m_shaderProgram = glCreateProgram();
-	if (!attachShader(m_shaderProgram, "vertex_basic.vert", GL_VERTEX_SHADER))
+	m_shaderProgram = std::make_unique<ShaderProgram>();
+	if (!m_shaderProgram->attachShader("vertex_basic.vert", GL_VERTEX_SHADER))
 		return false;
-	if (!attachShader(m_shaderProgram, "fragment_basic.frag", GL_FRAGMENT_SHADER))
+	if (!m_shaderProgram->attachShader("fragment_basic.frag", GL_FRAGMENT_SHADER))
 		return false;
-	glLinkProgram(m_shaderProgram); // Link attached shaders to shaderProgram
-
 
 	// Triangle vertices: left, right, top
 	GLfloat square[] = {
@@ -108,8 +102,8 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
 	glBindVertexArray(0); // Unbind VAO
 
-	ENSURE(glIsProgram(m_shaderProgram));
-	ENSURE(validateShaderObject(m_shaderProgram, GL_LINK_STATUS));
+	ENSURE(m_shaderProgram != nullptr);
+	ENSURE(m_shaderProgram->validate());
 	ENSURE(m_window != nullptr);
 	std::cout << "OpenGL initialized succesfully" << std::endl;
 
@@ -119,8 +113,8 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 void Renderer::render()
 {
 	REQUIRE(m_window != nullptr);
-	REQUIRE(glIsProgram(m_shaderProgram));
-	REQUIRE(validateShaderObject(m_shaderProgram, GL_LINK_STATUS));
+	REQUIRE(m_shaderProgram != nullptr);
+	REQUIRE(m_shaderProgram->validate());
 
 	while (!glfwWindowShouldClose(m_window))
 	{
@@ -132,7 +126,7 @@ void Renderer::render()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(m_shaderProgram);
+		m_shaderProgram->use();
 		glBindVertexArray(m_VAO);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -171,96 +165,4 @@ void Renderer::framebufferSizeCallback(GLFWwindow * window, int width, int heigh
 
 	ENSURE(framebufferWidth == width);
 	ENSURE(framebufferHeight == height);
-}
-
-bool Renderer::attachShader(GLuint shaderProgram, std::string filename, GLenum shaderType) const 
-{
-	REQUIRE(glIsProgram(shaderProgram));
-	REQUIRE(!filename.empty());
-	REQUIRE(shaderType != NULL);
-
-	// Load shader file
-	std::string sourcestr{};
-	if (!loadShader(filename, sourcestr))
-		return false;
-	const char* shaderSource = sourcestr.c_str();
-
-	// Compile shader
-	GLuint shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &shaderSource, NULL);
-	glCompileShader(shader);
-	if (!validateShaderObject(shader, GL_COMPILE_STATUS))
-	{
-		std::cout << "Shader compilation failed" << std::endl;
-		glDeleteShader(shader);
-		return false;
-	}
-	std::cout << "Shader compilation successful" << std::endl;
-
-	// Attach shader to shader program and delete shader afterwards
-	glAttachShader(shaderProgram, shader);
-	glDeleteShader(shader);
-
-	std::cout << filename + " successfully attached to shaderprogram" << std::endl;
-
-	return true;
-}
-
-bool Renderer::loadShader(std::string name, std::string& shaderSource) const
-{
-	REQUIRE(!name.empty());
-	
-	if (!shaderSource.empty())
-		shaderSource.clear();
-
-	std::ifstream file("../Data/Shaders/" + name);
-	if (!file.is_open())
-	{
-		std::cout << "Could not open shader: " + name << std::endl;
-		return false;
-	}
-
-	std::stringstream shaderData;
-	shaderData << file.rdbuf();  // Loads the entire string into a string stream.
-	file.close();
-	shaderSource = std::move(shaderData.str());
-
-	if (shaderSource.empty()) 
-	{
-		std::cout << "Empty shader file: " + name << std::endl;
-		return false;
-	}
-
-	ENSURE(!shaderSource.empty());
-	return true;
-}
-
-bool Renderer::validateShaderObject(GLuint object, GLenum paramType) const
-{
-	REQUIRE(object != 0);
-
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(object, paramType, &success);
-	if (!success)
-	{
-		switch (paramType) 
-		{
-		case GL_COMPILE_STATUS:
-			glGetShaderInfoLog(object, 512, NULL, infoLog);
-			std::cout << "Shader compilation failed:\n" << infoLog << std::endl;
-			break;
-
-		case GL_LINK_STATUS:
-			glGetProgramInfoLog(object, 512, NULL, infoLog);
-			std::cout << "Shader program linking failed:\n" << infoLog << std::endl;
-			break;
-
-		default:
-			std::cout << "Undefined paramType in validateShaderObject()" << std::endl;
-			return false;
-		}	
-		return false;
-	}
-	return true;
 }

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 //GLEW must be included before GLFW
 #define GLEW_STATIC
@@ -9,7 +10,10 @@
 //GLFW
 #include <3rdParty\GLFW\glfw3.h>
 
-class Renderer {
+#include "interfaces.h"
+#include "Renderer\shaderprogram.h"
+
+class Renderer : public IRenderer {
 public:
 
 	/**
@@ -36,7 +40,7 @@ public:
 	 * \post m_window != nullptr
 	 * \return true if successful else false
 	 */
-	bool init(std::string&& windowName, int width, int height, std::function<void()>&& gameLogic);
+	bool init(std::string&& windowName, int width, int height, std::function<void()>&& gameLogic) override;
 
 	/**
 	 * \brief The main Loop. Renders and calls gameLogic onUpdate
@@ -44,7 +48,7 @@ public:
 	 * \pre glIsProgram(m_shaderProgram)
 	 * \pre validateShaderObject(m_shaderProgram, GL_LINK_STATUS)
 	 */
-	void render();
+	void render() override;
 
 	/**
 	 * \brief Callback for key input
@@ -71,7 +75,7 @@ public:
 
 private:
 	GLFWwindow* m_window;
-	GLuint m_shaderProgram;
+	std::unique_ptr<ShaderProgram> m_shaderProgram;
 
 	GLuint m_VBO; // vertex buffer object
 	GLuint m_VAO; // vertex array object
@@ -79,35 +83,4 @@ private:
 	GLfloat m_vertices[12];
 
 	std::function<void()> m_gameLogic;
-
-	/**
-	 * \brief Reads shader source file, compiles it, and attaches it to shaderProgram
-	 * \param shaderProgram shader program to attach the shader
-	 * \param filename shader source filename
-	 * \param shaderType shader type to be attached
-	 * \pre glIsProgram(shaderProgram)
-	 * \pre !filename.empty()
-	 * \pre shaderType != NULL
-	 * \return operation successful
-	 */
-	bool attachShader(GLuint shaderProgram, std::string filename, GLenum shaderType) const;
-
-	/**
-	 * \brief Loads shader source file 'name' to shaderSource
-	 * \param name Shader source filename
-	 * \param shaderSource Reference parameter to hold the contents of shader source file
-	 * \pre !name.empty()
-	 * \post !shaderSource.empty()
-	 * \return operation successful
-	 */
-	bool loadShader(std::string name, std::string& shaderSource) const;
-
-	/**
-	 * \brief Validates shader object
-	 * \param object Shader object to be validated
-	 * \param paramType Status to be validated
-	 * \pre object != 0
-	 * \return validation successful
-	 */
-	bool validateShaderObject(GLuint object, GLenum paramType) const;
 };

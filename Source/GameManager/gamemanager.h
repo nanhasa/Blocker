@@ -2,7 +2,7 @@
 
 #include <memory>
 
-class Renderer;
+#include "interfaces.h"
 
 class GameManager {
 public:
@@ -29,5 +29,5 @@ public:
 	void onUpdate();
 
 private:
-	std::unique_ptr<Renderer> m_renderer;
+	std::unique_ptr<IRenderer> m_renderer;
 };
