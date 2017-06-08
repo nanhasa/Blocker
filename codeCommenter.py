@@ -116,6 +116,24 @@ def searchFilesRecursively():
     return headers
 
 
+#Truncates builder initialization from the line with builder declaration
+#Does not affect other than builders
+def truncateBuilderInitialization(line):
+    line = line.lstrip()
+    i = line.find('::')
+    #Test if line is builder definition
+    if (i == -1 or line[: i] != line[i + 2 : 2 * i + 2]):
+        return line
+
+    #Search for single set of : which separates declaration from initialization part in builder
+    while (i + 1 < len(line)):
+        if (i > 0):
+            if (line[i] == ':' and line[i - 1] != ':' and line[i + 1] != ':'):
+                return line[:i]
+        i += 1
+    return line
+
+
 #Crawls through the cpp file paired with the .h file given
 #If successful, will return a list of Function objects that describe the functions in the file
 def crawlFunctionDefinitions(filename):
@@ -178,6 +196,8 @@ def crawlFunctionDefinitions(filename):
             closedParentheses += line.count(')')
             prevLineTemp += line.lstrip(' \t').rstrip('\n')
             if (openParentheses == closedParentheses):
+                #Leave out member initializations in builder
+                prevLineTemp = truncateBuilderInitialization(prevLineTemp)
                 if (len(prevLineTemp) > 0):
                     #Attach pre and postconditions to the previously found function definition
                     if (len(functions) > 0):
@@ -190,7 +210,7 @@ def crawlFunctionDefinitions(filename):
                 del postconditions[:]
             continue
 
-        #Line does not hold function title
+        #Line does not hold function declaration
         else:
             if ('REQUIRE' in line):
                 preconditions.append(line[line.index('(') + 1:line.rindex(')')])
@@ -200,7 +220,7 @@ def crawlFunctionDefinitions(filename):
             closedBrackets += line.count('}')
             continue
 
-    #Attach pre and postconditions to the last found function definition
+    #Attach pre and postconditions to the last found function declaration
     #This is done afterwards because the definition is found before the contracts are found
     if (len(functions) > 0):
         functions[-1].pres = preconditions[:]
@@ -208,7 +228,7 @@ def crawlFunctionDefinitions(filename):
 
     return functions
 
-#Parses function definition into components
+#Parses function declaration into components
 #Returns list of ProcessedFunction objects
 def processFunctions(functions):
     processedFuncs = list()
@@ -335,7 +355,8 @@ def processHeaderFile(filename, backupPath):
                     #Match function definitions without spaces and tabs
                     #In header version there are additional keywords like extern etc -> search for substring
                     if ("".join(f.fullClasslessDefinition.split()) in strippedLine):
-                        #Builder is an expection because it passes the previous condition when compared to destructor
+
+                        #Builder is an expcetion because it passes the previous condition when compared to destructor
                         if (f.name == f.className and '~' in strippedLine):
                             continue
 
