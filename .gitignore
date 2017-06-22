@@ -24,8 +24,7 @@ Test/Win64Release/
 Source/3rdParty/**/*.h
 
 # Library binaries
-Libs/Release/*.lib
-Libs/Debug/*.lib
+Libs/**/*.lib
 
 # Doxygen output
 Docs/HTML/
