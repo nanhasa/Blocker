@@ -159,6 +159,9 @@
     <ClCompile Include="..\..\contract.cpp" />
     <ClCompile Include="..\..\GameManager\gamemanager.cpp" />
     <ClCompile Include="..\..\main.cpp" />
+    <ClCompile Include="..\..\Renderer\image.cpp" />
+    <ClCompile Include="..\..\Renderer\imageloader.cpp" />
+    <ClCompile Include="..\..\Renderer\imagetypefactory.cpp" />
     <ClCompile Include="..\..\Renderer\renderer.cpp" />
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
   </ItemGroup>
@@ -166,6 +169,9 @@
     <ClInclude Include="..\..\contract.h" />
     <ClInclude Include="..\..\GameManager\gamemanager.h" />
     <ClInclude Include="..\..\interfaces.h" />
+    <ClInclude Include="..\..\Renderer\image.h" />
+    <ClInclude Include="..\..\Renderer\imageloader.h" />
+    <ClInclude Include="..\..\Renderer\imagetypefactory.h" />
     <ClInclude Include="..\..\Renderer\renderer.h" />
     <ClInclude Include="..\..\Renderer\shaderprogram.h" />
   </ItemGroup>

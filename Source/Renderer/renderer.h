@@ -22,7 +22,7 @@ public:
 	Renderer();
 
 	/**
-	 * \brief ~Renderer
+	 * \brief Renderer
 	 */
 	~Renderer();
 
@@ -35,20 +35,20 @@ public:
 	 * \pre !windowName.empty()
 	 * \pre width >= 0
 	 * \pre height >= 0
-	 * \post glIsProgram(m_shaderProgram)
-	 * \post validateShaderObject(m_shaderProgram, GL_LINK_STATUS)
+	 * \post m_shaderProgram != nullptr
+	 * \post m_shaderProgram->validate()
 	 * \post m_window != nullptr
 	 * \return true if successful else false
 	 */
-	bool init(std::string&& windowName, int width, int height, std::function<void()>&& gameLogic) override;
+	bool initialize(std::string&& windowName, int width, int height, std::function<void()>&& gameLogic) override;
 
 	/**
 	 * \brief The main Loop. Renders and calls gameLogic onUpdate
 	 * \pre m_window != nullptr
-	 * \pre glIsProgram(m_shaderProgram)
-	 * \pre validateShaderObject(m_shaderProgram, GL_LINK_STATUS)
+	 * \pre m_shaderProgram != nullptr
+	 * \pre m_shaderProgram->validate()
 	 */
-	void render() override;
+	void startMainLoop() override;
 
 	/**
 	 * \brief Callback for key input

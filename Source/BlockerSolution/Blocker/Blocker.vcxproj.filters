@@ -22,12 +22,21 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{2e3bbb96-eec0-4113-82f5-c5ed85e75a38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GameManager">
+      <UniqueIdentifier>{64b9b36c-b2df-4e6b-924b-f142b3d9369a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameManager">
+      <UniqueIdentifier>{4e244659-e5a1-4d3a-8476-86b1fafee3a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Renderer\ImageLoader">
+      <UniqueIdentifier>{27e05dfa-34d9-41be-be75-5f83414e3582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Renderer\ImageLoader">
+      <UniqueIdentifier>{8e80b5fd-622b-4863-9153-1ded5a2edbd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\GameManager\gamemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\contract.cpp">
@@ -39,11 +48,20 @@
     <ClCompile Include="..\..\Renderer\renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\GameManager\gamemanager.cpp">
+      <Filter>Source Files\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Renderer\image.cpp">
+      <Filter>Source Files\Renderer\ImageLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Renderer\imageloader.cpp">
+      <Filter>Source Files\Renderer\ImageLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Renderer\imagetypefactory.cpp">
+      <Filter>Source Files\Renderer\ImageLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GameManager\gamemanager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\contract.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -55,6 +73,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Renderer\shaderprogram.h">
       <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GameManager\gamemanager.h">
+      <Filter>Header Files\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Renderer\image.h">
+      <Filter>Header Files\Renderer\ImageLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Renderer\imageloader.h">
+      <Filter>Header Files\Renderer\ImageLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Renderer\imagetypefactory.h">
+      <Filter>Header Files\Renderer\ImageLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

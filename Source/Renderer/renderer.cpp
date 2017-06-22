@@ -3,20 +3,16 @@
 #include "renderer.h"
 #include "contract.h"
 
-Renderer::Renderer() : m_window(nullptr), m_shaderProgram(nullptr)
-{
-}
+Renderer::Renderer() : m_window(nullptr), m_shaderProgram(nullptr) {}
 
-Renderer::~Renderer()
-{
+Renderer::~Renderer() {
 	glfwTerminate();
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
 }
 
-bool Renderer::init(std::string && windowName, int width, int height, std::function<void()>&& gameLogic)
-{
+bool Renderer::initialize(std::string && windowName, int width, int height, std::function<void()>&& gameLogic) {
 	REQUIRE(!windowName.empty());
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
@@ -35,16 +31,14 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	// Create a GLFWwindow object to for GLFW's functions
 	// TODO - read the size from config file
 	m_window = glfwCreateWindow(width, height, std::move(windowName.c_str()), nullptr, nullptr);
-	if (m_window == nullptr) 
-	{
+	if (m_window == nullptr) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		return false;
 	}
 	glfwMakeContextCurrent(m_window);
 
 	glewExperimental = GL_TRUE; // Uses more modern techniques for managing OpenGL functionality
-	if (glewInit() != GLEW_OK) // Initialize GLEW to setup the OpenGL Function pointers
-	{
+	if (glewInit() != GLEW_OK) {// Initialize GLEW to setup the OpenGL Function pointers
 		std::cout << "Failed to initialize GLEW" << std::endl;
 		return false;
 	}
@@ -110,14 +104,12 @@ bool Renderer::init(std::string && windowName, int width, int height, std::funct
 	return true;
 }
 
-void Renderer::render()
-{
+void Renderer::startMainLoop() {
 	REQUIRE(m_window != nullptr);
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
 
-	while (!glfwWindowShouldClose(m_window))
-	{
+	while (!glfwWindowShouldClose(m_window)) {
 		glfwPollEvents();
 
 		m_gameLogic();
@@ -137,8 +129,7 @@ void Renderer::render()
 	}
 }
 
-void Renderer::keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode)
-{
+void Renderer::keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode) {
 	REQUIRE(window != nullptr);
 
 	// Unused variables
@@ -153,8 +144,7 @@ void Renderer::keyCallback(GLFWwindow * window, int key, int scancode, int actio
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Normal mode on N
 }
 
-void Renderer::framebufferSizeCallback(GLFWwindow * window, int width, int height)
-{
+void Renderer::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
 

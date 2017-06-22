@@ -5,18 +5,15 @@
 #include "shaderprogram.h"
 #include "contract.h"
 
-ShaderProgram::ShaderProgram()
-{
+ShaderProgram::ShaderProgram() {
 	m_id = glCreateProgram();
 }
 
-ShaderProgram::~ShaderProgram()
-{
+ShaderProgram::~ShaderProgram() {
 	glDeleteProgram(m_id);
 }
 
-bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType) const
-{
+bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType) const {
 	REQUIRE(!filename.empty());
 	REQUIRE(shaderType != NULL);
 
@@ -31,8 +28,7 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 
 	glShaderSource(shader, 1, &shaderSource, NULL);
 	glCompileShader(shader);
-	if (!validateShaderObject(shader, GL_COMPILE_STATUS))
-	{
+	if (!validateShaderObject(shader, GL_COMPILE_STATUS)) 	{
 		glDeleteShader(shader);
 		return false;
 	}
@@ -51,46 +47,38 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 	return validateShaderObject(m_id, GL_LINK_STATUS); // Validate program linking
 }
 
-bool ShaderProgram::validate() const
-{
-	if (!glIsProgram(m_id))
-	{
+bool ShaderProgram::validate() const {
+	if (!glIsProgram(m_id)) {
 		std::cout << "Shader program not valid" << std::endl;
 		return false;
 	}
 	return validateShaderObject(m_id, GL_LINK_STATUS);
 }
 
-void ShaderProgram::use()
-{
+void ShaderProgram::use() const {
 	glUseProgram(m_id);
 }
 
-void ShaderProgram::setBool(const std::string& name, bool value) const
-{
-	glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
+void ShaderProgram::setBool(const std::string& name, bool value) const {
+	setInt(name, static_cast<int>(value));
 }
 
-void ShaderProgram::setInt(const std::string& name, int value) const
-{
+void ShaderProgram::setInt(const std::string& name, int value) const {
 	glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-void ShaderProgram::setFloat(const std::string& name, float value) const
-{
+void ShaderProgram::setFloat(const std::string& name, float value) const {
 	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const
-{
+bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const {
 	REQUIRE(!name.empty());
 
 	if (!shaderSource.empty())
 		shaderSource.clear();
 
 	std::ifstream file("../Data/Shaders/" + name);
-	if (!file.is_open())
-	{
+	if (!file.is_open()) {
 		std::cout << "Could not open shader: " + name << std::endl;
 		return false;
 	}
@@ -100,8 +88,7 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	file.close();
 	shaderSource = std::move(shaderData.str());
 
-	if (shaderSource.empty())
-	{
+	if (shaderSource.empty()) {
 		std::cout << "Empty shader file: " + name << std::endl;
 		return false;
 	}
@@ -110,10 +97,8 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	return true;
 }
 
-bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const
-{
-	if (object == 0)
-	{
+bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const {
+	if (object == 0) {
 		std::cout << "Object not valid" << std::endl;
 		return false;
 	}
@@ -121,10 +106,8 @@ bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const
 	GLint success;
 	GLchar infoLog[512];
 	glGetShaderiv(object, paramType, &success);
-	if (!success)
-	{
-		switch (paramType)
-		{
+	if (!success) {
+		switch (paramType) 	{
 		case GL_COMPILE_STATUS:
 			glGetShaderInfoLog(object, 512, NULL, infoLog);
 			std::cout << "Shader compilation failed:\n" << infoLog << std::endl;
