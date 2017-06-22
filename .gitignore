@@ -20,6 +20,9 @@ Test/Win32Release/
 Test/Win64Debug/
 Test/Win64Release/
 
+# 3rd Party headers
+Source/3rdParty/**/*.h
+
 # Library binaries
 Libs/Release/*.lib
 Libs/Debug/*.lib
