@@ -5,9 +5,11 @@
 
 #include "interfaces.h"
 
-namespace ImageTypeFactory {
+namespace texture {
+namespace imageTypeFactory {
 
-std::unique_ptr<IImageType> getImageType(unsigned char const * const data, 
+std::unique_ptr<IImageType> getImageType(unsigned char const * const data,
 	const std::string& filename);
 
-} //ImageTypeFactory
+} // namespace imageTypeFactory
+} // namespace texture

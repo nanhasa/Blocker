@@ -2,8 +2,10 @@
 
 #include <memory>
 
+namespace texture {
+
 class Image {
-public:	
+public:
 	Image(std::unique_ptr<unsigned char[]> data, int width, int height);
 	~Image();
 
@@ -16,6 +18,8 @@ public:
 
 private:
 	std::unique_ptr<unsigned char[]> m_data;
-	int m_width;
-	int m_height;
+	const int m_width;
+	const int m_height;
 };
+
+} // namespace texture
