@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
 #include <functional>
 #include <memory>
+#include <string>
 
 class IRenderer {
 public:
@@ -13,8 +13,11 @@ public:
 };
 
 class IImageType {
+public:
 	virtual ~IImageType() {};
 
-	virtual std::unique_ptr<unsigned char[]> decode(std::unique_ptr<unsigned char[]> rawdata,
-		int* width, int* height) = 0;
+	virtual bool loadFile(std::ifstream& stream) = 0;
+	virtual std::unique_ptr<char[]> decode() = 0;
+	virtual int getHeight() const = 0;
+	virtual int getWidth() const = 0;
 };

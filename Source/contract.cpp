@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <iostream>
 #include <exception>
+#include <iostream>
 
 #include "contract.h"
 
