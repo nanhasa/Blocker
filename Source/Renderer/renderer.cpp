@@ -1,7 +1,8 @@
 #include <iostream>
 
-#include "renderer.h"
 #include "contract.h"
+#include "Renderer\renderer.h"
+#include "Renderer\texture.h"
 
 Renderer::Renderer() : m_window(nullptr), m_shaderProgram(nullptr) {}
 
@@ -32,14 +33,14 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	// TODO - read the size from config file
 	m_window = glfwCreateWindow(width, height, std::move(windowName.c_str()), nullptr, nullptr);
 	if (m_window == nullptr) {
-		std::cout << "Failed to create GLFW window" << std::endl;
+		std::cerr << "\tFailed to create GLFW window" << std::endl;
 		return false;
 	}
 	glfwMakeContextCurrent(m_window);
 
 	glewExperimental = GL_TRUE; // Uses more modern techniques for managing OpenGL functionality
 	if (glewInit() != GLEW_OK) {// Initialize GLEW to setup the OpenGL Function pointers
-		std::cout << "Failed to initialize GLEW" << std::endl;
+		std::cerr << "\tFailed to initialize GLEW" << std::endl;
 		return false;
 	}
 	int frameBufferWidth = 0;
@@ -99,7 +100,9 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	ENSURE(m_shaderProgram != nullptr);
 	ENSURE(m_shaderProgram->validate());
 	ENSURE(m_window != nullptr);
-	std::cout << "OpenGL initialized succesfully" << std::endl;
+	std::cout << "\tOpenGL initialized succesfully" << std::endl;
+
+	auto asd = texture::load("square.bmp"); //TODO remove when done testing 
 
 	return true;
 }
@@ -108,6 +111,8 @@ void Renderer::startMainLoop() {
 	REQUIRE(m_window != nullptr);
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
+
+	std::cout << "Started main loop" << std::endl;
 
 	while (!glfwWindowShouldClose(m_window)) {
 		glfwPollEvents();
@@ -127,6 +132,8 @@ void Renderer::startMainLoop() {
 
 		glfwSwapBuffers(m_window);
 	}
+
+	std::cout << "Leaving from main loop" << std::endl;
 }
 
 void Renderer::keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode) {

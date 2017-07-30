@@ -17,6 +17,9 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 	REQUIRE(!filename.empty());
 	REQUIRE(shaderType != NULL);
 
+	
+	std::cout << "\tStarted attaching shader" << std::endl;
+
 	// Create shader
 	GLuint shader = glCreateShader(shaderType);
 
@@ -32,13 +35,13 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 		glDeleteShader(shader);
 		return false;
 	}
-	std::cout << "Shader compilation successful" << std::endl;
+	std::cout << "\tShader compilation successful" << std::endl;
 
 	// Attach shader to shader program and delete shader afterwards
 	glAttachShader(m_id, shader);
 	glDeleteShader(shader);
 
-	std::cout << filename + " successfully attached to shaderprogram " << m_id << std::endl;
+	std::cout << "\t" << filename + " successfully attached to shaderprogram " << m_id << std::endl;
 
 	glLinkProgram(m_id);
 
@@ -49,7 +52,7 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 
 bool ShaderProgram::validate() const {
 	if (!glIsProgram(m_id)) {
-		std::cout << "Shader program not valid" << std::endl;
+		std::cout << "\tShader program not valid" << std::endl;
 		return false;
 	}
 	return validateShaderObject(m_id, GL_LINK_STATUS);
@@ -74,12 +77,14 @@ void ShaderProgram::setFloat(const std::string& name, float value) const {
 bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const {
 	REQUIRE(!name.empty());
 
+	std::cout << "\tLoading shader file: " << name << std::endl;
+
 	if (!shaderSource.empty())
 		shaderSource.clear();
 
 	std::ifstream file("../Data/Shaders/" + name);
 	if (!file.is_open()) {
-		std::cout << "Could not open shader: " + name << std::endl;
+		std::cerr << "\tCould not open shader: " + name << std::endl;
 		return false;
 	}
 
@@ -89,17 +94,19 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	shaderSource = std::move(shaderData.str());
 
 	if (shaderSource.empty()) {
-		std::cout << "Empty shader file: " + name << std::endl;
+		std::cerr << "\tEmpty shader file: " + name << std::endl;
 		return false;
 	}
 
 	ENSURE(!shaderSource.empty());
+	std::cout << "\tShader file loaded successfully" << std::endl;
+
 	return true;
 }
 
 bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const {
 	if (object == 0) {
-		std::cout << "Object not valid" << std::endl;
+		std::cerr << "\tObject not valid" << std::endl;
 		return false;
 	}
 
@@ -110,14 +117,14 @@ bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const 
 		switch (paramType) 	{
 		case GL_COMPILE_STATUS:
 			glGetShaderInfoLog(object, 512, NULL, infoLog);
-			std::cout << "Shader compilation failed:\n" << infoLog << std::endl;
+			std::cerr << "\tShader compilation failed:\n" << infoLog << std::endl;
 			break;
 		case GL_LINK_STATUS:
 			glGetProgramInfoLog(object, 512, NULL, infoLog);
-			std::cout << "Shader program linking failed:\n" << infoLog << std::endl;
+			std::cerr << "\tShader program linking failed:\n" << infoLog << std::endl;
 			break;
 		default:
-			std::cout << "Undefined paramType in validateShaderObject()" << std::endl;
+			std::cerr << "\tUndefined paramType in validateShaderObject()" << std::endl;
 			break;
 		}
 		return false;

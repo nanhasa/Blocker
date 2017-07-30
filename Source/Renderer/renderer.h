@@ -1,8 +1,8 @@
 #pragma once
 
-#include <string>
 #include <functional>
 #include <memory>
+#include <string>
 
 //GLEW must be included before GLFW
 #define GLEW_STATIC
