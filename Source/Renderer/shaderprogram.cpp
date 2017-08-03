@@ -100,13 +100,13 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& sourcestr) 
 	sourcestr = std::move(shaderData.str());
 	unsigned int newLines = std::count(sourcestr.begin(), sourcestr.end(), '\n');
 
+	ENSURE(!sourcestr.empty());
+	ENSURE(sourcestr.size() + newLines == static_cast<unsigned int>(filesize));
+
 	if (sourcestr.empty()) {
 		std::cerr << "\tEmpty shader file: " + name << std::endl;
 		return false;
 	}
-
-	ENSURE(!sourcestr.empty());
-	ENSURE(sourcestr.size() + newLines == static_cast<unsigned int>(filesize));
 	std::cout << "\tShader file loaded successfully" << std::endl;
 
 	return true;
