@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -27,9 +28,9 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 	std::string sourcestr{};
 	if (!loadShader(filename, sourcestr))
 		return false;
-	const char* shaderSource = sourcestr.c_str();
+	const char* sourcechar = sourcestr.c_str();
 
-	glShaderSource(shader, 1, &shaderSource, NULL);
+	glShaderSource(shader, 1, &sourcechar, NULL);
 	glCompileShader(shader);
 	if (!validateShaderObject(shader, GL_COMPILE_STATUS)) 	{
 		glDeleteShader(shader);
@@ -74,13 +75,13 @@ void ShaderProgram::setFloat(const std::string& name, float value) const {
 	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const {
+bool ShaderProgram::loadShader(const std::string& name, std::string& sourcestr) const {
 	REQUIRE(!name.empty());
 
 	std::cout << "\tLoading shader file: " << name << std::endl;
 
-	if (!shaderSource.empty())
-		shaderSource.clear();
+	if (!sourcestr.empty())
+		sourcestr.clear();
 
 	std::ifstream file("../Data/Shaders/" + name);
 	if (!file.is_open()) {
@@ -89,16 +90,23 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	}
 
 	std::stringstream shaderData;
-	shaderData << file.rdbuf();  // Loads the entire string into a string stream.
-	file.close();
-	shaderSource = std::move(shaderData.str());
+	shaderData << file.rdbuf();  // Loads the entire string into a stringstream.
 
-	if (shaderSource.empty()) {
+	// Get file length
+	std::streamoff filesize = file.tellg();
+	file.close();
+
+	// Get contents to string and count new lines in it to compare it to file length
+	sourcestr = std::move(shaderData.str());
+	unsigned int newLines = std::count(sourcestr.begin(), sourcestr.end(), '\n');
+
+	if (sourcestr.empty()) {
 		std::cerr << "\tEmpty shader file: " + name << std::endl;
 		return false;
 	}
 
-	ENSURE(!shaderSource.empty());
+	ENSURE(!sourcestr.empty());
+	ENSURE(sourcestr.size() + newLines == static_cast<unsigned int>(filesize));
 	std::cout << "\tShader file loaded successfully" << std::endl;
 
 	return true;
