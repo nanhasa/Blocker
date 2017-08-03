@@ -17,7 +17,7 @@ public:
 	virtual ~IImageType() {};
 
 	virtual bool loadFile(std::ifstream& stream) = 0;
-	virtual std::unique_ptr<char[]> decode() = 0;
+	virtual std::unique_ptr<uint8_t[]> decode() = 0;
 	virtual int getHeight() const = 0;
 	virtual int getWidth() const = 0;
 };

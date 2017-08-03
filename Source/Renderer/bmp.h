@@ -48,7 +48,7 @@ public:
 
 	bool loadFile(std::ifstream& stream) override;
 
-	std::unique_ptr<char[]> decode() override;
+	std::unique_ptr<uint8_t[]> decode() override;
 
 	int getHeight() const override;
 
@@ -57,5 +57,5 @@ public:
 private:
 	std::unique_ptr<BITMAPFILEHEADER> m_fileheader;
 	std::unique_ptr<BITMAPINFOHEADER> m_infoheader;
-	std::unique_ptr<char[]> m_data;
+	std::unique_ptr<uint8_t[]> m_data;
 };

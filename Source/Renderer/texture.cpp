@@ -6,7 +6,7 @@
 
 namespace texture {
 
-	Image::Image(std::unique_ptr<char[]> data, int width, int height)
+	Image::Image(std::unique_ptr<uint8_t[]> data, int width, int height)
 		: m_data(std::move(data)), m_width(width), m_height(height) {}
 
 	Image::~Image() {}
@@ -19,15 +19,14 @@ namespace texture {
 		return m_height;
 	}
 
-	char * Image::getData() const {
+	uint8_t * Image::getData() const {
 		return m_data.get();
 	}
 
 	void Image::flipVertically() {
-		const int width = m_width * 3; // Each pixel has RGB bytes
-
 		// Create temp pointer to store the changes
-		auto temp = std::make_unique<char[]>(width * m_height);
+		const int width = m_width * 3; // Each pixel has RGB bytes
+		auto temp = std::make_unique<uint8_t[]>(width * m_height);
 
 		// Read from current data to temp in reverse row order
 		for (int from = width * (m_height - 1), to = 0;
@@ -35,7 +34,7 @@ namespace texture {
 			from -= width, to += width) {
 			// Read bytes of one row
 			for (int i = 0; i < width; ++i) {
-				temp[to + i] = m_data[from + i];
+				std::swap(temp[to + i], m_data[from + i]);
 			}
 		}
 
@@ -47,7 +46,7 @@ namespace texture {
 		const int width = m_width * 3; // Each pixel has RGB bytes
 
 		// Create temp pointer to store the changes
-		auto temp = std::make_unique<char[]>(width * m_height);
+		auto temp = std::make_unique<uint8_t[]>(width * m_height);
 
 		// Process rows
 		for (int i = 0; i < m_height; ++i) {
@@ -69,7 +68,7 @@ namespace texture {
 
 	std::unique_ptr<Image> load(const std::string & file) {
 		std::cout << "Loading file " << file << std::endl;
-		std::ifstream stream(R"(..\Data\Images\)" + file); //Todo read path from config 
+		std::ifstream stream(R"(..\Data\Images\)" + file, std::ios::binary); //Todo read path from config 
 
 		if (!validateFile(stream)) {
 			return nullptr;

@@ -10,18 +10,18 @@ namespace texture {
 
 	class Image {
 	public:
-		Image(std::unique_ptr<char[]> data, int width, int height);
+		Image(std::unique_ptr<uint8_t[]> data, int width, int height);
 		~Image();
 
 		int getWidth() const;
 		int getHeight() const;
-		char* getData() const;
+		uint8_t* getData() const;
 
 		void flipVertically();
 		void flipHorizontally();
 
 	private:
-		std::unique_ptr<char[]> m_data;
+		std::unique_ptr<uint8_t[]> m_data;
 		const int m_width;
 		const int m_height;
 	};

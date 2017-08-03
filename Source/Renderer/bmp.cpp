@@ -31,12 +31,12 @@ bool BMP::loadFile(std::ifstream& stream) {
 	}
 
 	// Allocate byte memory that will hold the two headers
-	auto header = std::make_unique<char[]>(sizeof(BITMAPFILEHEADER));
-	auto info = std::make_unique<char[]>(sizeof(BITMAPINFOHEADER));
+	auto header = std::make_unique<uint8_t[]>(sizeof(BITMAPFILEHEADER));
+	auto info = std::make_unique<uint8_t[]>(sizeof(BITMAPINFOHEADER));
 
 	// Read file into header buffers
-	stream.read(static_cast<char*>(header.get()), sizeof(BITMAPFILEHEADER));
-	stream.read(static_cast<char*>(info.get()), sizeof(BITMAPINFOHEADER));
+	stream.read((char*)header.get(), sizeof(BITMAPFILEHEADER));
+	stream.read((char*)info.get(), sizeof(BITMAPINFOHEADER));
 	
 	// Construct headers
 	m_fileheader = std::unique_ptr<BITMAPFILEHEADER>((BITMAPFILEHEADER*)header.release());
@@ -68,13 +68,13 @@ bool BMP::loadFile(std::ifstream& stream) {
 	}
 
 	// Allocate pixel memory
-	m_data = std::make_unique<char[]>(imageSize);
+	m_data = std::make_unique<uint8_t[]>(imageSize);
 
 	// Go to where image data starts
 	stream.seekg(m_fileheader->bfOffBits);
 
 	// Read image data
-	stream.read(static_cast<char*>(m_data.get()), imageSize);
+	stream.read((char*)m_data.get(), imageSize);
 
 	ENSURE(m_fileheader != nullptr);
 	ENSURE(m_infoheader != nullptr);
@@ -84,7 +84,7 @@ bool BMP::loadFile(std::ifstream& stream) {
 	return true;
 }
 
-std::unique_ptr<char[]> BMP::decode() {
+std::unique_ptr<uint8_t[]> BMP::decode() {
 	REQUIRE(m_fileheader != nullptr);
 	REQUIRE(m_infoheader != nullptr);
 	REQUIRE(m_data != nullptr);
@@ -93,33 +93,37 @@ std::unique_ptr<char[]> BMP::decode() {
 		std::cerr << "\tImagetype not properly initialized before calling decode" << std::endl;
 		return nullptr;
 	}
-
+	
 	// Allocate memory for copy of data
 	const unsigned int width = m_infoheader->biWidth;
 	const unsigned int height = m_infoheader->biHeight;
 	const unsigned int imageSize = width * height * 3;
-	auto decode = std::make_unique<char[]>(imageSize);
-
-	// Padding bytes
+	
+	// Padding bytes count
 	unsigned int pad = 4 - m_infoheader->biWidth % 4;
 	if (pad == 4) {
-		pad = 0;
+		// No need to remove padding so optimize the decode from BGR to RGB
+		for (unsigned int i = 0; i < imageSize; i += 3) {
+			std::swap(m_data[i], m_data[i + 2]);
+		}
+		return std::move(m_data);
 	}
-
+	
 	// Copy data
+	auto decode = std::make_unique<uint8_t[]>(imageSize);
 	unsigned int i = 0;
 	for (unsigned int row = 0; row < height; ++row) {
-		for (unsigned long j = 0; j < width; j += 3) { // 3 bytes per pixel
+		for (unsigned long j = 0; j < width * 3; j += 3) { // 3 bytes per pixel
 			// Change BGR format to RGB
-			decode[i] = m_data[i + 2];
-			m_data[i + 1] = m_data[i + 1];
-			m_data[i + 2] = m_data[i];
+			decode[i] = std::move(m_data[i + 2]);
+			decode[i + 1] = std::move(m_data[i + 1]);
+			decode[i + 2] = std::move(m_data[i]);
 			i += 3;
 		}
 		i += pad; // Ignore padding
 	}
 
-	return decode;
+	return std::move(decode);
 }
 
 int BMP::getHeight() const {
