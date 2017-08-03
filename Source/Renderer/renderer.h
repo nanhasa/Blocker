@@ -80,7 +80,6 @@ private:
 	GLuint m_VBO; // vertex buffer object
 	GLuint m_VAO; // vertex array object
 	GLuint m_EBO; // vertex element object
-	GLfloat m_vertices[12];
 
 	std::function<void()> m_gameLogic;
 };
