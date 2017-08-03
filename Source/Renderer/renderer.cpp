@@ -58,13 +58,13 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 		return false;
 
 	// Triangle vertices: left, right, top
-	GLfloat square[] = {
-		0.5f,  0.5f, 0.0f,  // top right
-		0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
+	float square[] = {
+		// positions          // colors           // texture coords
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 	};
-	std::copy(square, square + 12, m_vertices);
 
 	unsigned int indices[] = { // note that we start from 0!
 		0, 1, 3,  // first Triangle
@@ -82,15 +82,21 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 
 	// Copy vertices array to a vertex buffer object for OpenGL
-	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
 
 	// Bind element buffer object
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// Set the vertex attribute pointers
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	// Unbind vertex objects now that they are registered so that they aren't misconfigured again by accident
 	// 0 resets the currently bound buffer to a NULL like state
@@ -102,8 +108,6 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	ENSURE(m_window != nullptr);
 	std::cout << "\tOpenGL initialized succesfully" << std::endl;
 
-	auto asd = texture::load("square.bmp"); //TODO remove when done testing 
-
 	return true;
 }
 
@@ -114,6 +118,31 @@ void Renderer::startMainLoop() {
 
 	std::cout << "Started main loop" << std::endl;
 
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	// set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	std::unique_ptr<texture::Image> txrData = texture::load("square.bmp");
+	unsigned int width = txrData->getWidth();
+	unsigned int height = txrData->getHeight();
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, txrData->getData());
+	glGenerateMipmap(GL_TEXTURE_2D);
+	txrData.reset();
+
+	//uint8_t* data = txrData->getData();
+	//int w = txrData->getWidth();
+	//int h = txrData->getHeight();
+	//for (int i = 0; i < w * h * 3; i += 3) {
+	//	std::cout << (int)data[i] << " " << (int)data[i + 1] << " " << (int)data[i + 2] << std::endl;
+	//}
+
 	while (!glfwWindowShouldClose(m_window)) {
 		glfwPollEvents();
 
@@ -123,9 +152,12 @@ void Renderer::startMainLoop() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// bind Texture
+		glBindTexture(GL_TEXTURE_2D, textureID);
+
+		// render container
 		m_shaderProgram->use();
 		glBindVertexArray(m_VAO);
-
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
