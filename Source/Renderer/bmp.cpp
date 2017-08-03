@@ -111,16 +111,13 @@ std::unique_ptr<uint8_t[]> BMP::decode() {
 	
 	// Copy data
 	auto decode = std::make_unique<uint8_t[]>(imageSize);
-	unsigned int i = 0;
-	for (unsigned int row = 0; row < height; ++row) {
-		for (unsigned long j = 0; j < width * 3; j += 3) { // 3 bytes per pixel
-			// Change BGR format to RGB
-			decode[i] = std::move(m_data[i + 2]);
-			decode[i + 1] = std::move(m_data[i + 1]);
-			decode[i + 2] = std::move(m_data[i]);
-			i += 3;
+	for (unsigned int i = 0, row = 0, w = width * 3; row < height; ++row) {
+		for (unsigned int j = 0; j < w; j += 3, i += 3) { // 3 bytes per pixel
+			// Change BGR format to RGB and ignore padding
+			decode[i] = std::move(m_data[i + 2 + row * pad]);
+			decode[i + 1] = std::move(m_data[i + 1 + row * pad]);
+			decode[i + 2] = std::move(m_data[i + row * pad]);
 		}
-		i += pad; // Ignore padding
 	}
 
 	return std::move(decode);
