@@ -88,13 +88,13 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// position attribute
+	// Position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// color attribute
+	// Color attribute
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	// texture coord attribute
+	// Texture coord attribute
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
@@ -122,26 +122,20 @@ void Renderer::startMainLoop() {
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	// set the texture wrapping parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	// Set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// set texture filtering parameters
+	// Set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
+	// Load texture data
 	std::unique_ptr<texture::Image> txrData = texture::load("square.bmp");
 	unsigned int width = txrData->getWidth();
 	unsigned int height = txrData->getHeight();
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, txrData->getData());
 	glGenerateMipmap(GL_TEXTURE_2D);
 	txrData.reset();
-
-	//uint8_t* data = txrData->getData();
-	//int w = txrData->getWidth();
-	//int h = txrData->getHeight();
-	//for (int i = 0; i < w * h * 3; i += 3) {
-	//	std::cout << (int)data[i] << " " << (int)data[i + 1] << " " << (int)data[i + 2] << std::endl;
-	//}
 
 	while (!glfwWindowShouldClose(m_window)) {
 		glfwPollEvents();
@@ -152,15 +146,15 @@ void Renderer::startMainLoop() {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// bind Texture
+		// Bind Texture
 		glBindTexture(GL_TEXTURE_2D, textureID);
 
-		// render container
+		// Render container
 		m_shaderProgram->use();
 		glBindVertexArray(m_VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		glBindVertexArray(0);
+		glBindVertexArray(0); // Unbind
 
 		glfwSwapBuffers(m_window);
 	}
