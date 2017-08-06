@@ -29,6 +29,8 @@ import sys
 from shutil import copy2
 
 #Class to represent functions in cpp code
+#Builder parameter is the function definition e.g. 'int getHeight() const'
+#For builders leave out initialization section i.e. everything following :
 class Function(object):
     def __init__(self, definition):
         self.definition = definition
@@ -116,22 +118,6 @@ def searchFilesRecursively():
     return headers
 
 
-#Truncates builder initialization from the line with builder declaration
-#Does not affect other than builders
-def truncateBuilderInitialization(line):
-    line = line.lstrip()
-    i = line.find('::')
-    #Test if line is builder definition
-    if (i == -1 or line[: i] != line[i + 2 : 2 * i + 2]):
-        return line
-
-    #Search for single set of : which separates declaration from initialization part in builder
-    while (i + 1 < len(line)):
-        if (i > 0):
-            if (line[i] == ':' and line[i - 1] != ':' and line[i + 1] != ':'):
-                return line[:i]
-        i += 1
-    return line
 
 
 #Crawls through the cpp file paired with the .h file given
@@ -148,18 +134,21 @@ def crawlFunctionDefinitions(filename):
 
     #List to hold Function objects
     functions = list()
-    preconditions = list()
-    postconditions = list()
 
     #Variables to keep track of function begin and end, and comment blocks
-    openBrackets = 0
-    closedBrackets = 0
-    openParentheses = 0
-    closedParentheses = 0
+    bracketsOpen = 0
+    bracketsClosed = 0
+    bracketsOpenPrevLine = -1
     commentsBlock = False
 
-    #Loop through cpp file
-    prevLineTemp = ""
+    #Variables to keep track of active namespaces (they tend to mess the bracket counts)
+    namespaceLinetemp = ""
+    activeNamespaces = 0
+
+    #List to hold functions
+    fullfunctions = list()
+
+    #Loop through cpp file to collect functions to a list
     for line in cppfile:
         #skip comments
         if (commentsBlock and '*/' not in line):
@@ -184,53 +173,84 @@ def crawlFunctionDefinitions(filename):
         if (line.lstrip()[:8] == '#include' or line.lstrip()[:8] == '#declare'):
             continue
 
-        if (openBrackets == closedBrackets):
-            #Manage functions with open bracket at the end of the line
-            if ('{' in line):
-                openBrackets += line.count('{')
-                closedBrackets += line.count('}')
-                #Leave implementation out
-                line = line[:line.index('{')]
+        #Check for namespaces since they mess up the bracket counting
+        if (line.lstrip()[:9] == 'namespace'):
+            if ('{' not in line):
+                namespaceLinetemp += line
+            else:
+                namespaceLinetemp = ""
+                activeNamespaces += 1
+                continue
 
-            openParentheses += line.count('(')
-            closedParentheses += line.count(')')
-            prevLineTemp += line.lstrip(' \t').rstrip('\n')
-            if (openParentheses == closedParentheses):
-                #Leave out member initializations in builder
-                prevLineTemp = truncateBuilderInitialization(prevLineTemp)
-                if (len(prevLineTemp) > 0):
-                    #Attach pre and postconditions to the previously found function definition
-                    if (len(functions) > 0):
-                        functions[-1].pres = preconditions[:]
-                        functions[-1].posts = postconditions[:]
-                    #append the new function
-                    functions.append(Function(prevLineTemp))
-                prevLineTemp = ""
-                del preconditions[:]
-                del postconditions[:]
+        #Update bracket count
+        bracketsOpen += line.count('{')
+        bracketsClosed += line.count('}')
+
+        #Balance bracket amounts with activeNamespaces because the opening bracket of namespace was ignored
+        #There are less bracketsOpen than bracketsClosed when namespace closes
+        if (bracketsOpen < bracketsClosed):
+            activeNamespaces -= 1
+            bracketsClosed -= 1
+            if (activeNamespaces < 0):
+                print('Something went wrong with active namespace counter')
             continue
 
-        #Line does not hold function declaration
+        line = line.strip('\t\n\r')
+
+        #New function definition when there is equal amount of brackets
+        if (bracketsOpen == bracketsClosed):
+            #If there is no previous row, append new
+            if (bracketsOpenPrevLine == -1):
+                fullfunctions.append(line)
+                #If there is an opening bracket, update previous count
+                if (bracketsOpen == 0):
+                    bracketsOpenPrevLine = bracketsOpen
+                    continue
+            #Case when the function ends
+            else:
+                fullfunctions[-1] += line
+
+            bracketsOpen = 0
+            bracketsClosed = 0
+            bracketsOpenPrevLine = -1
+        #Append last one when the bracket counts don't match
         else:
-            if ('REQUIRE' in line):
-                preconditions.append(line[line.index('(') + 1:line.rindex(')')])
-            if ('ENSURE' in line):
-                postconditions.append(line[line.index('(') + 1:line.rindex(')')])
-            openBrackets += line.count('{')
-            closedBrackets += line.count('}')
-            continue
+            #But if there is no previous row, then append new
+            if (bracketsOpenPrevLine == -1):
+                fullfunctions.append(line)
+            else:
+                fullfunctions[-1] += line
+            bracketsOpenPrevLine = bracketsOpen
 
-    #Attach pre and postconditions to the last found function declaration
-    #This is done afterwards because the definition is found before the contracts are found
-    if (len(functions) > 0):
-        functions[-1].pres = preconditions[:]
-        functions[-1].posts = postconditions[:]
+
+    for f in fullfunctions:
+        startBracket = f.index('{')
+
+        pattern = re.compile(r'[^:](:)[^:]') #Find separator for builder initialization
+        match = pattern.search(f)
+        if (match):
+            if (match.start() < startBracket): #If there was separator, choose is it used or first bracket
+                functions.append(Function(f[:match.start() + 1]))
+            else:
+                functions.append(Function(f[:startBracket]))
+        else:
+            functions.append(Function(f[:startBracket]))
+
+        #Extract preconditions of from the function body
+        pattern = re.compile(r'REQUIRE\s*\((?P<condition>.+?)\);')
+        for pre in re.finditer(pattern, f):
+            functions[-1].pres.append(pre.group('condition'))
+
+        #Extract postconditions of from the function body
+        pattern = re.compile(r'ENSURE\s*\((?P<condition>.+?)\);')
+        for post in re.finditer(pattern, f):
+            functions[-1].posts.append(post.group('condition'))
 
     return functions
 
 #Parses function declaration into components
 #Returns list of ProcessedFunction objects
-def processFunctions(functions):
+def processFunctionsDefinitions(functions):
     processedFuncs = list()
     for func in functions:
         #Class member func
@@ -239,6 +259,12 @@ def processFunctions(functions):
         returnValue = ""
         funcName = ""
         classlessDef = ""
+
+
+
+        #TODO tee tää uusikss
+
+
         #Handle member functions
         if ('::' in d):
             #Builders and destructors dont have a return value
@@ -261,7 +287,7 @@ def processFunctions(functions):
         if (len(d[d.index('(') + 1:d.rindex(')')].strip(' ')) > 0):
             #Handle parameters
             #separate each parameter
-            parameters = [p.rstrip(' ') for p in d[d.index('(') + 1:d.rindex(')')].split(',')]
+            parameters = [p.strip(' ') for p in d[d.index('(') + 1:d.rindex(')')].split(',')]
             #collect names of parameters
             parameterNames = [p[p.rindex(' ') + 1:] for p in parameters]
 
@@ -304,7 +330,7 @@ def getUpdatedCommentSection(oldComments, outputList, indent, substr):
 def processHeaderFile(filename, backupPath):
     functions = crawlFunctionDefinitions(filename)
     if (len(functions) > 0):
-        processedFuncs = processFunctions(functions)
+        processedFuncs = processFunctionsDefinitions(functions)
 
         h = open(filename, "r")
         hfile = h.readlines()
@@ -363,7 +389,9 @@ def processHeaderFile(filename, backupPath):
                         #Set formatting of the list
                         if(len(upd_hfile[-1].strip()) > 0):
                             newLines.append('')
-                        indent = '\t ' if re.match(r'\s', line) else ' '
+                        p = re.compile(r'^\s*')
+                        match = p.search(line)
+                        indent = match.group() + ' ' if (match) else ' '
                         newLines.append(indent[:-1] + '/**')
 
                         #Update existing comments if there were any
