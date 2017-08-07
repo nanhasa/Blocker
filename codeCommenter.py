@@ -58,7 +58,7 @@ def main():
         bupath = sys.argv[1]
     while True:
         if (len(bupath) == 0):
-            bupath = input("Enter path to backup file folder: ")
+            bupath = input('Enter path to backup file folder: ')
         try:
             os.chdir(bupath)
             break
@@ -76,7 +76,7 @@ def main():
         path = sys.argv[2]
     while True:
         if (len(path) == 0):
-            path = input("Enter path to folder: ")
+            path = input('Enter path to folder: ')
         try:
             os.chdir(path)
             break
@@ -128,7 +128,7 @@ def crawlFunctionDefinitions(filename):
         return list()
 
     #Read cpp file
-    cpp = open(filename[:-1] + 'cpp', "r")
+    cpp = open(filename[:-1] + 'cpp', 'r')
     cppfile = cpp.readlines()
     cpp.close()
 
@@ -142,7 +142,7 @@ def crawlFunctionDefinitions(filename):
     commentsBlock = False
 
     #Variables to keep track of active namespaces (they tend to mess the bracket counts)
-    namespaceLinetemp = ""
+    namespaceLinetemp = ''
     activeNamespaces = 0
 
     #List to hold functions
@@ -178,7 +178,7 @@ def crawlFunctionDefinitions(filename):
             if ('{' not in line):
                 namespaceLinetemp += line
             else:
-                namespaceLinetemp = ""
+                namespaceLinetemp = ''
                 activeNamespaces += 1
                 continue
 
@@ -255,10 +255,10 @@ def processFunctionsDefinitions(functions):
     for func in functions:
         #Class member func
         defn = func.definition
-        className = ""
-        returnValue = ""
-        funcName = ""
-        classlessDef = ""
+        className = ''
+        returnValue = ''
+        funcName = ''
+        classlessDef = ''
 
         #Extract function name
         pattern = re.compile(r'[^(::|\s)]+(?=\s*?\()') #Find the name of the function
@@ -297,9 +297,9 @@ def processFunctionsDefinitions(functions):
         
         #Extract return value
         if (classIdx == -1): #Nonmember function
-            returnValue = "".join(defn[:nameIdx].rstrip().split())
+            returnValue = ''.join(defn[:nameIdx].rstrip().split())
         else:
-            returnValue = "".join(defn[:classIdx].rstrip().split())
+            returnValue = ''.join(defn[:classIdx].rstrip().split())
         
         #Check if there are any parameters
         parameterNames = list()
@@ -351,7 +351,7 @@ def processHeaderFile(filename, backupPath):
     if (len(functions) > 0):
         processedFuncs = processFunctionsDefinitions(functions)
 
-        h = open(filename, "r")
+        h = open(filename, 'r')
         hfile = h.readlines()
         h.close()
         upd_hfile = list()
@@ -377,12 +377,12 @@ def processHeaderFile(filename, backupPath):
 
             #Join the multiline function to single line
             if(len(multilineFuncDef) > 0):
-                line = ""
+                line = ''
                 for l in multilineFuncDef:
                     line += l
 
             #Create line without whitespaces in order to compare data in lines reliably
-            strippedLine = "".join(line.split())
+            strippedLine = ''.join(line.split())
 
             #Parse existing comments
             if ('/**' in strippedLine[:3]):
@@ -399,7 +399,7 @@ def processHeaderFile(filename, backupPath):
                 for f in processedFuncs:
                     #Match function definitions without spaces and tabs
                     #In header version there are additional keywords like extern etc -> search for substring
-                    if ("".join(f.fullClasslessDefinition.split()) in strippedLine):
+                    if (''.join(f.fullClasslessDefinition.split()) in strippedLine):
 
                         #Builder is an expcetion because it passes the previous condition when compared to destructor
                         if (f.name == f.className and '~' in strippedLine):
@@ -476,9 +476,9 @@ def processHeaderFile(filename, backupPath):
         copy2(filename, backupPath + '\\' + filename[filename.rfind('\\') + 1:] + '.bak_' + datetime.datetime.now().strftime('%S%f'))
 
         #Write the processed lines back to file
-        newFile = open(filename, "w")
+        newFile = open(filename, 'w')
         for row in upd_hfile:
-            newFile.write("%s\n" % row)
+            newFile.write('%s\n' % row)
         newFile.close()
 
         return True
@@ -493,5 +493,5 @@ def processHeaderFile(filename, backupPath):
 # Script entry point
 #
 ###########################################
-if (__name__ == "__main__"):
+if (__name__ == '__main__'):
     main()
