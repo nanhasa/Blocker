@@ -254,40 +254,59 @@ def processFunctionsDefinitions(functions):
     processedFuncs = list()
     for func in functions:
         #Class member func
-        d = func.definition
+        defn = func.definition
         className = ""
         returnValue = ""
         funcName = ""
         classlessDef = ""
 
-
-
-        #TODO tee tää uusikss
-
-
-        #Handle member functions
-        if ('::' in d):
-            #Builders and destructors dont have a return value
-            if (' ' not in d[:d.index('::')]):
-                className = d[:d.index('::')]
-                classlessDef = d[d.index('::') + 2:]
+        #Extract function name
+        pattern = re.compile(r'[^(::|\s)]+(?=\s*?\()') #Find the name of the function
+        match = pattern.search(defn)
+        if (not match):
+            #In case the function name could not be found, stop processing
+            #and set default value to classlessDef because it is used to 
+            #map functions to ones in .h file
+            print('Error extracting function name from definition: ' + defn)
+            funcName = 'ERROR'
+            classlessDef = defn
+            continue
+        
+        funcName = match.group(0)
+        nameIdx = match.start()
+        if (nameIdx < 3): #Sanity check
+            print('Error in function name match index definition: idx ' + nameIdx + ' ' + defn)
+            funcName = 'ERROR'
+            classlessDef = defn
+            continue
+            
+        #Extract class name
+        #Nonmember function has space before function name
+        classIdx = -1
+        if (defn[nameIdx - 1] != ' '):
+            pattern = re.compile(r'\w+$')
+            match = pattern.search(defn[:nameIdx - 2]) #Leave out colons before function name
+            if (not match):
+                print('Error in extracting class name: ' + defn)
             else:
-                returnValue = d[:d.index(' ')]
-                className = d[d.index(' ') + 1:d.index('::')]
-                classlessDef = d[:d.index(' ') + 1] + d[d.index('::') + 2:]
-            funcName = d[d.index('::') + 2:d.index('(')]
-        #Handle functions that are not members of a class
+                className = match.group(0)
+                classIdx = match.start()
+                classlessDef = defn[: classIdx] + defn[classIdx + len(className) + 2 : ]
         else:
-            returnValue = d[:d.index(' ')]
-            funcName = d[d.index(' ') + 1:d.index('(')]
-            classlessDef = d
-
+            classlessDef = defn
+        
+        #Extract return value
+        if (classIdx == -1): #Nonmember function
+            returnValue = "".join(defn[:nameIdx].rstrip().split())
+        else:
+            returnValue = "".join(defn[:classIdx].rstrip().split())
+        
         #Check if there are any parameters
         parameterNames = list()
-        if (len(d[d.index('(') + 1:d.rindex(')')].strip(' ')) > 0):
+        if (len(defn[defn.index('(') + 1 : defn.rindex(')')].strip(',')) > 0):
             #Handle parameters
             #separate each parameter
-            parameters = [p.strip(' ') for p in d[d.index('(') + 1:d.rindex(')')].split(',')]
+            parameters = [p.strip(' ') for p in defn[defn.index('(') + 1 : defn.rindex(')')].split(',')]
             #collect names of parameters
             parameterNames = [p[p.rindex(' ') + 1:] for p in parameters]
 
@@ -391,7 +410,7 @@ def processHeaderFile(filename, backupPath):
                             newLines.append('')
                         p = re.compile(r'^\s*')
                         match = p.search(line)
-                        indent = match.group() + ' ' if (match) else ' '
+                        indent = match.group(0) + ' ' if (match) else ' '
                         newLines.append(indent[:-1] + '/**')
 
                         #Update existing comments if there were any
