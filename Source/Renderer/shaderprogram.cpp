@@ -75,13 +75,13 @@ void ShaderProgram::setFloat(const std::string& name, float value) const {
 	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-bool ShaderProgram::loadShader(const std::string& name, std::string& sourcestr) const {
+bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const {
 	REQUIRE(!name.empty());
 
 	std::cout << "\tLoading shader file: " << name << std::endl;
 
-	if (!sourcestr.empty())
-		sourcestr.clear();
+	if (!shaderSource.empty())
+		shaderSource.clear();
 
 	std::ifstream file("../Data/Shaders/" + name);
 	if (!file.is_open()) {
@@ -97,13 +97,13 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& sourcestr) 
 	file.close();
 
 	// Get contents to string and count new lines in it to compare it to file length
-	sourcestr = std::move(shaderData.str());
-	unsigned int newLines = std::count(sourcestr.begin(), sourcestr.end(), '\n');
+	shaderSource = std::move(shaderData.str());
+	unsigned int newLines = std::count(shaderSource.begin(), shaderSource.end(), '\n');
 
-	ENSURE(!sourcestr.empty());
-	ENSURE(sourcestr.size() + newLines == static_cast<unsigned int>(filesize));
+	ENSURE(!shaderSource.empty());
+	ENSURE(shaderSource.size() + newLines == static_cast<unsigned int>(filesize));
 
-	if (sourcestr.empty()) {
+	if (shaderSource.empty()) {
 		std::cerr << "\tEmpty shader file: " + name << std::endl;
 		return false;
 	}

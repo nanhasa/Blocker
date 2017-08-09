@@ -12,12 +12,12 @@ class ShaderProgram {
 public:
 
 	/**
-	 * \brief ShaderProgram
+	 * \brief Builder. Call attachShader to initialize object.
 	 */
 	ShaderProgram();
 
 	/**
-	 * \brief ~ShaderProgram
+	 * \brief Destructor
 	 */
 	~ShaderProgram();
 
@@ -44,22 +44,22 @@ public:
 
 	/**
 	 * \brief Utility bool uniform
-	 * \param name
-	 * \param value
+	 * \param name Uniform name
+	 * \param value Uniform value to be updated
 	 */
 	void setBool(const std::string &name, bool value) const;
 
 	/**
 	 * \brief Utility int uniform
-	 * \param name
-	 * \param value
+	 * \param name Uniform name
+	 * \param value Uniform value to updated
 	 */
 	void setInt(const std::string &name, int value) const;
 
 	/**
 	 * \brief Utility float uniform
-	 * \param name
-	 * \param value
+	 * \param name Uniform name
+	 * \param value Uniform value to be updated
 	 */
 	void setFloat(const std::string &name, float value) const;
 
@@ -67,20 +67,21 @@ private:
 	GLuint m_id;
 
 	/**
-	 * \brief Loads shader source file 'name' to shaderSource
-	 * \param name Name of the source file
-	 * \param shaderSource Identifies which type of shader is loaded
+	 * \brief Loads shader file into shaderSource parameter string
+	 * \param name Shader file name to be loaded without file path
+	 * \param shaderSource Output variable that stores contents of file loaded
 	 * \pre !name.empty()
 	 * \post !shaderSource.empty()
-	 * \return true if loading was successful
+	 * \post shaderSource.size() + newLines == static_cast<unsigned int>(filesize)
+	 * \return True if successful, otherwise false
 	 */
 	bool loadShader(const std::string& name, std::string& shaderSource) const;
 
 	/**
-	 * \brief Validates shader object
+	 * \brief Loads shader source file 'name' to shaderSource
 	 * \param object Object being validated
 	 * \param paramType Aspect being validated
-	 * \return true if valid
+	 * \return true if loading was successful
 	 */
 	bool validateShaderObject(GLuint object, GLenum paramType) const;
 };

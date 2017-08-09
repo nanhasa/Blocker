@@ -84,6 +84,9 @@ namespace texture {
 	}
 
 	bool isStreamEmpty(std::ifstream& stream) {
+		if (!stream.is_open())
+			return false;
+
 		return stream.peek() == std::ifstream::traits_type::eof();
 	}
 
