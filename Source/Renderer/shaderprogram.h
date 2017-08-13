@@ -4,9 +4,17 @@
 
 //GLEW must be included before GLFW
 #define GLEW_STATIC
-#include <3rdParty\GL\glew.h>
+#include <3rdParty/GL/glew.h>
 //GLFW
-#include <3rdParty\GLFW\glfw3.h>
+#include <3rdParty/GLFW/glfw3.h>
+
+#pragma warning (push, 2)  // Temporarily set warning level 2
+#define GLM_FORCE_CXX14
+#include <3rdParty/glm/glm.hpp>
+#include <3rdParty/glm/gtc/matrix_transform.hpp>
+#include <3rdParty/glm/gtc/type_ptr.hpp>
+#pragma warning (pop)      // Restore back
+
 
 class ShaderProgram {
 public:
@@ -20,6 +28,8 @@ public:
 	 * \brief Destructor
 	 */
 	~ShaderProgram();
+
+	GLuint getID() const;
 
 	/**
 	 * \brief Reads shader source file, compiles it, attaches, and links it to shaderProgram
@@ -62,6 +72,24 @@ public:
 	 * \param value Uniform value to be updated
 	 */
 	void setFloat(const std::string &name, float value) const;
+
+	void setVec2(const std::string &name, const glm::vec2 &value) const;
+
+	void setVec2(const std::string &name, float x, float y) const;
+
+	void setVec3(const std::string &name, const glm::vec3 &value) const;
+
+	void setVec3(const std::string &name, float x, float y, float z) const;
+
+	void setVec4(const std::string &name, const glm::vec4 &value) const;
+
+	void setVec4(const std::string &name, float x, float y, float z, float w) const;
+
+	void setMat2(const std::string &name, const glm::mat2 &mat) const;
+
+	void setMat3(const std::string &name, const glm::mat3 &mat) const;
+
+	void setMat4(const std::string &name, const glm::mat4 &mat) const;
 
 private:
 	GLuint m_id;

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "shaderprogram.h"
+#include "Renderer/shaderprogram.h"
 #include "contract.h"
 
 ShaderProgram::ShaderProgram() {
@@ -12,6 +12,10 @@ ShaderProgram::ShaderProgram() {
 
 ShaderProgram::~ShaderProgram() {
 	glDeleteProgram(m_id);
+}
+
+GLuint ShaderProgram::getID() const {
+	return m_id;
 }
 
 bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType) const {
@@ -75,6 +79,39 @@ void ShaderProgram::setFloat(const std::string& name, float value) const {
 	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
+void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) const {
+	glUniform2fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
+}
+void ShaderProgram::setVec2(const std::string& name, float x, float y) const {
+	glUniform2f(glGetUniformLocation(m_id, name.c_str()), x, y);
+}
+
+void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) const {
+	glUniform3fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
+}
+void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) const {
+	glUniform3f(glGetUniformLocation(m_id, name.c_str()), x, y, z);
+}
+
+void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) const {
+	glUniform4fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
+}
+void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, float w) const {
+	glUniform4f(glGetUniformLocation(m_id, name.c_str()), x, y, z, w);
+}
+
+void ShaderProgram::setMat2(const std::string& name, const glm::mat2& mat) const {
+	glUniformMatrix2fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void ShaderProgram::setMat3(const std::string& name, const glm::mat3& mat) const {
+	glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void ShaderProgram::setMat4(const std::string& name, const glm::mat4& mat) const {
+	glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
 bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const {
 	REQUIRE(!name.empty());
 
@@ -119,23 +156,23 @@ bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const 
 	}
 
 	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(object, paramType, &success);
-	if (!success) {
-		switch (paramType) 	{
-		case GL_COMPILE_STATUS:
-			glGetShaderInfoLog(object, 512, NULL, infoLog);
-			std::cerr << "\tShader compilation failed:\n" << infoLog << std::endl;
-			break;
-		case GL_LINK_STATUS:
-			glGetProgramInfoLog(object, 512, NULL, infoLog);
-			std::cerr << "\tShader program linking failed:\n" << infoLog << std::endl;
-			break;
-		default:
-			std::cerr << "\tUndefined paramType in validateShaderObject()" << std::endl;
-			break;
+	GLchar infoLog[1024];
+	if (paramType != GL_LINK_STATUS) {
+		glGetShaderiv(object, GL_COMPILE_STATUS, &success);
+		if (!success) {
+			glGetShaderInfoLog(object, 1024, NULL, infoLog);
+			std::cout << "SHADER_COMPILATION_ERROR: \n\t" << infoLog << std::endl;
+			return false;
 		}
-		return false;
+		return true;
 	}
-	return true;
+	else {
+		glGetProgramiv(object, GL_LINK_STATUS, &success);
+		if (!success) {
+			glGetProgramInfoLog(object, 1024, NULL, infoLog);
+			std::cout << "ERROR::PROGRAM_LINKING_ERROR: \n\t" << infoLog << std::endl;
+			return false;
+		}
+		return true;
+	}
 }
