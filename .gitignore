@@ -20,17 +20,16 @@ Test/Win32Release/
 Test/Win64Debug/
 Test/Win64Release/
 
-# 3rd Party headers
-Source/3rdParty/**/*
-Source/3rdParty/**/!*.md
+# 3rd Party headers but allow readme files
+Source/3rdParty/**
+!Source/3rdParty/**/
+!*.md
 
 # Library binaries
 Libs/**/*.lib
 
 # Doxygen output
 Docs/HTML/
-
-
 
 
 # MSTest test Results
