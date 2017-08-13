@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "contract.h"
-#include "Renderer\renderer.h"
-#include "Renderer\texture.h"
+#include "Renderer/renderer.h"
+#include "Renderer/texture.h"
 
 Renderer::Renderer() : m_window(nullptr), m_shaderProgram(nullptr) {}
 
@@ -59,11 +59,11 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 
 	// Triangle vertices: left, right, top
 	float square[] = {
-		// positions          // colors           // texture coords
-		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+		// positions          // texture coords
+		0.5f,  0.5f, 0.0f,    1.0f, 1.0f, // top right
+		0.5f, -0.5f, 0.0f,    1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
 	};
 
 	unsigned int indices[] = { // note that we start from 0!
@@ -80,23 +80,25 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	glBindVertexArray(m_VAO);
 	// Bind vertex buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-
 	// Copy vertices array to a vertex buffer object for OpenGL
 	glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
-
 	// Bind element buffer object
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// Color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 	// Texture coord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+
+	// Initialize member matrices
+	m_model = glm::rotate(m_model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	m_view = glm::translate(m_view, glm::vec3(0.0f, 0.0f, -3.0f)); // Translate scene in the reverse direction of where we want to move
+	m_projection = glm::perspective(glm::radians(45.0f), 
+		static_cast<float>(width / height), 0.1f, 100.0f);
 
 	// Unbind vertex objects now that they are registered so that they aren't misconfigured again by accident
 	// 0 resets the currently bound buffer to a NULL like state
@@ -115,8 +117,6 @@ void Renderer::startMainLoop() {
 	REQUIRE(m_window != nullptr);
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
-
-	std::cout << "Started main loop" << std::endl;
 
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -137,6 +137,8 @@ void Renderer::startMainLoop() {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	txrData.reset();
 
+	std::cout << "Started main loop" << std::endl;
+
 	while (!glfwWindowShouldClose(m_window)) {
 		glfwPollEvents();
 
@@ -148,9 +150,14 @@ void Renderer::startMainLoop() {
 
 		// Bind Texture
 		glBindTexture(GL_TEXTURE_2D, textureID);
+		m_shaderProgram->use();
+
+		// Set uniforms
+		m_shaderProgram->setMat4("model", m_model);
+		m_shaderProgram->setMat4("view", m_view);
+		m_shaderProgram->setMat4("projection", m_projection);
 
 		// Render container
-		m_shaderProgram->use();
 		glBindVertexArray(m_VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

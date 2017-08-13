@@ -6,12 +6,20 @@
 
 //GLEW must be included before GLFW
 #define GLEW_STATIC
-#include <3rdParty\GL\glew.h>
+#include <3rdParty/GL/glew.h>
 //GLFW
-#include <3rdParty\GLFW\glfw3.h>
+#include <3rdParty/GLFW/glfw3.h>
+
+#pragma warning (push, 2)  // Temporarily set warning level 2
+#define GLM_FORCE_CXX14
+#include <3rdParty/glm/glm.hpp>
+#include <3rdParty/glm/gtc/matrix_transform.hpp>
+#include <3rdParty/glm/gtc/type_ptr.hpp>
+#pragma warning (pop)      // Restore back
+
 
 #include "interfaces.h"
-#include "Renderer\shaderprogram.h"
+#include "Renderer/shaderprogram.h"
 
 class Renderer : public IRenderer {
 public:
@@ -80,6 +88,10 @@ private:
 	GLuint m_VBO; // vertex buffer object
 	GLuint m_VAO; // vertex array object
 	GLuint m_EBO; // vertex element object
+
+	glm::mat4 m_model;		// Matrice From local space to world space
+	glm::mat4 m_view;		// Matcice From world space to view space
+	glm::mat4 m_projection;	// Matrice From view space to clip space
 
 	std::function<void()> m_gameLogic;
 };
