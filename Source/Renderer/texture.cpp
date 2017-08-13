@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "contract.h"
-#include "Renderer\bmp.h"
-#include "texture.h"
+#include "Renderer/bmp.h"
+#include "Renderer/texture.h"
 
 namespace texture {
 

@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "GameManager\gamemanager.h"
+#include "GameManager/gamemanager.h"
 
 int main() {
 	GameManager gm;

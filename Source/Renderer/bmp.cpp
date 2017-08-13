@@ -2,8 +2,8 @@
 #include <iostream>
 
 #include "contract.h"
-#include "Renderer\bmp.h"
-#include "Renderer\texture.h"
+#include "Renderer/bmp.h"
+#include "Renderer/texture.h"
 
 BMP::BMP() {
 	m_data = nullptr;

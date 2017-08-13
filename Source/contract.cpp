@@ -1,9 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <exception>
-#include <iostream>
-
 #include "contract.h"
 
 void abortProgram(const char* file, const int line, const char* condition, const char* type) {

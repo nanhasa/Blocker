@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "gamemanager.h"
-#include "Renderer\renderer.h"
+#include "GameManager/gamemanager.h"
+#include "Renderer/renderer.h"
 #include "contract.h"
 
 GameManager::GameManager() {}
