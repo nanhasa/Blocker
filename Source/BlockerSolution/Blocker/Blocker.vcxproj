@@ -160,6 +160,7 @@
     <ClCompile Include="..\..\GameManager\gamemanager.cpp" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\..\Renderer\bmp.cpp" />
+    <ClCompile Include="..\..\Renderer\camera.cpp" />
     <ClCompile Include="..\..\Renderer\renderer.cpp" />
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
     <ClCompile Include="..\..\Renderer\texture.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="..\..\GameManager\gamemanager.h" />
     <ClInclude Include="..\..\interfaces.h" />
     <ClInclude Include="..\..\Renderer\bmp.h" />
+    <ClInclude Include="..\..\Renderer\camera.h" />
     <ClInclude Include="..\..\Renderer\renderer.h" />
     <ClInclude Include="..\..\Renderer\shaderprogram.h" />
     <ClInclude Include="..\..\Renderer\texture.h" />

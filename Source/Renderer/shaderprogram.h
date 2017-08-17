@@ -9,7 +9,6 @@
 #include <3rdParty/GLFW/glfw3.h>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
-#define GLM_FORCE_CXX14
 #include <3rdParty/glm/glm.hpp>
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
 #include <3rdParty/glm/gtc/type_ptr.hpp>

@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\Renderer\texture.cpp">
       <Filter>Source Files\Renderer\ImageLoader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Renderer\camera.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\contract.h">
@@ -79,6 +82,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Renderer\texture.h">
       <Filter>Header Files\Renderer\ImageLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Renderer\camera.h">
+      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

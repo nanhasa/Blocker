@@ -11,14 +11,13 @@
 #include <3rdParty/GLFW/glfw3.h>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
-#define GLM_FORCE_CXX14
 #include <3rdParty/glm/glm.hpp>
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
 #include <3rdParty/glm/gtc/type_ptr.hpp>
 #pragma warning (pop)      // Restore back
 
-
 #include "interfaces.h"
+#include "Renderer/camera.h"
 #include "Renderer/shaderprogram.h"
 
 class Renderer : public IRenderer {
@@ -48,7 +47,8 @@ public:
 	 * \post m_window != nullptr
 	 * \return true if successful else false
 	 */
-	bool initialize(std::string&& windowName, int width, int height, std::function<void()>&& gameLogic) override;
+	bool initialize(std::string&& windowName, int width, int height, 
+		std::function<void(float)>&& gameLogic) override;
 
 	/**
 	 * \brief The main Loop. Renders and calls gameLogic onUpdate
@@ -67,7 +67,13 @@ public:
 	 * \param mode Mode of key input
 	 * \pre window != nullptr
 	 */
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+	static void staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
+	void keyCallback(int key, int scancode, int action, int mode);
+
+	static void staticMouseCallback(GLFWwindow* window, double xpos, double ypos);
+
+	void mouseCallback(double xpos, double ypos);
 
 	/**
 	 * \brief Callback to adjust frame buffer size
@@ -79,7 +85,11 @@ public:
 	 * \post framebufferWidth == width
 	 * \post framebufferHeight == height
 	 */
-	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+	static void staticFramebufferSizeCallback(GLFWwindow* window, int width, int height);
+
+	void framebufferSizeCallback(int width, int height);
+
+	glm::vec3 getCameraFront() override;
 
 private:
 	GLFWwindow* m_window;
@@ -89,9 +99,14 @@ private:
 	GLuint m_VAO; // vertex array object
 	GLuint m_EBO; // vertex element object
 
+	Camera m_camera; // Main camera
+	bool m_firstMouseMovement = true;
+	double m_mousexPos;
+	double m_mouseyPos;
+
 	glm::mat4 m_model;		// Matrice From local space to world space
 	glm::mat4 m_view;		// Matcice From world space to view space
 	glm::mat4 m_projection;	// Matrice From view space to clip space
 
-	std::function<void()> m_gameLogic;
+	std::function<void(float)> m_gameLogic;
 };

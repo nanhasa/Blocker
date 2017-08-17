@@ -144,6 +144,10 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 		std::cerr << "\tEmpty shader file: " + name << std::endl;
 		return false;
 	}
+	if (shaderSource.size() + newLines != static_cast<unsigned int>(filesize)) {
+		std::cerr << "\tShader loaded does not match shader file: " + name << std::endl;
+		return false;
+	}
 	std::cout << "\tShader file loaded successfully" << std::endl;
 
 	return true;

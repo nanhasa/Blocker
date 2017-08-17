@@ -4,7 +4,9 @@
 #include "Renderer/renderer.h"
 #include "Renderer/texture.h"
 
-Renderer::Renderer() : m_window(nullptr), m_shaderProgram(nullptr) {}
+Renderer::Renderer() 
+	: m_window(nullptr), m_shaderProgram(nullptr), 
+	  m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)), m_firstMouseMovement(true) {}
 
 Renderer::~Renderer() {
 	glfwTerminate();
@@ -13,7 +15,9 @@ Renderer::~Renderer() {
 	glDeleteBuffers(1, &m_EBO);
 }
 
-bool Renderer::initialize(std::string && windowName, int width, int height, std::function<void()>&& gameLogic) {
+bool Renderer::initialize(std::string && windowName, int width, int height, 
+		std::function<void(float)>&& gameLogic) {
+	
 	REQUIRE(!windowName.empty());
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
@@ -46,9 +50,20 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	int frameBufferWidth = 0;
 	int frameBufferHeight = 0;
 	glfwGetFramebufferSize(m_window, &frameBufferWidth, &frameBufferHeight);
-	glfwSetKeyCallback(m_window, Renderer::keyCallback); // Set callback for key pressing
 	glViewport(0, 0, frameBufferWidth, frameBufferHeight);
-	glfwSetFramebufferSizeCallback(m_window, Renderer::framebufferSizeCallback); // Set callback for window resize
+	
+	// Set callback functions to static functions
+	glfwSetFramebufferSizeCallback(m_window, Renderer::staticFramebufferSizeCallback); // Resize
+	glfwSetKeyCallback(m_window, Renderer::staticKeyCallback); // Key
+	glfwSetCursorPosCallback(m_window, Renderer::staticMouseCallback); // Mouse 
+	// Cannot bind member functions to callbacks so bind window with pointer to this
+	// With this we can call member functions from static callback functions
+	glfwSetWindowUserPointer(m_window, this); 
+
+
+
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glEnable(GL_DEPTH_TEST); // Enable depth testing
 
 	// Create shader program by attaching and linking shaders to it
 	m_shaderProgram = std::make_unique<ShaderProgram>();
@@ -57,13 +72,48 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	if (!m_shaderProgram->attachShader("fragment_basic.frag", GL_FRAGMENT_SHADER))
 		return false;
 
-	// Triangle vertices: left, right, top
-	float square[] = {
-		// positions          // texture coords
-		0.5f,  0.5f, 0.0f,    1.0f, 1.0f, // top right
-		0.5f, -0.5f, 0.0f,    1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
+	float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
 	unsigned int indices[] = { // note that we start from 0!
@@ -81,7 +131,7 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 	// Bind vertex buffer object
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	// Copy vertices array to a vertex buffer object for OpenGL
-	glBufferData(GL_ARRAY_BUFFER, sizeof(square), square, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	// Bind element buffer object
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -95,8 +145,8 @@ bool Renderer::initialize(std::string && windowName, int width, int height, std:
 
 
 	// Initialize member matrices
-	m_model = glm::rotate(m_model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	m_view = glm::translate(m_view, glm::vec3(0.0f, 0.0f, -3.0f)); // Translate scene in the reverse direction of where we want to move
+	m_model = glm::rotate(glm::mat4(), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	m_view = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -3.0f)); // Translate scene in the reverse direction of where we want to move
 	m_projection = glm::perspective(glm::radians(45.0f), 
 		static_cast<float>(width / height), 0.1f, 100.0f);
 
@@ -137,12 +187,31 @@ void Renderer::startMainLoop() {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	txrData.reset();
 
-	std::cout << "Started main loop" << std::endl;
+	glm::vec3 cubePositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
 
+	std::cout << "Started main loop" << std::endl;
+	float previousTick = static_cast<float>(glfwGetTime());
 	while (!glfwWindowShouldClose(m_window)) {
+		float currentTick = static_cast<float>(glfwGetTime());
+		float deltaTime = currentTick - previousTick;
+
 		glfwPollEvents();
 
-		m_gameLogic();
+		m_gameLogic(deltaTime);
+
+		// Clear depth buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Clear color and set it to greenish
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -153,46 +222,94 @@ void Renderer::startMainLoop() {
 		m_shaderProgram->use();
 
 		// Set uniforms
-		m_shaderProgram->setMat4("model", m_model);
+		m_view = m_camera.getViewMatrix();
 		m_shaderProgram->setMat4("view", m_view);
 		m_shaderProgram->setMat4("projection", m_projection);
 
 		// Render container
 		glBindVertexArray(m_VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		for (const auto cube : cubePositions) {
+			m_model = glm::translate(glm::mat4(), cube);
+			float angle = 20.0f * static_cast<float>(glfwGetTime());
+			m_model = glm::rotate(m_model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			
+			m_shaderProgram->setMat4("model", m_model);
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 
 		glBindVertexArray(0); // Unbind
-
 		glfwSwapBuffers(m_window);
+
+		previousTick = currentTick;
 	}
 
 	std::cout << "Leaving from main loop" << std::endl;
 }
 
-void Renderer::keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode) {
+void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	REQUIRE(window != nullptr);
+
+	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	r->keyCallback(key, scancode, action, mode);
+}
+
+void Renderer::keyCallback(int key, int scancode, int action, int mode) {
+	REQUIRE(m_window != nullptr);
 
 	// Unused variables
 	(void)mode;
 	(void)scancode;
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE); // Close window on ESC
+		glfwSetWindowShouldClose(m_window, GL_TRUE); // Close window on ESC
 	if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode on W
 	if (key == GLFW_KEY_N && action == GLFW_PRESS)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Normal mode on N
 }
 
-void Renderer::framebufferSizeCallback(GLFWwindow * window, int width, int height) {
+void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos) {
+	REQUIRE(window != nullptr);
+
+	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	r->mouseCallback(xpos, ypos);
+}
+
+void Renderer::mouseCallback(double xpos, double ypos) {
+	if (m_firstMouseMovement) {
+		m_mousexPos = xpos;
+		m_mouseyPos = ypos;
+		m_firstMouseMovement = false;
+	}
+	double xoffset = xpos - m_mousexPos;
+	double yoffset = m_mouseyPos - ypos; // Reversed since y-coordinates go from bottom to up
+	m_mousexPos = xpos;
+	m_mouseyPos = ypos;
+
+	m_camera.processMouseMovement(xoffset, yoffset);
+}
+
+void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
+
+	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	r->framebufferSizeCallback(width, height);
+}
+
+void Renderer::framebufferSizeCallback(int width, int height) {
+	REQUIRE(m_window != nullptr);
 
 	// Adjust viewport for window changes
 	glViewport(0, 0, width, height);
 	int framebufferWidth = 0, framebufferHeight = 0;
-	glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
+	glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
 
 	ENSURE(framebufferWidth == width);
 	ENSURE(framebufferHeight == height);
+}
+
+glm::vec3 Renderer::getCameraFront() {
+	return m_camera.getCameraFront();
 }

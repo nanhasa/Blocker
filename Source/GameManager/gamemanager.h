@@ -26,7 +26,9 @@ public:
 	/**
 	 * \brief Function called on every frame to update game logic
 	 */
-	void onUpdate();
+	void onUpdate(float deltatime);
+
+	static void deviceInput(int keyvalue);
 
 private:
 	std::unique_ptr<IRenderer> m_renderer;
