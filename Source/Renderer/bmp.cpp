@@ -14,7 +14,7 @@ BMP::BMP() {
 BMP::~BMP() {
 }
 
-bool BMP::loadFile(std::ifstream& stream) {
+bool BMP::vLoadFile(std::ifstream& stream) {
 	REQUIRE(stream.is_open());
 
 	if (!stream.is_open()) {
@@ -84,7 +84,7 @@ bool BMP::loadFile(std::ifstream& stream) {
 	return true;
 }
 
-std::unique_ptr<uint8_t[]> BMP::decode() {
+std::unique_ptr<uint8_t[]> BMP::vDecode() {
 	REQUIRE(m_fileheader != nullptr);
 	REQUIRE(m_infoheader != nullptr);
 	REQUIRE(m_data != nullptr);
@@ -123,7 +123,7 @@ std::unique_ptr<uint8_t[]> BMP::decode() {
 	return std::move(decode);
 }
 
-int BMP::getHeight() const {
+int BMP::vGetHeight() const {
 	REQUIRE(m_infoheader != nullptr);
 	
 	if (m_infoheader == nullptr) {
@@ -134,7 +134,7 @@ int BMP::getHeight() const {
 	return m_infoheader->biHeight;
 }
 
-int BMP::getWidth() const {
+int BMP::vGetWidth() const {
 	REQUIRE(m_infoheader != nullptr);
 	
 	if (m_infoheader == nullptr) {

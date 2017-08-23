@@ -63,7 +63,7 @@ public:
 	 * \post m_data != nullptr
 	 * \return true if successful, otherwise false
 	 */
-	bool loadFile(std::ifstream& stream) override;
+	bool vLoadFile(std::ifstream& stream) override;
 
 	/**
 	 * \brief Get decoded image data in RGB format
@@ -72,21 +72,21 @@ public:
 	 * \pre m_data != nullptr
 	 * \return Pointer to decoded RGB byte array, nullptr if object not initialized with loadFile()
 	 */
-	std::unique_ptr<uint8_t[]> decode() override;
+	std::unique_ptr<uint8_t[]> vDecode() override;
 
 	/**
 	 * \brief Get image height in pixels
 	 * \pre m_infoheader != nullptr
 	 * \return Image height, 0 if object not initialized with loadFile()
 	 */
-	int getHeight() const override;
+	int vGetHeight() const override;
 
 	/**
 	 * \brief Get image width in pixels
 	 * \pre m_infoheader != nullptr
 	 * \return Image width, 0 if object not initialized with loadFile()
 	 */
-	int getWidth() const override;
+	int vGetWidth() const override;
 
 private:
 	std::unique_ptr<BITMAPFILEHEADER> m_fileheader; // Header
