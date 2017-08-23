@@ -13,7 +13,7 @@ std::queue<eventDataPtr> EventManager::m_eventQueue;
 bool EventManager::addListener(const eventType evtType, const eventDelegate evtDelegate) {
 	REQUIRE(evtDelegate);
 	if (!evtDelegate) {
-		std::cout << "Attempted to add uncallable event delegate for " << evtType << std::endl;
+		std::cerr << "Attempted to add uncallable event delegate for " << evtType << std::endl;
 		return false;
 	}
 
@@ -33,7 +33,7 @@ bool EventManager::addListener(const eventType evtType, const eventDelegate evtD
 	else {
 		// Event type already exists, make sure that the delegate does not already exist
 		if (std::any_of(it->second.begin(), it->second.end(), compare)) {
-			std::cout << "Attempted to add more than one delegate for the same object and event type " 
+			std::cerr << "Attempted to add more than one delegate for the same object and event type " 
 				<< std::hex << evtType << std::endl;
 			return false;
 		}
@@ -51,7 +51,7 @@ bool EventManager::addListener(const eventType evtType, const eventDelegate evtD
 bool EventManager::removeListener(const eventType evtType, const eventDelegate evtDelegate) {
 	REQUIRE(evtDelegate);
 	if (!evtDelegate) {
-		std::cout << "Attempted to remove uncallable event delegate from event type " 
+		std::cerr << "Attempted to remove uncallable event delegate from event type " 
 			<< std::hex << evtType << std::endl;
 		return false;
 	}
@@ -65,7 +65,7 @@ bool EventManager::removeListener(const eventType evtType, const eventDelegate e
 
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
-		std::cout << "Attempted to remove non-existing event type " 
+		std::cerr << "Attempted to remove non-existing event type " 
 			<< std::hex << evtType << std::endl;
 		return false;
 	}
@@ -73,7 +73,7 @@ bool EventManager::removeListener(const eventType evtType, const eventDelegate e
 	// Event type found, remove the delegate
 	auto del_it = std::find_if(it->second.begin(), it->second.end(), compare);
 	if (del_it == it->second.end()) {
-		std::cout << "Attempted to delete non-existing delegate from " 
+		std::cerr << "Attempted to delete non-existing delegate from " 
 			<< std::hex << evtType << std::endl;
 		return false;
 	}
@@ -97,7 +97,7 @@ bool EventManager::removeListener(const eventType evtType, const eventDelegate e
 void EventManager::triggerEvent(eventDataPtr pEvent) {
 	REQUIRE(pEvent != nullptr);
 	if (!pEvent) {
-		std::cout << "Attempting to trigger nullptr event" << std::endl;
+		std::cerr << "Attempting to trigger nullptr event" << std::endl;
 		return;
 	}
 
@@ -106,7 +106,7 @@ void EventManager::triggerEvent(eventDataPtr pEvent) {
 	eventType evtType = pEvent->vGetEventType();
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
-		std::cout << "Attempting to trigger event type " << std::hex << evtType << " with no delegates" << std::endl;
+		std::cerr << "Attempting to trigger event type " << std::hex << evtType << " with no delegates" << std::endl;
 		return;
 	}
 
@@ -148,6 +148,7 @@ void EventManager::onUpdate(float timeToProcess) {
 
 	std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
 
+	std::cout << "Processing events from event queue" << std::endl;
 	// Process events from queue until queue is empty or all the time given to process is used
 	float elapsedTime = 0.0f;
 	float startTime = utility::getTimestamp();
