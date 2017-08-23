@@ -1,8 +1,11 @@
 #include <iostream>
 
 #include "contract.h"
+#include "Event/eventmanager.h"
+#include "Event/inputcommandevent.h"
 #include "Renderer/renderer.h"
 #include "Renderer/texture.h"
+#include "utility.h"
 
 Renderer::Renderer() 
 	: m_window(nullptr), m_shaderProgram(nullptr), 
@@ -15,12 +18,20 @@ Renderer::~Renderer() {
 	glDeleteBuffers(1, &m_EBO);
 }
 
-bool Renderer::initialize(std::string && windowName, int width, int height, 
+bool Renderer::vInitialize(std::string && windowName, int width, int height, 
 		std::function<void(float)>&& gameLogic) {
 	
 	REQUIRE(!windowName.empty());
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
+	if (windowName.empty()) {
+		std::cout << "Missing window name" << std::endl;
+		return false;
+	}
+	if (width < 0 || height < 0) {
+		std::cout << "Invalid screen size" << std::endl;
+		return false;
+	}
 
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
 
@@ -60,9 +71,7 @@ bool Renderer::initialize(std::string && windowName, int width, int height,
 	// With this we can call member functions from static callback functions
 	glfwSetWindowUserPointer(m_window, this); 
 
-
-
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glEnable(GL_DEPTH_TEST); // Enable depth testing
 
 	// Create shader program by attaching and linking shaders to it
@@ -163,10 +172,14 @@ bool Renderer::initialize(std::string && windowName, int width, int height,
 	return true;
 }
 
-void Renderer::startMainLoop() {
+void Renderer::vStartMainLoop() {
 	REQUIRE(m_window != nullptr);
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
+	if (m_window == nullptr || m_shaderProgram == nullptr || !m_shaderProgram->validate()) {
+		std::cout << "OpenGL not properly initialized before calling vStartMainLoop" << std::endl;
+		return;
+	}
 
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -187,6 +200,7 @@ void Renderer::startMainLoop() {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	txrData.reset();
 
+	// Test values, later let gamemanager push these here
 	glm::vec3 cubePositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -201,9 +215,9 @@ void Renderer::startMainLoop() {
 	};
 
 	std::cout << "Started main loop" << std::endl;
-	float previousTick = static_cast<float>(glfwGetTime());
+	float previousTick = utility::getTimestamp();
 	while (!glfwWindowShouldClose(m_window)) {
-		float currentTick = static_cast<float>(glfwGetTime());
+		float currentTick = utility::getTimestamp();
 		float deltaTime = currentTick - previousTick;
 
 		glfwPollEvents();
@@ -249,6 +263,10 @@ void Renderer::startMainLoop() {
 
 void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 	REQUIRE(window != nullptr);
+	if (window == nullptr) {
+		std::cout << "window parameter invalid in staticKeyCallback" << std::endl;
+		return;
+	}
 
 	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
 	r->keyCallback(key, scancode, action, mode);
@@ -256,21 +274,53 @@ void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int 
 
 void Renderer::keyCallback(int key, int scancode, int action, int mode) {
 	REQUIRE(m_window != nullptr);
+	if (m_window == nullptr) {
+		std::cout << "OpenGL not properly initialized before calling keyCallback" << std::endl;
+		return;
+	}
 
 	// Unused variables
 	(void)mode;
 	(void)scancode;
 
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(m_window, GL_TRUE); // Close window on ESC
-	if (key == GLFW_KEY_W && action == GLFW_PRESS)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode on W
-	if (key == GLFW_KEY_N && action == GLFW_PRESS)
+		return;
+	}
+	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode on M
+		return;
+	}
+	if (key == GLFW_KEY_N && action == GLFW_PRESS) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Normal mode on N
+		return;
+	}
+
+	// Handle events
+	std::shared_ptr<IEvent> evt = nullptr;
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
+		evt = std::make_shared<InputCommandEvent>("W");
+	}
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+		evt = std::make_shared<InputCommandEvent>("A");
+	}
+	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+		evt = std::make_shared<InputCommandEvent>("S");
+	}
+	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+		evt = std::make_shared<InputCommandEvent>("D");
+	}
+
+	if (evt) 
+		EventManager::triggerEvent(evt);
 }
 
 void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	REQUIRE(window != nullptr);
+	if (window == nullptr) {
+		std::cout << "window parameter invalid in staticMouseCallback" << std::endl;
+		return;
+	}
 
 	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
 	r->mouseCallback(xpos, ypos);
@@ -291,8 +341,17 @@ void Renderer::mouseCallback(double xpos, double ypos) {
 }
 
 void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+	REQUIRE(window != nullptr);
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
+	if (window == nullptr) {
+		std::cout << "window parameter invalid in staticFramebufferSizeCallback" << std::endl;
+		return;
+	}
+	if (width < 0 || height < 0) {
+		std::cout << "Invalid size " << std::endl;
+		return;
+	}
 
 	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
 	r->framebufferSizeCallback(width, height);
@@ -300,6 +359,10 @@ void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int 
 
 void Renderer::framebufferSizeCallback(int width, int height) {
 	REQUIRE(m_window != nullptr);
+	if (m_window == nullptr) {
+		std::cout << "OpenGL not properly initialized before calling framebufferSizeCallback" << std::endl;
+		return;
+	}
 
 	// Adjust viewport for window changes
 	glViewport(0, 0, width, height);
@@ -310,6 +373,6 @@ void Renderer::framebufferSizeCallback(int width, int height) {
 	ENSURE(framebufferHeight == height);
 }
 
-glm::vec3 Renderer::getCameraFront() {
+glm::vec3 Renderer::vGetCameraFront() {
 	return m_camera.getCameraFront();
 }

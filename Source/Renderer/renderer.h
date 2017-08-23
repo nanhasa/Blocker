@@ -47,7 +47,7 @@ public:
 	 * \post m_window != nullptr
 	 * \return true if successful else false
 	 */
-	bool initialize(std::string&& windowName, int width, int height, 
+	bool vInitialize(std::string&& windowName, int width, int height, 
 		std::function<void(float)>&& gameLogic) override;
 
 	/**
@@ -56,7 +56,7 @@ public:
 	 * \pre m_shaderProgram != nullptr
 	 * \pre m_shaderProgram->validate()
 	 */
-	void startMainLoop() override;
+	void vStartMainLoop() override;
 
 	/**
 	 * \brief Callback for key input
@@ -89,7 +89,7 @@ public:
 
 	void framebufferSizeCallback(int width, int height);
 
-	glm::vec3 getCameraFront() override;
+	glm::vec3 vGetCameraFront() override;
 
 private:
 	GLFWwindow* m_window;
