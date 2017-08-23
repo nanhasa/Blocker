@@ -68,35 +68,11 @@ namespace texture {
 	std::unique_ptr<Image> load(const std::string& file);
 
 	/**
-	 * \brief Tests if stream is empty or at the end
-	 * \param stream Filestream to a file
-	 * \return True if stream is empty or at the end, otherwise false
-	 */
-	bool isStreamEmpty(std::ifstream& stream);
+	* \brief Get byte size of file
+	* \param stream Filestream to the file
+	* \pre stream.is_open()
+	* \return File size in bytes
+	*/
+	std::streampos getFileSize(std::ifstream & stream);
 
-	/**
-	 * \brief Tests that stream is open, is not empty, and file is not too big (limit from config)
-	 * \param stream Filestream to be tested
-	 * \return True if stream is valid, otherwise false
-	 */
-	bool validateFile(std::ifstream& stream);
-
-	/**
-	 * \brief Get byte size of file
-	 * \param stream Filestream to the file
-	 * \pre stream.is_open()
-	 * \return File size in bytes
-	 */
-	std::streampos getFileSize(std::ifstream& stream);
-
-namespace factory {
-
-	/**
-	 * \brief Recognizes file type from file extension and returns correct image type to load the file
-	 * \param filename File name without file path
-	 * \return Pointer to ImageType matching the parameter file extension, nullptr if file is not supported
-	 */
-	std::unique_ptr<IImageType> getImageType(const std::string& filename);
-
-} // namespace factory
 } // namespace texture
