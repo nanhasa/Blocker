@@ -34,6 +34,12 @@
     <Filter Include="Source Files\Renderer\ImageLoader">
       <UniqueIdentifier>{8e80b5fd-622b-4863-9153-1ded5a2edbd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Event">
+      <UniqueIdentifier>{279a5275-5e07-4932-8d3c-6fcc24fd5e63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Event">
+      <UniqueIdentifier>{d32b0559-bebc-4699-8fc4-636bcf51d77e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp">
@@ -60,6 +66,18 @@
     <ClCompile Include="..\..\Renderer\camera.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Event\eventmanager.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Event\event.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Event\inputcommandevent.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\contract.h">
@@ -85,6 +103,18 @@
     </ClInclude>
     <ClInclude Include="..\..\Renderer\camera.h">
       <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Event\eventmanager.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Event\event.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Event\inputcommandevent.h">
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

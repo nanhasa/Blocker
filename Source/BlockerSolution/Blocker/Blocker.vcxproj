@@ -157,6 +157,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\contract.cpp" />
+    <ClCompile Include="..\..\Event\event.cpp" />
+    <ClCompile Include="..\..\Event\eventmanager.cpp" />
+    <ClCompile Include="..\..\Event\inputcommandevent.cpp" />
     <ClCompile Include="..\..\GameManager\gamemanager.cpp" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\..\Renderer\bmp.cpp" />
@@ -164,9 +167,13 @@
     <ClCompile Include="..\..\Renderer\renderer.cpp" />
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
     <ClCompile Include="..\..\Renderer\texture.cpp" />
+    <ClCompile Include="..\..\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\contract.h" />
+    <ClInclude Include="..\..\Event\event.h" />
+    <ClInclude Include="..\..\Event\eventmanager.h" />
+    <ClInclude Include="..\..\Event\inputcommandevent.h" />
     <ClInclude Include="..\..\GameManager\gamemanager.h" />
     <ClInclude Include="..\..\interfaces.h" />
     <ClInclude Include="..\..\Renderer\bmp.h" />
@@ -174,6 +181,7 @@
     <ClInclude Include="..\..\Renderer\renderer.h" />
     <ClInclude Include="..\..\Renderer\shaderprogram.h" />
     <ClInclude Include="..\..\Renderer\texture.h" />
+    <ClInclude Include="..\..\utility.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag" />
