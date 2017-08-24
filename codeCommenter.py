@@ -119,7 +119,6 @@ def searchFilesRecursively():
 
 
 
-
 #Crawls through the cpp file paired with the .h file given
 #If successful, will return a list of Function objects that describe the functions in the file
 def crawlFunctionDefinitions(filename):
@@ -132,24 +131,33 @@ def crawlFunctionDefinitions(filename):
     cppfile = cpp.readlines()
     cpp.close()
 
-    #List to hold Function objects
-    functions = list()
+    if (len(cppfile) == 0):
+        return list()
 
-    #Variables to keep track of function begin and end, and comment blocks
-    bracketsOpen = 0
-    bracketsClosed = 0
-    bracketsOpenPrevLine = -1
+    #Remove comments, includes, declares, pragmas, and empty lines
+    cleanedcppfile = cleanCodeLines(cppfile)
+    del cppfile[:] #Clear previous stage list
+
+    #Divide code into code blocks based on open and closed brackets
+    codeBlocks = divideIntoCodeBlocks(cleanedcppfile)
+    del cleanedcppfile[:] #Clear previous stage list
+
+    #Divide coarse granularity code blocks into function blocks
+    functionBlocks = divideCodeBlocksToFunctions(codeBlocks)
+    del codeBlocks[:] #Clear previous stage list
+
+    #Create function objects from function blocks
+    return createFunctionObjects(functionBlocks)
+
+
+
+#Returns list of code lines without comments, includes, declares, pragmas, and empty lines
+#Expects input list to be read the original file content, does not alter input list
+def cleanCodeLines(cppLines):
     commentsBlock = False
-
-    #Variables to keep track of active namespaces (they tend to mess the bracket counts)
-    namespaceLinetemp = ''
-    activeNamespaces = 0
-
-    #List to hold functions
-    fullfunctions = list()
-
-    #Loop through cpp file to collect functions to a list
-    for line in cppfile:
+    cleanedcppfile = list()
+    #Loop through cpp file to remove unnecessary parts
+    for line in cppLines:
         #skip comments
         if (commentsBlock and '*/' not in line):
             continue
@@ -170,60 +178,146 @@ def crawlFunctionDefinitions(filename):
             continue
 
         #Skip includes and declares
-        if (line.lstrip()[:8] == '#include' or line.lstrip()[:8] == '#declare'):
+        if (line.lstrip()[:8] == '#include' or line.lstrip()[:8] == '#declare' or line.lstrip()[:7] == '#pragma'):
             continue
 
-        #Check for namespaces since they mess up the bracket counting
-        if (line.lstrip()[:9] == 'namespace'):
-            if ('{' not in line):
-                namespaceLinetemp += line
-            else:
-                namespaceLinetemp = ''
-                activeNamespaces += 1
-                continue
+        cleanedcppfile.append(line)
+
+    return cleanedcppfile
+
+
+
+#Returns list of code divided into blocks based on open '{' and closed '}' brackets
+#Block here means either namespace level or function level
+#Expects input list to have been cleaned with cleanCodeLines(), does not alter parameter list
+def divideIntoCodeBlocks(cleanedcppfile):
+    #Variables to keep track of function begin and end
+    blockBracketsOpen = 0
+    blockBracketsClosed = 0
+    blockStarted = False
+
+    #Code separated into blocks based on open and closed bracket counts
+    codeBlocks = list()
+
+    #Loop through cleaned cpp file to separate functions into separate strings
+    for line in cleanedcppfile:
+        line = line.strip()
 
         #Update bracket count
-        bracketsOpen += line.count('{')
-        bracketsClosed += line.count('}')
+        openCount = line.count('{')
+        closedCount = line.count('}')
+        blockBracketsOpen += openCount
+        blockBracketsClosed += closedCount
 
-        #Balance bracket amounts with activeNamespaces because the opening bracket of namespace was ignored
-        #There are less bracketsOpen than bracketsClosed when namespace closes
-        if (bracketsOpen < bracketsClosed):
-            activeNamespaces -= 1
-            bracketsClosed -= 1
-            if (activeNamespaces < 0):
-                print('Something went wrong with active namespace counter')
-            continue
-
-        line = line.strip('\t\n\r')
-
-        #New function definition when there is equal amount of brackets
-        if (bracketsOpen == bracketsClosed):
-            #If there is no previous row, append new
-            if (bracketsOpenPrevLine == -1):
-                fullfunctions.append(line)
-                #If there is an opening bracket, update previous count
-                if (bracketsOpen == 0):
-                    bracketsOpenPrevLine = bracketsOpen
+        #Test new block has started
+        if (not blockStarted):
+            if (blockBracketsOpen == 0):
+                #Not a block operation if the line ends with semi-colon
+                if (line.rstrip()[-1] == ';'):
                     continue
-            #Case when the function ends
-            else:
-                fullfunctions[-1] += line
 
-            bracketsOpen = 0
-            bracketsClosed = 0
-            bracketsOpenPrevLine = -1
-        #Append last one when the bracket counts don't match
+            #Append start of new block
+            codeBlocks.append(line)
+
+            if (blockBracketsOpen > 0 and blockBracketsOpen == blockBracketsClosed):
+                #One line block so do not set block as started
+                continue
+
+            blockStarted = True
+
         else:
-            #But if there is no previous row, then append new
-            if (bracketsOpenPrevLine == -1):
-                fullfunctions.append(line)
-            else:
-                fullfunctions[-1] += line
-            bracketsOpenPrevLine = bracketsOpen
+            codeBlocks[-1] += line
+            #Test if the line ended block
+            if (blockBracketsOpen == blockBracketsClosed):
+                #If there are no brackets in the block it is not finished yet
+                if (blockBracketsOpen == 0):
+                    continue
+                #If there are no opening brackets in the latest block it is not finished
+                if ('{' not in codeBlocks[-1]):
+                    continue
+
+                #Otherwise the block ended
+                blockStarted = False
+                blockBracketsOpen = 0
+                blockBracketsClosed = 0
+
+    return codeBlocks
 
 
-    for f in fullfunctions:
+
+#Splits code blocks to function level if there are higher level blocks such as namespace blocks
+#Returns list of full function implementations
+#Expects input list to have been divided into code blocks with divideIntoCodeBlocks()
+def divideCodeBlocksToFunctions(codeBlocks):
+    functionBlocks = list()
+    tempBlocks = list()
+
+    for block in codeBlocks:
+        #Get start of block to test if it starts with namespace or inline namespace
+        safeguard = 20 if len(block) >= 20 else len(block)
+        startOfBlock = ''.join(block[:safeguard].split())
+        if ('namespace' not in startOfBlock):
+            functionBlocks.append(block)
+        else:
+            temp = ''
+            templist = list()
+            #Remove namespace brackets
+            temp = block[block.index('{') + 1 : ]
+            openCount = 0
+            closedCount = 0
+            i = 0
+            for c in temp:
+                if (c == '{'):
+                    openCount += 1
+                elif (c == '}'):
+                    closedCount += 1
+
+                if (closedCount > openCount):
+                    if (i == len(temp) - 1):
+                        temp = temp[ : i]
+                    else:
+                        temp = temp[ : i] + temp[i + 1 : ]
+                    break
+                i += 1
+
+            #Divide into higher granularity blocks now that the outermost namespace brackets are gone
+            openCount = 0
+            closedCount = 0
+            i = 0
+            for c in temp:
+                if (c == '{'):
+                    openCount += 1
+                elif (c == '}'):
+                    closedCount += 1
+                    #Test if block ended
+                    if (openCount == closedCount):
+                        templist[-1] += c
+                        templist.append('')
+                        continue
+                if (len(templist) == 0):
+                    templist.append(c)
+                else:
+                    templist[-1] += c
+
+            #Divide blocks again after removing the namespace brackets
+            templist.remove('')
+            tempBlocks.extend(templist)
+            del templist[:]
+
+    #Recursively process the once processed blocks to make sure that all nested blocks are divided
+    if (len(tempBlocks) > 0):
+        functionBlocks.extend(divideCodeBlocksToFunctions(tempBlocks))
+
+    return functionBlocks
+
+
+#Returns list of function objects
+#Expects input list to be processed into function blocks with divideCodeBlocksToFunctions()
+def createFunctionObjects(functionBlocks):
+    #List to hold Function objects
+    functions = list()
+
+    for f in functionBlocks:
         startBracket = f.index('{')
 
         pattern = re.compile(r'[^:](:)[^:]') #Find separator for builder initialization
@@ -248,9 +342,11 @@ def crawlFunctionDefinitions(filename):
 
     return functions
 
-#Parses function declaration into components
+
+#Parses function declarations into components
+#Expects a list of Function objects as parameter
 #Returns list of ProcessedFunction objects
-def processFunctionsDefinitions(functions):
+def processFunctionDeclarations(functions):
     processedFuncs = list()
     for func in functions:
         #Class member func
@@ -265,13 +361,13 @@ def processFunctionsDefinitions(functions):
         match = pattern.search(defn)
         if (not match):
             #In case the function name could not be found, stop processing
-            #and set default value to classlessDef because it is used to 
+            #and set default value to classlessDef because it is used to
             #map functions to ones in .h file
             print('Error extracting function name from definition: ' + defn)
             funcName = 'ERROR'
             classlessDef = defn
             continue
-        
+
         funcName = match.group(0)
         nameIdx = match.start()
         if (nameIdx < 3): #Sanity check
@@ -279,7 +375,7 @@ def processFunctionsDefinitions(functions):
             funcName = 'ERROR'
             classlessDef = defn
             continue
-            
+
         #Extract class name
         #Nonmember function has space before function name
         classIdx = -1
@@ -294,13 +390,13 @@ def processFunctionsDefinitions(functions):
                 classlessDef = defn[: classIdx] + defn[classIdx + len(className) + 2 : ]
         else:
             classlessDef = defn
-        
+
         #Extract return value
         if (classIdx == -1): #Nonmember function
             returnValue = ''.join(defn[:nameIdx].rstrip().split())
         else:
             returnValue = ''.join(defn[:classIdx].rstrip().split())
-        
+
         #Check if there are any parameters
         parameterNames = list()
         if (len(defn[defn.index('(') + 1 : defn.rindex(')')].strip(',')) > 0):
@@ -349,7 +445,7 @@ def getUpdatedCommentSection(oldComments, outputList, indent, substr):
 def processHeaderFile(filename, backupPath):
     functions = crawlFunctionDefinitions(filename)
     if (len(functions) > 0):
-        processedFuncs = processFunctionsDefinitions(functions)
+        processedFuncs = processFunctionDeclarations(functions)
 
         h = open(filename, 'r')
         hfile = h.readlines()
