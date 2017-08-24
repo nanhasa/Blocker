@@ -106,6 +106,8 @@ std::unique_ptr<uint8_t[]> BMP::vDecode() {
 		for (unsigned int i = 0; i < imageSize; i += 3) {
 			std::swap(m_data[i], m_data[i + 2]);
 		}
+		m_fileheader.reset();
+		m_infoheader.reset();
 		return std::move(m_data);
 	}
 	
@@ -120,6 +122,8 @@ std::unique_ptr<uint8_t[]> BMP::vDecode() {
 		}
 	}
 
+	m_fileheader.reset();
+	m_infoheader.reset();
 	return std::move(decode);
 }
 

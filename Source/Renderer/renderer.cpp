@@ -71,7 +71,7 @@ bool Renderer::vInitialize(std::string && windowName, int width, int height,
 	// With this we can call member functions from static callback functions
 	glfwSetWindowUserPointer(m_window, this); 
 
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // FOR DEBUGGING USE GLFW_CURSOR_HIDDEN, LATER CHANGE TO GLFW_CURSOR_DISABLED
 	glEnable(GL_DEPTH_TEST); // Enable depth testing
 
 	// Create shader program by attaching and linking shaders to it

@@ -8,28 +8,33 @@ class GameManager {
 public:
 
 	/**
-	 * \brief GameManager
+	 * \brief Builder. Call start to start the game logic
 	 */
 	GameManager();
 
 	/**
-	 * \brief ~GameManager
+	 * \brief Destructor
 	 */
 	~GameManager();
 
 	/**
 	 * \brief Initialize game and start main loop
-	 * \return Operation successful
+	 * \return True if initializations were successful, otherwise false
 	 */
 	bool start();
 
 	/**
 	 * \brief Function called on every frame to update game logic
+	 * \param deltatime Time in seconds since last main loop started
 	 */
 	void onUpdate(float deltatime);
 
-	static void deviceInput(int keyvalue);
+	/**
+	 * \brief Function used to test event system delegates. Will be deleted soon.
+	 * \param eventData Pointer to the event data object
+	 */
+	void testDelegate(std::shared_ptr<IEvent> eventData);
 
 private:
-	std::unique_ptr<IRenderer> m_renderer;
+	std::unique_ptr<IRenderer> m_renderer; //!< Pointer to renderer component
 };

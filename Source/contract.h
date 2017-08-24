@@ -1,7 +1,7 @@
 #pragma once
 
 /**
- * \brief Prints error details and throws exception
+ * \brief Prints error details and shuts down the software
  * \param file Filepath and name of the file where the error occured
  * \param line Line number in the file where the error occured
  * \param condition The condition that failed

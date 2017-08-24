@@ -14,7 +14,7 @@ namespace texture {
 	public:
 
 		/**
-		 * \brief Builder
+		 * \brief Builder. Creates valid object
 		 * \param data Image RGB byte array
 		 * \param width Image width in pixels
 		 * \param height Image height in pixels
@@ -27,13 +27,13 @@ namespace texture {
 		~Image();
 
 		/**
-		 * \brief getWidth
+		 * \brief used to get image width in pixels
 		 * \return Image width in pixels
 		 */
 		int getWidth() const;
 
 		/**
-		 * \brief getHeight
+		 * \brief Used to get image height in pixels
 		 * \return Image height in pixels
 		 */
 		int getHeight() const;
@@ -55,9 +55,9 @@ namespace texture {
 		void flipHorizontally();
 
 	private:
-		std::unique_ptr<uint8_t[]> m_data;
-		const int m_width;
-		const int m_height;
+		std::unique_ptr<uint8_t[]> m_data;	//!< Pointer to array of image rgb bytes
+		const int m_width;					//!< Image pixel width
+		const int m_height;					//!< Image pixel height
 	};
 
 	/**
@@ -68,11 +68,12 @@ namespace texture {
 	std::unique_ptr<Image> load(const std::string& file);
 
 	/**
-	* \brief Get byte size of file
-	* \param stream Filestream to the file
-	* \pre stream.is_open()
-	* \return File size in bytes
-	*/
+	 * \brief Get byte size of file
+	 * \param stream Filestream to the file
+	 * \pre stream.is_open()
+	 * \post originalPosition == stream.tellg()
+	 * \return File size in bytes
+	 */
 	std::streampos getFileSize(std::ifstream & stream);
 
 } // namespace texture

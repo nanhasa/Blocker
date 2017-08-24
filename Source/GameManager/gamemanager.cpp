@@ -1,11 +1,12 @@
+#include <functional>
 #include <iostream>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/glm.hpp>
-#include <3rdParty/glm/gtc/matrix_transform.hpp>
-#include <3rdParty/glm/gtc/type_ptr.hpp>
 #pragma warning (pop)      // Restore back
 
+#include "Event/eventmanager.h"
+#include "Event/inputcommandevent.h"
 #include "GameManager/gamemanager.h"
 #include "Renderer/renderer.h"
 #include "contract.h"
@@ -16,19 +17,27 @@ GameManager::~GameManager() {}
 
 bool GameManager::start() { 
 	m_renderer = std::make_unique<Renderer>();
-	if (m_renderer->initialize("Blocker", 800, 600, 
+	if (m_renderer->vInitialize("Blocker", 800, 600, 
 		std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
-		m_renderer->startMainLoop(); //Start main loop
+
+		//EventManager::addListener(InputCommandEvent::m_eventType,
+		//	std::bind(&GameManager::testDelegate, this, std::placeholders::_1));
+
+		//EventManager::removeListener(InputCommandEvent::m_eventType,
+		//	std::bind(&GameManager::testDelegate, this, std::placeholders::_1));
+
+		m_renderer->vStartMainLoop(); //Start main loop
 		return true;
 	}
 	return false;
 }
 
 void GameManager::onUpdate(float deltatime) {
-	auto camera = m_renderer->getCameraFront();
-	std::cout << "delta: " << deltatime << " Camera front: " << camera.x << "f " << camera.y << "f " << camera.z << "f" << std::endl;
+	(void)deltatime;
+	//auto camera = m_renderer->vGetCameraFront();
+	//std::cout << "delta: " << deltatime << " Camera front: " << camera.x << "f " << camera.y << "f " << camera.z << "f" << std::endl;
 }
 
-void GameManager::deviceInput(int keyvalue) {
-	(void)keyvalue;
+void GameManager::testDelegate(std::shared_ptr<IEvent> eventData) {
+	std::cout << "testDelegate GameManager" << std::endl;
 }

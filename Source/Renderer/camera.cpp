@@ -1,5 +1,8 @@
-#include "Renderer/camera.h"
 #include <iostream>
+
+#include "contract.h"
+#include "Renderer/camera.h"
+
 Camera::Camera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ) 
 	: m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), m_minZoom(2.0f), m_maxZoom(30.0f), 
 	 m_mouseSensitivity(0.1f) {
@@ -99,4 +102,6 @@ void Camera::updateVectors() {
 	m_cameraUp = glm::normalize(glm::cross(m_cameraRight, m_cameraFront));
 
 	m_dirtyFlag = false;
+
+	ENSURE(!m_dirtyFlag);
 }
