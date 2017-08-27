@@ -5,12 +5,19 @@
 #include "Event/eventmanager.h"
 #include "utility.h"
 
+std::atomic<listenerID> EventManager::m_nextListenerID(0);
 std::mutex EventManager::m_mapMtx;
 std::mutex EventManager::m_queueMtx;
 std::map<const eventType, eventListenerVector> EventManager::m_eventListenerMap;
 std::queue<eventDataPtr> EventManager::m_eventQueue;
 
-bool EventManager::addListener(const eventType evtType, const eventDelegate evtDelegate) {
+const listenerID ERRORID = -1;
+
+listenerID EventManager::registerListener() {
+	return m_nextListenerID++;
+}
+
+bool EventManager::addListener(const eventType evtType, const listenerID listener, const eventDelegate evtDelegate) {
 	REQUIRE(evtDelegate);
 	if (!evtDelegate) {
 		std::cerr << "Attempted to add uncallable event delegate for " << evtType << std::endl;
@@ -20,27 +27,28 @@ bool EventManager::addListener(const eventType evtType, const eventDelegate evtD
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
 	// Lambda function to compare delegate targets
-	auto compare = [evtDelegate](eventDelegate del) {
-		return evtDelegate.target_type() == del.target_type(); 
+	auto compare = [listener](auto rhs) {
+		return listener == std::get<0>(rhs);
 	};
 
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
 		// New event type
-		std::cout << "Adding new event type " << std::hex << evtType << " and a delegate for it" << std::endl;
-		m_eventListenerMap.emplace(evtType, eventListenerVector({ evtDelegate }));
+		m_eventListenerMap.emplace(evtType, eventListenerVector({ std::make_tuple(listener, evtDelegate) }));
 	}
 	else {
 		// Event type already exists, make sure that the delegate does not already exist
 		if (std::any_of(it->second.begin(), it->second.end(), compare)) {
-			std::cerr << "Attempted to add more than one delegate for the same object and event type " 
-				<< std::hex << evtType << std::endl;
+			std::cerr << "Attempted to add listener " << std::dec << listener
+				<< " twice for event type "	<< std::hex << evtType << std::endl;
 			return false;
 		}
-		std::cout << "Adding new delegate for event type " << std::hex << evtType << std::endl;
-		it->second.emplace_back(std::move(evtDelegate));
-		
+		// Existing event type but it doesnt have this listener
+		it->second.emplace_back(listener, evtDelegate);
 	}
+
+	std::cout << "Added new listener " << std::dec << listener <<
+		" for event type " << std::hex << evtType << " and a delegate for it" << std::endl;
 
 	ENSURE(m_eventListenerMap.find(evtType) != m_eventListenerMap.end());
 	ENSURE(std::count_if(m_eventListenerMap[evtType].begin(), m_eventListenerMap[evtType].end(), compare) == 1);
@@ -48,20 +56,8 @@ bool EventManager::addListener(const eventType evtType, const eventDelegate evtD
 	return true;
 }
 
-bool EventManager::removeListener(const eventType evtType, const eventDelegate evtDelegate) {
-	REQUIRE(evtDelegate);
-	if (!evtDelegate) {
-		std::cerr << "Attempted to remove uncallable event delegate from event type " 
-			<< std::hex << evtType << std::endl;
-		return false;
-	}
-
+bool EventManager::removeListener(const eventType evtType, const listenerID listener) {
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
-
-	// Lambda function to compare delegate targets
-	auto compare = [evtDelegate](eventDelegate del) {
-		return evtDelegate.target_type() == del.target_type();
-	};
 
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
@@ -70,6 +66,9 @@ bool EventManager::removeListener(const eventType evtType, const eventDelegate e
 		return false;
 	}
 
+	// Lambda to compare items in vector
+	auto compare = [listener](auto rhs) { return listener == std::get<0>(rhs); };
+
 	// Event type found, remove the delegate
 	auto del_it = std::find_if(it->second.begin(), it->second.end(), compare);
 	if (del_it == it->second.end()) {
@@ -77,7 +76,8 @@ bool EventManager::removeListener(const eventType evtType, const eventDelegate e
 			<< std::hex << evtType << std::endl;
 		return false;
 	}
-	std::cout << "Removing delegate from event " << std::hex << evtType << std::endl;
+	std::cout << "Removing listener " << std::dec << listener
+		<< " from event " << std::hex << evtType << std::endl;
 	it->second.erase(del_it);
 
 	ENSURE(std::count_if(m_eventListenerMap[evtType].begin(), m_eventListenerMap[evtType].end(), compare) == 0);
@@ -111,7 +111,8 @@ void EventManager::triggerEvent(eventDataPtr pEvent) {
 	}
 
 	// Lambda to execute delegates, before calling make sure the delegate is still callable
-	auto execute = [pEvent](auto func) {
+	auto execute = [pEvent](auto tuple) {
+		auto func = std::get<1>(tuple);
 		if (func) 
 			func(pEvent);
 	};
@@ -130,7 +131,7 @@ bool EventManager::queueEvent(eventDataPtr pEvent) {
 
 	std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
 
-	std::cout << "Adding event for event type " 
+	std::cout << "Adding event " 
 		<< std::hex << pEvent->vGetEventType() << " to event queue" << std::endl;
 	m_eventQueue.emplace(pEvent);
 
@@ -160,4 +161,9 @@ void EventManager::onUpdate(float timeToProcess) {
 		// Calculate the time used processing events
 		elapsedTime = utility::getTimestamp() - startTime;
 	}
+}
+
+unsigned int EventManager::getQueueLength() {
+	std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
+	return m_eventQueue.size();
 }

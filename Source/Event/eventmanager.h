@@ -1,17 +1,20 @@
 #pragma once
 
+#include <atomic>
 #include <functional>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <queue>
+#include <tuple>
 #include <vector>
 
 #include "interfaces.h"
 
+using listenerID = int;
 using eventDataPtr = std::shared_ptr<IEvent>;
 using eventDelegate = std::function<void(eventDataPtr)>;
-using eventListenerVector = std::vector<std::function<void(eventDataPtr)>>;
+using eventListenerVector = std::vector<std::tuple<listenerID, std::function<void(eventDataPtr)>>>;
 
 // Because of this class is static and accessible from anywhere
 // all functions are thread safe
@@ -22,26 +25,32 @@ public:
 	EventManager() = delete;
 
 	/**
+	 * \brief Used to get listener ID when registering new listener. DO NOT EXPLICITLY CALL! EventListener class calls this in its builder. Thread safe
+	 * \return Unique listenerID (int)
+	 */
+	static listenerID registerListener();
+
+	/**
 	 * \brief Used to add listeners for certain events. Allows objects to have only one listener delegate per event type. Thread safe
 	 * \param evtType Event GUID
+	 * \param listener ListenerID assigned by registerListener(). Used to identify listener
 	 * \param evtDelegate Function object called when event launches
 	 * \pre evtDelegate
 	 * \post m_eventListenerMap.find(evtType) != m_eventListenerMap.end()
 	 * \post std::count_if(m_eventListenerMap[evtType].begin(), m_eventListenerMap[evtType].end(), compare) == 1
 	 * \return True if successful, otherwise false
 	 */
-	static bool addListener(const eventType evtType, const eventDelegate evtDelegate);
+	static bool addListener(const eventType evtType, const listenerID listener, const eventDelegate evtDelegate);
 
 	/**
 	 * \brief Used to remove object's listener delegate for certain event type. Thread safe
 	 * \param evtType Event GUID
-	 * \param evtDelegate Delegate being removed
-	 * \pre evtDelegate
+	 * \param listener ListenerID assigned by registerListener(). Used to identify listener
 	 * \post std::count_if(m_eventListenerMap[evtType].begin(), m_eventListenerMap[evtType].end(), compare) == 0
 	 * \post std::all_of(m_eventListenerMap.begin(), m_eventListenerMap.end(), [](auto pair) { return !pair.second.empty(); })
 	 * \return True if successful, otherwise false
 	 */
-	static bool removeListener(const eventType evtType, const eventDelegate evtDelegate);
+	static bool removeListener(const eventType evtType, const listenerID listener);
 
 	/**
 	 * \brief Triggers event listeners immediately by forwarding event to them. Thread safe
@@ -66,7 +75,14 @@ public:
 	 */
 	static void onUpdate(float timeToProcess);
 
-private:
+	/**
+	 * \brief Used to get the count of events in event queue. Thread safe
+	 * \return Count of events in event queue. 0 if empty.
+	 */
+	static unsigned int getQueueLength();
+
+protected: // Protected for testing purposes
+	static std::atomic<int> m_nextListenerID;									//!< ID given to next registering listener
 	static std::map<const eventType, eventListenerVector> m_eventListenerMap;	//!< Map tracking which delegates listen to which events
 	static std::queue<eventDataPtr> m_eventQueue;								//!< Queue for events
 	static std::mutex m_mapMtx;													//!< Mutex used when accessing m_eventListenerMap
