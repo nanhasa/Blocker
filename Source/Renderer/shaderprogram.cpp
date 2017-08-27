@@ -211,7 +211,7 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 
 	// Get contents to string and count new lines in it to compare it to file length
 	shaderSource = std::move(shaderData.str());
-	unsigned int newLines = std::count(shaderSource.begin(), shaderSource.end(), '\n');
+	unsigned int newLines = static_cast<unsigned int>(std::count(shaderSource.begin(), shaderSource.end(), '\n'));
 
 	ENSURE(!shaderSource.empty());
 	ENSURE(shaderSource.size() + newLines == static_cast<unsigned int>(filesize));
