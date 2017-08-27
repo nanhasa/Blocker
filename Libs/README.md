@@ -1,3 +1,2 @@
-Folder to store static libraries built used in building the software.    
-Release - Directory for libraries compiled in release form (Multi-threaded DLL)     
-Debug - Directory for libraries compiled in debug form (Multi-threaded Debug DLL)
+Folder to store static libraries built used in building the software.       
+x86 - Debug and Release libs built in x86     
