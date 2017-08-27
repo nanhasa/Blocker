@@ -116,6 +116,16 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>@echo off
+
+if exist %~dp0..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat (
+	blocker_post_build_code_commenting.bat
+)</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Comments header files by running script codeCommenter.py if it exists an python is in environment path</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -151,6 +161,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>@echo off
+
+if exist %~dp0..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat (
+	blocker_post_build_code_commenting.bat
+)</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Comments header files by running script codeCommenter.py if it exists an python is in environment path</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
