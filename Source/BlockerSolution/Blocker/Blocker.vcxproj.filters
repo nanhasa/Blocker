@@ -78,6 +78,9 @@
     <ClCompile Include="..\..\Event\inputcommandevent.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Event\eventlistener.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\contract.h">
@@ -114,6 +117,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Event\inputcommandevent.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Event\eventlistener.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
   </ItemGroup>
