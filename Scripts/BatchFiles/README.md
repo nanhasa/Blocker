@@ -1,0 +1,1 @@
+Folder used to store batch files used in build events of projects
