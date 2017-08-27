@@ -11,18 +11,18 @@
 Temp/
 Game/Win32Debug/
 Game/Win32Release/
-Game/Win64Debug/
-Game/Win64Release/
 
 # Test build results
-Test/Win32Debug/
-Test/Win32Release/
-Test/Win64Debug/
-Test/Win64Release/
+Test/Output/Win32Debug/
+Test/Output/Win32Release/
+
 
 # 3rd Party headers but allow readme files
 Source/3rdParty/**
 !Source/3rdParty/**/
+!*.md
+Test/Source/3rdParty/**
+!Test/Source/3rdParty/**/
 !*.md
 
 # Library binaries
