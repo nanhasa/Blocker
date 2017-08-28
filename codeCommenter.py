@@ -51,14 +51,17 @@ class ProcessedFunction(object):
 
 #Main function for this script
 def main():
+    print('Started codeCommenter.py')
     #Process path to backup files
     bupath = ''
+    dir = os.path.dirname(__file__)
+
     if (len(sys.argv) > 2):
-        print('Entered path for backup files: ' + sys.argv[1])
-        bupath = sys.argv[1]
+        bupath = os.path.join(dir, sys.argv[1])
+        print('Path where to create backup file folder: ' + bupath)
     while True:
         if (len(bupath) == 0):
-            bupath = input('Enter path to backup file folder: ')
+            bupath = input('Path where to create backup file folder: ')
         try:
             os.chdir(bupath)
             break
@@ -72,11 +75,11 @@ def main():
     #Process path from where files are loaded
     path = ''
     if (len(sys.argv) > 2):
-        print('Entered path: ' + sys.argv[2])
-        path = sys.argv[2]
+        path = os.path.join(dir, sys.argv[2])
+        print('Path to source files: ' + path)
     while True:
         if (len(path) == 0):
-            path = input('Enter path to folder: ')
+            path = input('Path to source files: ')
         try:
             os.chdir(path)
             break
@@ -90,7 +93,7 @@ def main():
     for file in headerFiles:
         fileupdated = processHeaderFile(file, bupath)
         if (len(fileupdated) > 0):
-            print('Updated ' + fileupdated)
+            print('Updated commenting in ' + fileupdated)
             updatedFilesCount += 1
 
     if (updatedFilesCount == 0):
