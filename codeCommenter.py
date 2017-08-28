@@ -88,9 +88,17 @@ def main():
     headerFiles = searchFilesRecursively()
     updatedFilesCount = 0
     for file in headerFiles:
-        if (processHeaderFile(file, bupath)):
+        fileupdated = processHeaderFile(file, bupath)
+        if (len(fileupdated) > 0):
+            print('Updated ' + fileupdated)
             updatedFilesCount += 1
-    print('Total of ', updatedFilesCount, ' files were updated')
+
+    if (updatedFilesCount == 0):
+        print('No files were updated')
+    elif(updatedFilesCount == 1):
+        print('Total of ', updatedFilesCount, ' file updated')
+    else:
+        print('Total of ', updatedFilesCount, ' files updated')
 
 
 
@@ -564,6 +572,17 @@ def processHeaderFile(filename, backupPath):
             else:
                 upd_hfile.append(line.rstrip())
 
+        #Check if file was updated
+        #To be able to compare lists, new lines has to be removed from hfile
+        notUpdated = True
+        if (len(hfile) == len(upd_hfile)):
+            for idx, val in enumerate(hfile):
+                if (val.rstrip() != upd_hfile[idx]):
+                    notUpdated = False
+            if (notUpdated):
+                #File was not updated
+                return ''
+
         #Create backup directory only when it is actually needed
         if not os.path.exists(backupPath):
             os.makedirs(backupPath)
@@ -577,9 +596,11 @@ def processHeaderFile(filename, backupPath):
             newFile.write('%s\n' % row)
         newFile.close()
 
-        return True
+        #Return the file name that was updated
+        return filename[filename.rfind('\\') + 1:]
     else:
-        return False
+        #No file was updated
+        return ''
 
 
 
