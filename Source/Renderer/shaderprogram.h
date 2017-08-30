@@ -6,11 +6,8 @@
 #define GLEW_STATIC
 #include <3rdParty/GL/glew.h>
 //GLFW
-#include <3rdParty/GLFW/glfw3.h>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
-#include <3rdParty/glm/glm.hpp>
-#include <3rdParty/glm/gtc/matrix_transform.hpp>
 #include <3rdParty/glm/gtc/type_ptr.hpp>
 #pragma warning (pop)      // Restore back
 
@@ -178,5 +175,5 @@ private:
 	 * \pre object != 0
 	 * \return true if loading was successful, otherwise false
 	 */
-	bool validateShaderObject(GLuint object, GLenum paramType) const;
+	static bool validateShaderObject(GLuint object, GLenum paramType);
 };

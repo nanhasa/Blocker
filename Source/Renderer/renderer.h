@@ -13,7 +13,6 @@
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/glm.hpp>
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
-#include <3rdParty/glm/gtc/type_ptr.hpp>
 #pragma warning (pop)      // Restore back
 
 #include "interfaces.h"
@@ -77,7 +76,7 @@ public:
 	 * \param mode Mode of key input
 	 * \pre m_window != nullptr
 	 */
-	void keyCallback(int key, int scancode, int action, int mode);
+	void keyCallback(int key, int scancode, int action, int mode) const;
 
 	/**
 	 * \brief Callback for mouse events and movement
@@ -114,7 +113,7 @@ public:
 	 * \post framebufferWidth == width
 	 * \post framebufferHeight == height
 	 */
-	void framebufferSizeCallback(int width, int height);
+	void framebufferSizeCallback(int width, int height) const;
 
 	/**
 	 * \brief Used to access the direction the camera is facing (This function will probably be removed once player class is implemented)

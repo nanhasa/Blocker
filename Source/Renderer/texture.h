@@ -4,8 +4,6 @@
 #include <memory>
 #include <string>
 
-#include "interfaces.h"
-
 // Namespace to group image loading functionality
 namespace texture {
 

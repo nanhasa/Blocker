@@ -8,7 +8,7 @@ class Event : public IEvent {
 public:
 	virtual ~Event() {};
 
-	virtual eventType vGetEventType() const = 0;
+	eventType vGetEventType() const override = 0;
 
 	/**
 	 * \brief Used to access time of event creation
@@ -16,7 +16,7 @@ public:
 	 */
 	float vGetCreateTime() const override final;
 
-	virtual std::string vGetEventName() const = 0;
+	std::string vGetEventName() const override = 0;
 
 protected:
 	float m_createTimestamp; //!< Timestamp in milliseconds when event was created

@@ -6,9 +6,10 @@
 // Custom exception to throw from callback functions
 class TestException : public std::exception {
 public:
-	TestException(std::string message) : m_message(message) {}
+	explicit TestException(std::string message) : m_message(message) {}
 
-	virtual const char* what() const throw() {
+	const char* what() const throw() override
+	{
 		return m_message.c_str();
 	}
 

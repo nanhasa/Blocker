@@ -38,7 +38,7 @@ namespace texture {
 			}
 
 			// Test if file is long enough to have headers
-			auto size = getFileSize(stream);
+			const auto size = getFileSize(stream);
 			if (size > 5120000) { // Hard limit the file size TODO read from config 
 				std::cerr << "\tFile is too big to load: " << size << " bytes" << std::endl;
 			}
@@ -52,7 +52,7 @@ namespace texture {
 		* \return Pointer to ImageType matching the parameter file extension, nullptr if file is not supported
 		*/
 		std::unique_ptr<IImageType> getImageType(const std::string& filename) {
-			std::size_t found = filename.find_last_of(".");
+			const std::size_t found = filename.find_last_of(".");
 			if (found == std::string::npos || found == filename.length()) {
 				std::cerr << "\tCould not recognize file type from file extension" << std::endl;
 				return nullptr;
@@ -152,9 +152,9 @@ namespace texture {
 			return 0;
 		}
 
-		auto originalPosition = stream.tellg();
+		const auto originalPosition = stream.tellg();
 		stream.seekg(0, std::ios::end);
-		auto size = stream.tellg();
+		const auto size = stream.tellg();
 		stream.seekg(originalPosition); //Return stream position to where it was
 
 		ENSURE(originalPosition == stream.tellg());

@@ -24,7 +24,7 @@ bool BMP::vLoadFile(std::ifstream& stream) {
 
 	// Test if file is long enough to have headers
 	stream.seekg(std::ios::beg); // Make sure the cursor is at the beginning of file
-	auto size = texture::getFileSize(stream);
+	const auto size = texture::getFileSize(stream);
 	if (size < 54) { // Offset of BMP file
 		std::cerr << "\tCannot read file, because file is smaller than BMP header size (54B): " 
 			<< size << "B" << std::endl;
@@ -100,7 +100,7 @@ std::unique_ptr<uint8_t[]> BMP::vDecode() {
 	const unsigned int imageSize = width * height * 3;
 	
 	// Padding bytes count
-	unsigned int pad = 4 - m_infoheader->biWidth % 4;
+	const unsigned int pad = 4 - m_infoheader->biWidth % 4;
 	if (pad == 4) {
 		// No need to remove padding so optimize the decode from BGR to RGB
 		for (unsigned int i = 0; i < imageSize; i += 3) {

@@ -3,7 +3,6 @@
 #include "Interfaces.h"
 
 #include <memory>
-#include <string>
 
 
 // Without the pragma, the unsigned short fields are being padded to 4 bytes.

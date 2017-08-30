@@ -1,5 +1,4 @@
 #include "Event/inputcommandevent.h"
-#include "utility.h"
 
 // 32bit GUID created with visual studio Tools->Create GUID->DEFINE GUID 
 const eventType InputCommandEvent::m_eventType(0xf894bb78);

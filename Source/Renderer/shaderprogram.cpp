@@ -26,7 +26,7 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 	std::cout << "\tStarted attaching shader" << std::endl;
 
 	// Create shader
-	GLuint shader = glCreateShader(shaderType);
+	const GLuint shader = glCreateShader(shaderType);
 
 	// Load shader file
 	std::string sourcestr{};
@@ -206,12 +206,12 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	shaderData << file.rdbuf();  // Loads the entire string into a stringstream.
 
 	// Get file length
-	std::streamoff filesize = file.tellg();
+	const std::streamoff filesize = file.tellg();
 	file.close();
 
 	// Get contents to string and count new lines in it to compare it to file length
 	shaderSource = std::move(shaderData.str());
-	unsigned int newLines = static_cast<unsigned int>(std::count(shaderSource.begin(), shaderSource.end(), '\n'));
+	const unsigned int newLines = static_cast<unsigned int>(std::count(shaderSource.begin(), shaderSource.end(), '\n'));
 
 	ENSURE(!shaderSource.empty());
 	ENSURE(shaderSource.size() + newLines == static_cast<unsigned int>(filesize));
@@ -229,7 +229,8 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	return true;
 }
 
-bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const {
+bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType)
+{
 	REQUIRE(object != 0);
 	if (object == 0) {
 		std::cerr << "\tObject not valid" << std::endl;

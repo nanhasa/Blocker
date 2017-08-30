@@ -27,7 +27,7 @@ bool EventManager::addListener(const eventType evtType, const listenerID listene
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
 	// Lambda function to compare delegate targets
-	auto compare = [listener](auto rhs) {
+	const auto compare = [listener](auto rhs) {
 		return listener == std::get<0>(rhs);
 	};
 
@@ -67,10 +67,10 @@ bool EventManager::removeListener(const eventType evtType, const listenerID list
 	}
 
 	// Lambda to compare items in vector
-	auto compare = [listener](auto rhs) { return listener == std::get<0>(rhs); };
+	const auto compare = [listener](auto rhs) { return listener == std::get<0>(rhs); };
 
 	// Event type found, remove the delegate
-	auto del_it = std::find_if(it->second.begin(), it->second.end(), compare);
+	const auto del_it = std::find_if(it->second.begin(), it->second.end(), compare);
 	if (del_it == it->second.end()) {
 		std::cerr << "Attempted to delete non-existing delegate from " 
 			<< std::hex << evtType << std::endl;
@@ -103,7 +103,7 @@ void EventManager::triggerEvent(eventDataPtr pEvent) {
 
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
-	eventType evtType = pEvent->vGetEventType();
+	const eventType evtType = pEvent->vGetEventType();
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
 		std::cerr << "Attempting to trigger event type " << std::hex << evtType << " with no delegates" << std::endl;
@@ -111,7 +111,7 @@ void EventManager::triggerEvent(eventDataPtr pEvent) {
 	}
 
 	// Lambda to execute delegates, before calling make sure the delegate is still callable
-	auto execute = [pEvent](auto tuple) {
+	const auto execute = [pEvent](auto tuple) {
 		auto func = std::get<1>(tuple);
 		if (func) 
 			func(pEvent);
@@ -152,7 +152,7 @@ void EventManager::onUpdate(float timeToProcess) {
 	std::cout << "Processing events from event queue" << std::endl;
 	// Process events from queue until queue is empty or all the time given to process is used
 	float elapsedTime = 0.0f;
-	float startTime = utility::getTimestamp();
+	const float startTime = utility::getTimestamp();
 	while (!m_eventQueue.empty() && elapsedTime < timeToProcess) {
 		// Get first event from queue and trigger it
 		triggerEvent(m_eventQueue.front());

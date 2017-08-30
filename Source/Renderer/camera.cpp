@@ -1,15 +1,19 @@
 #include <iostream>
 
+#pragma warning (push, 2)  // Temporarily set warning level 2
+#include <3rdParty/glm/gtc/matrix_transform.hpp>
+#pragma warning (pop)      // Restore back
+
 #include "contract.h"
 #include "Renderer/camera.h"
 
 Camera::Camera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ) 
-	: m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), m_minZoom(2.0f), m_maxZoom(30.0f), 
-	 m_mouseSensitivity(0.1f) {
+	: m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), m_zoom(1.0f), m_minZoom(2.0f), 
+	 m_maxZoom(30.0f), m_mouseSensitivity(0.1f) {
 
 	m_position = glm::vec3(posX, posY, posZ);
 	m_cameraFront = glm::normalize(glm::vec3(targetX, targetY, targetZ));
-	glm::vec3 directionToCamera = glm::normalize(m_position - m_cameraFront);
+	const glm::vec3 directionToCamera = glm::normalize(m_position - m_cameraFront);
 	m_cameraRight = glm::normalize(glm::cross(m_worldUp, directionToCamera));
 	m_cameraUp = glm::cross(directionToCamera, m_cameraRight);
 
@@ -21,9 +25,8 @@ Camera::Camera(float posX, float posY, float posZ, float targetX, float targetY,
 
 Camera::Camera(glm::vec3 position, glm::vec3 target) 
 	: m_position(position), m_cameraFront(glm::normalize(target)), m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-	  m_minZoom(2.0f), m_maxZoom(30.0f), m_mouseSensitivity(0.1f) {
-
-	glm::vec3 directionToCamera = glm::normalize(m_position - m_cameraFront);
+	  m_zoom(1.0f), m_minZoom(2.0f), m_maxZoom(30.0f), m_mouseSensitivity(0.1f) {
+	const glm::vec3 directionToCamera = glm::normalize(m_position - m_cameraFront);
 	m_cameraRight = glm::normalize(glm::cross(m_worldUp, directionToCamera));
 	m_cameraUp = glm::cross(directionToCamera, m_cameraRight);
 
@@ -61,8 +64,8 @@ void Camera::processMouseMovement(double xOffset, double yOffset) {
 	xOffset *= m_mouseSensitivity;
 	yOffset *= m_mouseSensitivity;
 
-	double yaw = m_yaw;
-	double pitch = m_pitch;
+	const double yaw = m_yaw;
+	const double pitch = m_pitch;
 
 	m_yaw += xOffset;
 	m_pitch += yOffset;

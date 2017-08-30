@@ -9,7 +9,8 @@
 
 Renderer::Renderer() 
 	: m_window(nullptr), m_shaderProgram(nullptr), 
-	  m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)), m_firstMouseMovement(true) {}
+	  m_VBO(0), m_VAO(0), m_EBO(0), m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)), 
+	  m_firstMouseMovement(true), m_mousexPos(0), m_mouseyPos(0) {}
 
 Renderer::~Renderer() {
 	glfwTerminate();
@@ -198,8 +199,8 @@ void Renderer::vStartMainLoop() {
 	
 	// Load texture data
 	std::unique_ptr<texture::Image> txrData = texture::load("square.bmp");
-	unsigned int width = txrData->getWidth();
-	unsigned int height = txrData->getHeight();
+	const unsigned int width = txrData->getWidth();
+	const unsigned int height = txrData->getHeight();
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, txrData->getData());
 	glGenerateMipmap(GL_TEXTURE_2D);
 	txrData.reset();
@@ -221,8 +222,8 @@ void Renderer::vStartMainLoop() {
 	std::cout << "Started main loop" << std::endl;
 	float previousTick = utility::getTimestamp();
 	while (!glfwWindowShouldClose(m_window)) {
-		float currentTick = utility::getTimestamp();
-		float deltaTime = currentTick - previousTick;
+		const float currentTick = utility::getTimestamp();
+		const float deltaTime = currentTick - previousTick;
 
 		glfwPollEvents();
 
@@ -248,7 +249,7 @@ void Renderer::vStartMainLoop() {
 		glBindVertexArray(m_VAO);
 		for (const auto cube : cubePositions) {
 			m_model = glm::translate(glm::mat4(), cube);
-			float angle = 20.0f * static_cast<float>(glfwGetTime());
+			const float angle = 20.0f * static_cast<float>(glfwGetTime());
 			m_model = glm::rotate(m_model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			
 			m_shaderProgram->setMat4("model", m_model);
@@ -276,7 +277,8 @@ void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int 
 	r->keyCallback(key, scancode, action, mode);
 }
 
-void Renderer::keyCallback(int key, int scancode, int action, int mode) {
+void Renderer::keyCallback(int key, int scancode, int action, int mode) const
+{
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
 		std::cout << "OpenGL not properly initialized before calling keyCallback" << std::endl;
@@ -336,8 +338,8 @@ void Renderer::mouseCallback(double xpos, double ypos) {
 		m_mouseyPos = ypos;
 		m_firstMouseMovement = false;
 	}
-	double xoffset = xpos - m_mousexPos;
-	double yoffset = m_mouseyPos - ypos; // Reversed since y-coordinates go from bottom to up
+	const double xoffset = xpos - m_mousexPos;
+	const double yoffset = m_mouseyPos - ypos; // Reversed since y-coordinates go from bottom to up
 	m_mousexPos = xpos;
 	m_mouseyPos = ypos;
 
@@ -361,7 +363,8 @@ void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int 
 	r->framebufferSizeCallback(width, height);
 }
 
-void Renderer::framebufferSizeCallback(int width, int height) {
+void Renderer::framebufferSizeCallback(int width, int height) const
+{
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
 		std::cout << "OpenGL not properly initialized before calling framebufferSizeCallback" << std::endl;

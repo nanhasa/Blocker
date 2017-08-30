@@ -12,7 +12,7 @@ public:
 	 * \brief Builder. Creates valid object
 	 * \param key
 	 */
-	InputCommandEvent(std::string key);
+	explicit InputCommandEvent(std::string key);
 
 	~InputCommandEvent() {};
 

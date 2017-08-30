@@ -2,14 +2,10 @@
 #include <iostream>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
-#include <3rdParty/glm/glm.hpp>
 #pragma warning (pop)      // Restore back
 
-#include "Event/eventmanager.h"
-#include "Event/inputcommandevent.h"
 #include "GameManager/gamemanager.h"
 #include "Renderer/renderer.h"
-#include "contract.h"
 
 GameManager::GameManager() {}
 

@@ -4,7 +4,6 @@
 #include "Event/eventlistener.h"
 #include "Event/eventmanager.h"
 #include "interfaces.h"
-#include "testexception.h"
 
 // Extend EventManager class for testing purposes
 class DerivedEventManager : public EventManager {
@@ -13,7 +12,7 @@ public:
 	static unsigned int getEventListenerCount(const eventType evtType) {
 		std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
-		auto it = m_eventListenerMap.find(evtType);
+		const auto it = m_eventListenerMap.find(evtType);
 		if (it != m_eventListenerMap.end()) {
 			return it->second.size();
 		}
@@ -79,8 +78,8 @@ int g_callbackCounter = 0;
 // Dummy classes that are registered for TestEvent
 class TestClass1 {
 public:
-	void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
-	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&TestClass1::callback, this, std::placeholders::_1)); }
+	static void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
+	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&TestClass1::callback, std::placeholders::_1)); }
 	bool unregisterListener(eventType evtType = TestEvent::m_eventType) { return m_listener.unregisterForEvent(evtType); }
 
 protected:
@@ -88,20 +87,20 @@ protected:
 };
 class SubTestClass1 : public TestClass1 {
 public:
-	void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
-	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&SubTestClass1::callback, this, std::placeholders::_1)); }
+	static void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
+	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&SubTestClass1::callback, std::placeholders::_1)); }
 	bool unregisterListener(eventType evtType = TestEvent::m_eventType) { return m_listener.unregisterForEvent(evtType); }
 };
 class SubTestClass2 : public TestClass1 {
 public:
-	void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
-	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&SubTestClass2::callback, this, std::placeholders::_1)); }
+	static void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
+	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&SubTestClass2::callback, std::placeholders::_1)); }
 	bool unregisterListener(eventType evtType = TestEvent::m_eventType) { return m_listener.unregisterForEvent(evtType); }
 };
 class TestClass2 {
 public:
-	void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
-	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&TestClass2::callback, this, std::placeholders::_1)); }
+	static void callback(std::shared_ptr<IEvent> ptr) { ++g_callbackCounter; }
+	bool registerListener(eventType evtType = TestEvent::m_eventType) { return m_listener.registerForEvent(evtType, std::bind(&TestClass2::callback, std::placeholders::_1)); }
 	bool unregisterListener(eventType evtType = TestEvent::m_eventType) { return m_listener.unregisterForEvent(evtType); }
 protected:
 	EventListener m_listener;

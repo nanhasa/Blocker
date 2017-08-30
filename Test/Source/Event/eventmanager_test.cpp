@@ -8,19 +8,21 @@ namespace {
 
 	class EventManagerTest : public testing::Test {
 	protected:
-		TestClass1 testClass;
-		const uint32_t invalidEventType = 0;
+		TestClass1 m_testClass;
+		const int m_invalidListenerId = -1;
 
 		// Function called before every TEST_F call
-		virtual void SetUp() {
+		void SetUp() override
+		{
 			ASSERT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 0);
-			testClass.registerListener();
+			m_testClass.registerListener();
 			ASSERT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 1);
 			g_callbackCounter = 0;
 		}
 
 		// Function called after every TEST_F call
-		virtual void TearDown() {
+		void TearDown() override
+		{
 			DerivedEventManager::clearListeners();
 			ASSERT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 0);
 			DerivedEventManager::flushQueue();
@@ -31,13 +33,13 @@ namespace {
 
 	// Test removeListener function
 	TEST_F(EventManagerTest, removeOnlyListener) {
-		EXPECT_TRUE(testClass.unregisterListener());
+		EXPECT_TRUE(m_testClass.unregisterListener());
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 0);
 	}
 	TEST_F(EventManagerTest, removeSameListenerTwice) {
-		EXPECT_TRUE(testClass.unregisterListener());
+		EXPECT_TRUE(m_testClass.unregisterListener());
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 0);
-		EXPECT_FALSE(testClass.unregisterListener());
+		EXPECT_FALSE(m_testClass.unregisterListener());
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 0);
 	}
 	TEST_F(EventManagerTest, removeNonExistingEventListener) {
@@ -46,19 +48,19 @@ namespace {
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 1);
 	}
 	TEST_F(EventManagerTest, removeInvalidEventListener) {
-		EXPECT_FALSE(DerivedEventManager::removeListener(TestEvent::m_eventType, -1));
+		EXPECT_FALSE(DerivedEventManager::removeListener(TestEvent::m_eventType, m_invalidListenerId));
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 1);
 	}
 	TEST_F(EventManagerTest, removeListenerFromOneOfTwoEventTypes) {
-		EXPECT_TRUE(testClass.registerListener(TestEvent2::m_eventType));
-		EXPECT_TRUE(testClass.unregisterListener(TestEvent2::m_eventType));
+		EXPECT_TRUE(m_testClass.registerListener(TestEvent2::m_eventType));
+		EXPECT_TRUE(m_testClass.unregisterListener(TestEvent2::m_eventType));
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 1);
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent2::m_eventType), 0);
 	}
 
 	//Test addListener function
 	TEST_F(EventManagerTest, addDuplicateListeners) {
-		EXPECT_FALSE(testClass.registerListener());
+		EXPECT_FALSE(m_testClass.registerListener());
 		EXPECT_EQ(DerivedEventManager::getEventListenerCount(TestEvent::m_eventType), 1);
 	}
 	TEST_F(EventManagerTest, addDerivedClassListener) {
@@ -142,7 +144,7 @@ namespace {
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent2>()));
 		}
-		float startTime = utility::getTimestamp();
+		const float startTime = utility::getTimestamp();
 		float processTime = 50.0f;
 		DerivedEventManager::onUpdate(processTime);
 		float delta = utility::getTimestamp() - startTime;
@@ -156,7 +158,7 @@ namespace {
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent2>()));
 		}
-		float processTime = 1000.0f;
+		const float processTime = 1000.0f;
 		DerivedEventManager::onUpdate(processTime);
 		EXPECT_EQ(DerivedEventManager::getQueueLength(), static_cast<unsigned int>(0));
 	}
