@@ -54,10 +54,8 @@ def main():
     print('Started codeCommenter.py')
     #Process path to backup files
     bupath = ''
-    dir = os.path.dirname(__file__)
-
     if (len(sys.argv) > 2):
-        bupath = os.path.join(dir, sys.argv[1])
+        bupath = sys.argv[1]
         print('Path where to create backup file folder: ' + bupath)
     while True:
         if (len(bupath) == 0):
@@ -75,7 +73,7 @@ def main():
     #Process path from where files are loaded
     path = ''
     if (len(sys.argv) > 2):
-        path = os.path.join(dir, sys.argv[2])
+        path = sys.argv[2]
         print('Path to source files: ' + path)
     while True:
         if (len(path) == 0):
