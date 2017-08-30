@@ -1,5 +1,4 @@
 #include "stdafx.h"  
-#include <iostream>
 
 #include "3rdParty/gtest/gtest.h"
 
