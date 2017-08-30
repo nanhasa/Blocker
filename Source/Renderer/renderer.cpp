@@ -7,21 +7,22 @@
 #include "Renderer/texture.h"
 #include "utility.h"
 
-Renderer::Renderer() 
-	: m_window(nullptr), m_shaderProgram(nullptr), 
-	  m_VBO(0), m_VAO(0), m_EBO(0), m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)), 
+Renderer::Renderer()
+	: m_window(nullptr), m_shaderProgram(nullptr),
+	  m_VBO(0), m_VAO(0), m_EBO(0), m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
 	  m_firstMouseMovement(true), m_mousexPos(0), m_mouseyPos(0) {}
 
-Renderer::~Renderer() {
+Renderer::~Renderer()
+{
 	glfwTerminate();
 	glDeleteVertexArrays(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 	glDeleteBuffers(1, &m_EBO);
 }
 
-bool Renderer::vInitialize(std::string && windowName, int width, int height, 
-		std::function<void(float)>&& gameLogic) {
-	
+bool Renderer::vInitialize(std::string&& windowName, int width, int height,
+                           std::function<void(float)>&& gameLogic)
+{
 	REQUIRE(!windowName.empty());
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
@@ -55,7 +56,8 @@ bool Renderer::vInitialize(std::string && windowName, int width, int height,
 	glfwMakeContextCurrent(m_window);
 
 	glewExperimental = GL_TRUE; // Uses more modern techniques for managing OpenGL functionality
-	if (glewInit() != GLEW_OK) {// Initialize GLEW to setup the OpenGL Function pointers
+	if (glewInit() != GLEW_OK) {
+		// Initialize GLEW to setup the OpenGL Function pointers
 		std::cerr << "\tFailed to initialize GLEW" << std::endl;
 		return false;
 	}
@@ -63,20 +65,20 @@ bool Renderer::vInitialize(std::string && windowName, int width, int height,
 	int frameBufferHeight = 0;
 	glfwGetFramebufferSize(m_window, &frameBufferWidth, &frameBufferHeight);
 	glViewport(0, 0, frameBufferWidth, frameBufferHeight);
-	
+
 	// Set callback functions to static functions
 	glfwSetFramebufferSizeCallback(m_window, Renderer::staticFramebufferSizeCallback); // Resize
 	glfwSetKeyCallback(m_window, Renderer::staticKeyCallback); // Key
 	glfwSetCursorPosCallback(m_window, Renderer::staticMouseCallback); // Mouse 
 	// Cannot bind member functions to callbacks so bind window with pointer to this
 	// With this we can call member functions from static callback functions
-	glfwSetWindowUserPointer(m_window, this); 
+	glfwSetWindowUserPointer(m_window, this);
 
-#ifdef _DEBUG
+	#ifdef _DEBUG
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // For debugging use disabled cursor
-#else
+	#else
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // For release do not let cursor out of the screen
-#endif
+	#endif
 	glEnable(GL_DEPTH_TEST); // Enable depth testing
 
 	// Create shader program by attaching and linking shaders to it
@@ -87,52 +89,202 @@ bool Renderer::vInitialize(std::string && windowName, int width, int height,
 		return false;
 
 	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		0.0f,
+		0.5f,
+		-0.5f,
+		-0.5f,
+		1.0f,
+		0.0f,
+		0.5f,
+		0.5f,
+		-0.5f,
+		1.0f,
+		1.0f,
+		0.5f,
+		0.5f,
+		-0.5f,
+		1.0f,
+		1.0f,
+		-0.5f,
+		0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		-0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		0.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,
+		-0.5f,
+		0.5f,
+		0.0f,
+		0.0f,
+		0.5f,
+		-0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		1.0f,
+		0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		1.0f,
+		-0.5f,
+		0.5f,
+		0.5f,
+		0.0f,
+		1.0f,
+		-0.5f,
+		-0.5f,
+		0.5f,
+		0.0f,
+		0.0f,
 
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		-0.5f,
+		0.5f,
+		-0.5f,
+		1.0f,
+		1.0f,
+		-0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		-0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		-0.5f,
+		-0.5f,
+		0.5f,
+		0.0f,
+		0.0f,
+		-0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
 
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		0.5f,
+		0.5f,
+		-0.5f,
+		1.0f,
+		1.0f,
+		0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		0.5f,
+		-0.5f,
+		0.5f,
+		0.0f,
+		0.0f,
+		0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		0.5f,
+		-0.5f,
+		-0.5f,
+		1.0f,
+		1.0f,
+		0.5f,
+		-0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		0.5f,
+		-0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		-0.5f,
+		-0.5f,
+		0.5f,
+		0.0f,
+		0.0f,
+		-0.5f,
+		-0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		-0.5f,
+		0.5f,
+		-0.5f,
+		0.0f,
+		1.0f,
+		0.5f,
+		0.5f,
+		-0.5f,
+		1.0f,
+		1.0f,
+		0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		0.5f,
+		0.5f,
+		0.5f,
+		1.0f,
+		0.0f,
+		-0.5f,
+		0.5f,
+		0.5f,
+		0.0f,
+		0.0f,
+		-0.5f,
+		0.5f,
+		-0.5f,
+		0.0f,
+		1.0f
 	};
 
-	unsigned int indices[] = { // note that we start from 0!
-		0, 1, 3,  // first Triangle
-		1, 2, 3   // second Triangle
+	unsigned int indices[] = {
+		// note that we start from 0!
+		0,
+		1,
+		3,
+		// first Triangle
+		1,
+		2,
+		3 // second Triangle
 	};
 
 	// Generate vertex management objects
@@ -160,9 +312,10 @@ bool Renderer::vInitialize(std::string && windowName, int width, int height,
 
 	// Initialize member matrices
 	m_model = glm::rotate(glm::mat4(), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	m_view = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -3.0f)); // Translate scene in the reverse direction of where we want to move
-	m_projection = glm::perspective(glm::radians(45.0f), 
-		static_cast<float>(width / height), 0.1f, 100.0f);
+	m_view = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -3.0f));
+	// Translate scene in the reverse direction of where we want to move
+	m_projection = glm::perspective(glm::radians(45.0f),
+	                                static_cast<float>(width / height), 0.1f, 100.0f);
 
 	// Unbind vertex objects now that they are registered so that they aren't misconfigured again by accident
 	// 0 resets the currently bound buffer to a NULL like state
@@ -177,7 +330,8 @@ bool Renderer::vInitialize(std::string && windowName, int width, int height,
 	return true;
 }
 
-void Renderer::vStartMainLoop() {
+void Renderer::vStartMainLoop()
+{
 	REQUIRE(m_window != nullptr);
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
@@ -196,7 +350,7 @@ void Renderer::vStartMainLoop() {
 	// Set texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
+
 	// Load texture data
 	std::unique_ptr<texture::Image> txrData = texture::load("square.bmp");
 	const unsigned int width = txrData->getWidth();
@@ -207,16 +361,16 @@ void Renderer::vStartMainLoop() {
 
 	// Test values, later let gamemanager push these here
 	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f,  0.0f,  0.0f),
-		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(2.0f, 5.0f, -15.0f),
 		glm::vec3(-1.5f, -2.2f, -2.5f),
 		glm::vec3(-3.8f, -2.0f, -12.3f),
 		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(-1.7f, 3.0f, -7.5f),
 		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
-		glm::vec3(-1.3f,  1.0f, -1.5f)
+		glm::vec3(1.5f, 2.0f, -2.5f),
+		glm::vec3(1.5f, 0.2f, -1.5f),
+		glm::vec3(-1.3f, 1.0f, -1.5f)
 	};
 
 	std::cout << "Started main loop" << std::endl;
@@ -251,7 +405,7 @@ void Renderer::vStartMainLoop() {
 			m_model = glm::translate(glm::mat4(), cube);
 			const float angle = 20.0f * static_cast<float>(glfwGetTime());
 			m_model = glm::rotate(m_model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			
+
 			m_shaderProgram->setMat4("model", m_model);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -266,7 +420,8 @@ void Renderer::vStartMainLoop() {
 	std::cout << "Leaving from main loop" << std::endl;
 }
 
-void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
 	REQUIRE(window != nullptr);
 	if (window == nullptr) {
 		std::cout << "window parameter invalid in staticKeyCallback" << std::endl;
@@ -304,24 +459,17 @@ void Renderer::keyCallback(int key, int scancode, int action, int mode) const
 
 	// Handle events
 	std::shared_ptr<IEvent> evt = nullptr;
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-		evt = std::make_shared<InputCommandEvent>("W");
-	}
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-		evt = std::make_shared<InputCommandEvent>("A");
-	}
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) {
-		evt = std::make_shared<InputCommandEvent>("S");
-	}
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-		evt = std::make_shared<InputCommandEvent>("D");
-	}
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("W"); }
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("A"); }
+	if (key == GLFW_KEY_S && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("S"); }
+	if (key == GLFW_KEY_D && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("D"); }
 
-	if (evt) 
+	if (evt)
 		EventManager::triggerEvent(evt);
 }
 
-void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos) {
+void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
 	REQUIRE(window != nullptr);
 	if (window == nullptr) {
 		std::cout << "window parameter invalid in staticMouseCallback" << std::endl;
@@ -332,7 +480,8 @@ void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos)
 	r->mouseCallback(xpos, ypos);
 }
 
-void Renderer::mouseCallback(double xpos, double ypos) {
+void Renderer::mouseCallback(double xpos, double ypos)
+{
 	if (m_firstMouseMovement) {
 		m_mousexPos = xpos;
 		m_mouseyPos = ypos;
@@ -346,7 +495,8 @@ void Renderer::mouseCallback(double xpos, double ypos) {
 	m_camera.processMouseMovement(xoffset, yoffset);
 }
 
-void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
 	REQUIRE(window != nullptr);
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
@@ -380,6 +530,4 @@ void Renderer::framebufferSizeCallback(int width, int height) const
 	ENSURE(framebufferHeight == height);
 }
 
-glm::vec3 Renderer::vGetCameraFront() {
-	return m_camera.getCameraFront();
-}
+glm::vec3 Renderer::vGetCameraFront() { return m_camera.getCameraFront(); }

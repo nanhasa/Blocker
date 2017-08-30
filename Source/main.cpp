@@ -2,7 +2,8 @@
 
 #include "GameManager/gamemanager.h"
 
-int main() {
+int main()
+{
 	GameManager gm;
 	if (!gm.start())
 		return EXIT_FAILURE;

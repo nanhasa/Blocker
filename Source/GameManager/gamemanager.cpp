@@ -9,13 +9,13 @@
 
 GameManager::GameManager() {}
 
-GameManager::~GameManager() {} 
+GameManager::~GameManager() {}
 
-bool GameManager::start() { 
+bool GameManager::start()
+{
 	m_renderer = std::make_unique<Renderer>();
-	if (m_renderer->vInitialize("Blocker", 800, 600, 
-		std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
-
+	if (m_renderer->vInitialize("Blocker", 800, 600,
+	                            std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
 		//EventManager::addListener(InputCommandEvent::m_eventType,
 		//	std::bind(&GameManager::testDelegate, this, std::placeholders::_1));
 
@@ -28,12 +28,14 @@ bool GameManager::start() {
 	return false;
 }
 
-void GameManager::onUpdate(float deltatime) {
+void GameManager::onUpdate(float deltatime)
+{
 	(void)deltatime;
 	//auto camera = m_renderer->vGetCameraFront();
 	//std::cout << "delta: " << deltatime << " Camera front: " << camera.x << "f " << camera.y << "f " << camera.z << "f" << std::endl;
 }
 
-void GameManager::testDelegate(std::shared_ptr<IEvent> eventData) {
+void GameManager::testDelegate(std::shared_ptr<IEvent> eventData)
+{
 	std::cout << "testDelegate GameManager" << std::endl;
 }

@@ -2,7 +2,8 @@
 
 #include "utility.h"
 
-float utility::getTimestamp() {
+float utility::getTimestamp()
+{
 	SYSTEMTIME st;
 	GetSystemTime(&st);
 	return static_cast<float>(st.wMilliseconds);

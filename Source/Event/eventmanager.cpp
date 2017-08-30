@@ -13,11 +13,10 @@ std::queue<eventDataPtr> EventManager::m_eventQueue;
 
 const listenerID ERRORID = -1;
 
-listenerID EventManager::registerListener() {
-	return m_nextListenerID++;
-}
+listenerID EventManager::registerListener() { return m_nextListenerID++; }
 
-bool EventManager::addListener(const eventType evtType, const listenerID listener, const eventDelegate evtDelegate) {
+bool EventManager::addListener(const eventType evtType, const listenerID listener, const eventDelegate evtDelegate)
+{
 	REQUIRE(evtDelegate);
 	if (!evtDelegate) {
 		std::cerr << "Attempted to add uncallable event delegate for " << evtType << std::endl;
@@ -27,20 +26,18 @@ bool EventManager::addListener(const eventType evtType, const listenerID listene
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
 	// Lambda function to compare delegate targets
-	const auto compare = [listener](auto rhs) {
-		return listener == std::get<0>(rhs);
-	};
+	const auto compare = [listener](auto rhs) { return listener == std::get<0>(rhs); };
 
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
 		// New event type
-		m_eventListenerMap.emplace(evtType, eventListenerVector({ std::make_tuple(listener, evtDelegate) }));
+		m_eventListenerMap.emplace(evtType, eventListenerVector({std::make_tuple(listener, evtDelegate)}));
 	}
 	else {
 		// Event type already exists, make sure that the delegate does not already exist
 		if (std::any_of(it->second.begin(), it->second.end(), compare)) {
 			std::cerr << "Attempted to add listener " << std::dec << listener
-				<< " twice for event type "	<< std::hex << evtType << std::endl;
+				<< " twice for event type " << std::hex << evtType << std::endl;
 			return false;
 		}
 		// Existing event type but it doesnt have this listener
@@ -56,12 +53,13 @@ bool EventManager::addListener(const eventType evtType, const listenerID listene
 	return true;
 }
 
-bool EventManager::removeListener(const eventType evtType, const listenerID listener) {
+bool EventManager::removeListener(const eventType evtType, const listenerID listener)
+{
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
-		std::cerr << "Attempted to remove non-existing event type " 
+		std::cerr << "Attempted to remove non-existing event type "
 			<< std::hex << evtType << std::endl;
 		return false;
 	}
@@ -72,7 +70,7 @@ bool EventManager::removeListener(const eventType evtType, const listenerID list
 	// Event type found, remove the delegate
 	const auto del_it = std::find_if(it->second.begin(), it->second.end(), compare);
 	if (del_it == it->second.end()) {
-		std::cerr << "Attempted to delete non-existing delegate from " 
+		std::cerr << "Attempted to delete non-existing delegate from "
 			<< std::hex << evtType << std::endl;
 		return false;
 	}
@@ -84,17 +82,19 @@ bool EventManager::removeListener(const eventType evtType, const listenerID list
 
 	// Erase event type if no listeners are active for it
 	if (it->second.empty()) {
-		std::cout << "Removing event type " << std::hex << evtType 
+		std::cout << "Removing event type " << std::hex << evtType
 			<< " because there are no delegates left after remove" << std::endl;
 		m_eventListenerMap.erase(it);
 	}
 
-	ENSURE(std::all_of(m_eventListenerMap.begin(), m_eventListenerMap.end(), [](auto pair) { return !pair.second.empty(); }));
+	ENSURE(std::all_of(m_eventListenerMap.begin(), m_eventListenerMap.end(), [](auto pair) { return !pair.second.empty(); }
+	));
 
 	return true;
 }
 
-void EventManager::triggerEvent(eventDataPtr pEvent) {
+void EventManager::triggerEvent(eventDataPtr pEvent)
+{
 	REQUIRE(pEvent != nullptr);
 	if (!pEvent) {
 		std::cerr << "Attempting to trigger nullptr event" << std::endl;
@@ -113,7 +113,7 @@ void EventManager::triggerEvent(eventDataPtr pEvent) {
 	// Lambda to execute delegates, before calling make sure the delegate is still callable
 	const auto execute = [pEvent](auto tuple) {
 		auto func = std::get<1>(tuple);
-		if (func) 
+		if (func)
 			func(pEvent);
 	};
 
@@ -122,7 +122,8 @@ void EventManager::triggerEvent(eventDataPtr pEvent) {
 	std::for_each(it->second.begin(), it->second.end(), execute);
 }
 
-bool EventManager::queueEvent(eventDataPtr pEvent) {
+bool EventManager::queueEvent(eventDataPtr pEvent)
+{
 	REQUIRE(pEvent != nullptr);
 	if (!pEvent) {
 		std::cerr << "Attempting to queue nullptr event" << std::endl;
@@ -131,16 +132,17 @@ bool EventManager::queueEvent(eventDataPtr pEvent) {
 
 	std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
 
-	std::cout << "Adding event " 
+	std::cout << "Adding event "
 		<< std::hex << pEvent->vGetEventType() << " to event queue" << std::endl;
 	m_eventQueue.emplace(pEvent);
 
 	ENSURE(m_eventQueue.back() == pEvent);
-	
+
 	return true;
 }
 
-void EventManager::onUpdate(float timeToProcess) {
+void EventManager::onUpdate(float timeToProcess)
+{
 	REQUIRE(timeToProcess >= 0.0f);
 	if (timeToProcess < 0.0f) {
 		std::cerr << "timeToProcess value invalid in EventManager::onUpdate" << std::endl;
@@ -163,7 +165,8 @@ void EventManager::onUpdate(float timeToProcess) {
 	}
 }
 
-unsigned int EventManager::getQueueLength() {
+unsigned int EventManager::getQueueLength()
+{
 	std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
 	return m_eventQueue.size();
 }

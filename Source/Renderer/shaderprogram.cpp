@@ -6,23 +6,18 @@
 #include "Renderer/shaderprogram.h"
 #include "contract.h"
 
-ShaderProgram::ShaderProgram() {
-	m_id = glCreateProgram();
-}
+ShaderProgram::ShaderProgram() { m_id = glCreateProgram(); }
 
-ShaderProgram::~ShaderProgram() {
-	glDeleteProgram(m_id);
-}
+ShaderProgram::~ShaderProgram() { glDeleteProgram(m_id); }
 
-GLuint ShaderProgram::getID() const {
-	return m_id;
-}
+GLuint ShaderProgram::getID() const { return m_id; }
 
-bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType) const {
+bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType) const
+{
 	REQUIRE(!filename.empty());
 	REQUIRE(shaderType != NULL);
 
-	
+
 	std::cout << "\tStarted attaching shader" << std::endl;
 
 	// Create shader
@@ -36,7 +31,7 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 
 	glShaderSource(shader, 1, &sourcechar, NULL);
 	glCompileShader(shader);
-	if (!validateShaderObject(shader, GL_COMPILE_STATUS)) 	{
+	if (!validateShaderObject(shader, GL_COMPILE_STATUS)) {
 		glDeleteShader(shader);
 		return false;
 	}
@@ -55,7 +50,8 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 	return validateShaderObject(m_id, GL_LINK_STATUS); // Validate program linking
 }
 
-bool ShaderProgram::validate() const {
+bool ShaderProgram::validate() const
+{
 	if (!glIsProgram(m_id)) {
 		std::cout << "\tShader program not valid" << std::endl;
 		return false;
@@ -63,11 +59,10 @@ bool ShaderProgram::validate() const {
 	return validateShaderObject(m_id, GL_LINK_STATUS);
 }
 
-void ShaderProgram::use() const {
-	glUseProgram(m_id);
-}
+void ShaderProgram::use() const { glUseProgram(m_id); }
 
-void ShaderProgram::setBool(const std::string& name, bool value) const {
+void ShaderProgram::setBool(const std::string& name, bool value) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetBool" << std::endl;
@@ -77,7 +72,8 @@ void ShaderProgram::setBool(const std::string& name, bool value) const {
 	setInt(name, static_cast<int>(value));
 }
 
-void ShaderProgram::setInt(const std::string& name, int value) const {
+void ShaderProgram::setInt(const std::string& name, int value) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetInt" << std::endl;
@@ -87,7 +83,8 @@ void ShaderProgram::setInt(const std::string& name, int value) const {
 	glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-void ShaderProgram::setFloat(const std::string& name, float value) const {
+void ShaderProgram::setFloat(const std::string& name, float value) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetFloat" << std::endl;
@@ -97,7 +94,8 @@ void ShaderProgram::setFloat(const std::string& name, float value) const {
 	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
-void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) const {
+void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetBool" << std::endl;
@@ -106,7 +104,9 @@ void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) con
 
 	glUniform2fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
 }
-void ShaderProgram::setVec2(const std::string& name, float x, float y) const {
+
+void ShaderProgram::setVec2(const std::string& name, float x, float y) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetVec2" << std::endl;
@@ -116,7 +116,8 @@ void ShaderProgram::setVec2(const std::string& name, float x, float y) const {
 	glUniform2f(glGetUniformLocation(m_id, name.c_str()), x, y);
 }
 
-void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) const {
+void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetVec3" << std::endl;
@@ -125,7 +126,9 @@ void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) con
 
 	glUniform3fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
 }
-void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) const {
+
+void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetVec3" << std::endl;
@@ -135,7 +138,8 @@ void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) 
 	glUniform3f(glGetUniformLocation(m_id, name.c_str()), x, y, z);
 }
 
-void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) const {
+void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetVec4" << std::endl;
@@ -144,7 +148,9 @@ void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) con
 
 	glUniform4fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
 }
-void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, float w) const {
+
+void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, float w) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetVec4" << std::endl;
@@ -154,7 +160,8 @@ void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, 
 	glUniform4f(glGetUniformLocation(m_id, name.c_str()), x, y, z, w);
 }
 
-void ShaderProgram::setMat2(const std::string& name, const glm::mat2& mat) const {
+void ShaderProgram::setMat2(const std::string& name, const glm::mat2& mat) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetMat2" << std::endl;
@@ -164,7 +171,8 @@ void ShaderProgram::setMat2(const std::string& name, const glm::mat2& mat) const
 	glUniformMatrix2fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void ShaderProgram::setMat3(const std::string& name, const glm::mat3& mat) const {
+void ShaderProgram::setMat3(const std::string& name, const glm::mat3& mat) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetMat3" << std::endl;
@@ -174,7 +182,8 @@ void ShaderProgram::setMat3(const std::string& name, const glm::mat3& mat) const
 	glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void ShaderProgram::setMat4(const std::string& name, const glm::mat4& mat) const {
+void ShaderProgram::setMat4(const std::string& name, const glm::mat4& mat) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "Invalid name in SetMat4" << std::endl;
@@ -184,7 +193,8 @@ void ShaderProgram::setMat4(const std::string& name, const glm::mat4& mat) const
 	glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const {
+bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSource) const
+{
 	REQUIRE(!name.empty());
 	if (name.empty()) {
 		std::cerr << "\tInvalid name in loadShader" << std::endl;
@@ -203,7 +213,7 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	}
 
 	std::stringstream shaderData;
-	shaderData << file.rdbuf();  // Loads the entire string into a stringstream.
+	shaderData << file.rdbuf(); // Loads the entire string into a stringstream.
 
 	// Get file length
 	const std::streamoff filesize = file.tellg();

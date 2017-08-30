@@ -6,10 +6,6 @@ const std::string InputCommandEvent::m_eventName("Input Command");
 
 InputCommandEvent::InputCommandEvent(std::string key) : m_pressedKey(key) {}
 
-eventType InputCommandEvent::vGetEventType() const {
-	return m_eventType;
-}
+eventType InputCommandEvent::vGetEventType() const { return m_eventType; }
 
-std::string InputCommandEvent::vGetEventName() const {
-	return m_eventName;
-}
+std::string InputCommandEvent::vGetEventName() const { return m_eventName; }

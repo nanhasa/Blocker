@@ -14,7 +14,8 @@ namespace texture {
 		* \param stream Filestream to a file
 		* \return True if stream is empty or at the end, otherwise false
 		*/
-		bool isStreamEmpty(std::ifstream& stream) {
+		bool isStreamEmpty(std::ifstream& stream)
+		{
 			if (!stream.is_open())
 				return false;
 
@@ -26,7 +27,8 @@ namespace texture {
 		* \param stream Filestream to be tested
 		* \return True if stream is valid, otherwise false
 		*/
-		bool validateFile(std::ifstream& stream) {
+		bool validateFile(std::ifstream& stream)
+		{
 			if (!stream.is_open()) {
 				std::cerr << "\tCould not open file" << std::endl;
 				return false;
@@ -39,7 +41,8 @@ namespace texture {
 
 			// Test if file is long enough to have headers
 			const auto size = getFileSize(stream);
-			if (size > 5120000) { // Hard limit the file size TODO read from config 
+			if (size > 5120000) {
+				// Hard limit the file size TODO read from config 
 				std::cerr << "\tFile is too big to load: " << size << " bytes" << std::endl;
 			}
 
@@ -51,7 +54,8 @@ namespace texture {
 		* \param filename File name without file path
 		* \return Pointer to ImageType matching the parameter file extension, nullptr if file is not supported
 		*/
-		std::unique_ptr<IImageType> getImageType(const std::string& filename) {
+		std::unique_ptr<IImageType> getImageType(const std::string& filename)
+		{
 			const std::size_t found = filename.find_last_of(".");
 			if (found == std::string::npos || found == filename.length()) {
 				std::cerr << "\tCould not recognize file type from file extension" << std::endl;
@@ -73,38 +77,32 @@ namespace texture {
 
 	Image::~Image() {}
 
-	int Image::getWidth() const {
-		return m_width;
-	}
+	int Image::getWidth() const { return m_width; }
 
-	int Image::getHeight() const {
-		return m_height;
-	}
+	int Image::getHeight() const { return m_height; }
 
-	uint8_t * Image::getData() const {
-		return m_data.get();
-	}
+	uint8_t* Image::getData() const { return m_data.get(); }
 
-	void Image::flipVertically() {
+	void Image::flipVertically()
+	{
 		// Create temp pointer to store the changes
 		const int width = m_width * 3; // Each pixel has RGB bytes
 		auto temp = std::make_unique<uint8_t[]>(width * m_height);
 
 		// Read from current data to temp in reverse row order
 		for (int from = width * (m_height - 1), to = 0;
-			from >= 0;
-			from -= width, to += width) {
+		     from >= 0;
+		     from -= width , to += width) {
 			// Read bytes of one row
-			for (int i = 0; i < width; ++i) {
-				std::swap(temp[to + i], m_data[from + i]);
-			}
+			for (int i = 0; i < width; ++i) { std::swap(temp[to + i], m_data[from + i]); }
 		}
 
 		// Replace the old data with altered temp
 		m_data = std::move(temp);
 	}
 
-	void Image::flipHorizontally() {
+	void Image::flipHorizontally()
+	{
 		const int width = m_width * 3; // Each pixel has RGB bytes
 
 		// Create temp pointer to store the changes
@@ -127,13 +125,12 @@ namespace texture {
 		m_data = std::move(temp);
 	}
 
-	std::unique_ptr<Image> load(const std::string & file) {
+	std::unique_ptr<Image> load(const std::string& file)
+	{
 		std::cout << "Loading file " << file << std::endl;
 		std::ifstream stream(R"(..\Data\Images\)" + file, std::ios::binary); //Todo read path from config 
 
-		if (!validateFile(stream)) {
-			return nullptr;
-		}
+		if (!validateFile(stream)) { return nullptr; }
 
 		std::unique_ptr<IImageType> type = getImageType(file);
 		type->vLoadFile(stream);
@@ -144,7 +141,8 @@ namespace texture {
 		return std::make_unique<Image>(type->vDecode(), width, height);
 	}
 
-	std::streampos getFileSize(std::ifstream & stream) {
+	std::streampos getFileSize(std::ifstream& stream)
+	{
 		REQUIRE(stream.is_open());
 
 		if (!stream) {
