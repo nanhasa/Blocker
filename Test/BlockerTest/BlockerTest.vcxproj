@@ -104,7 +104,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;gtestd.lib;gtest_maind.lib;bmp.obj;camera.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;gamemanager.obj;inputcommandevent.obj;renderer.obj;shaderprogram.obj;texture.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;gtestd.lib;gtest_maind.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;gamemanager.obj;inputcommandevent.obj;logger.obj;renderer.obj;shaderprogram.obj;texture.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
     </Link>
