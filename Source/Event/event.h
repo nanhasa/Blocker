@@ -8,7 +8,7 @@ class Event : public IEvent {
 public:
 	virtual ~Event() {};
 
-	eventType vGetEventType() const override = 0;
+	EventType vGetEventType() const override = 0;
 
 	/**
 	 * \brief Used to access time of event creation

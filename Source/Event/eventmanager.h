@@ -11,10 +11,10 @@
 
 #include "interfaces.h"
 
-using listenerID = int;
-using eventDataPtr = std::shared_ptr<IEvent>;
-using eventDelegate = std::function<void(eventDataPtr)>;
-using eventListenerVector = std::vector<std::tuple<listenerID, std::function<void(eventDataPtr)>>>;
+using ListenerId = int;
+using EventDataPtr = std::shared_ptr<IEvent>;
+using EventDelegate = std::function<void(EventDataPtr)>;
+using EventListenerVector = std::vector<std::tuple<ListenerId, std::function<void(EventDataPtr)>>>;
 
 // Because of this class is static and accessible from anywhere
 // all functions are thread safe
@@ -26,9 +26,9 @@ public:
 
 	/**
 	 * \brief Used to get listener ID when registering new listener. DO NOT EXPLICITLY CALL! EventListener class calls this in its builder. Thread safe
-	 * \return Unique listenerID (int)
+	 * \return Unique ListenerId (int)
 	 */
-	static listenerID registerListener();
+	static ListenerId registerListener();
 
 	/**
 	 * \brief Used to add listeners for certain events. Allows objects to have only one listener delegate per event type. Thread safe
@@ -40,7 +40,7 @@ public:
 	 * \post std::count_if(m_eventListenerMap[evtType].begin(), m_eventListenerMap[evtType].end(), compare) == 1
 	 * \return True if successful, otherwise false
 	 */
-	static bool addListener(const eventType evtType, const listenerID listener, const eventDelegate evtDelegate);
+	static bool addListener(const EventType evtType, const ListenerId listener, const EventDelegate evtDelegate);
 
 	/**
 	 * \brief Used to remove object's listener delegate for certain event type. Thread safe
@@ -50,14 +50,14 @@ public:
 	 * \post std::all_of(m_eventListenerMap.begin(), m_eventListenerMap.end(), [](auto pair) { return !pair.second.empty(); })
 	 * \return True if successful, otherwise false
 	 */
-	static bool removeListener(const eventType evtType, const listenerID listener);
+	static bool removeListener(const EventType evtType, const ListenerId listener);
 
 	/**
 	 * \brief Triggers event listeners immediately by forwarding event to them. Thread safe
 	 * \param pEvent Event being triggered
 	 * \pre pEvent != nullptr
 	 */
-	static void triggerEvent(eventDataPtr pEvent);
+	static void triggerEvent(EventDataPtr pEvent);
 
 	/**
 	 * \brief Used to place event in the queue. If event is not valid, it is not placed in the queue. Thread safe
@@ -66,7 +66,7 @@ public:
 	 * \post m_eventQueue.back() == pEvent
 	 * \return True if event was valid to be placed in a queue, otherwise false
 	 */
-	static bool queueEvent(eventDataPtr pEvent);
+	static bool queueEvent(EventDataPtr pEvent);
 
 	/**
 	 * \brief Processes event queue until the queue is empty or the function has run out of time given to it. Thread safe
@@ -83,8 +83,8 @@ public:
 
 protected: // Protected for testing purposes
 	static std::atomic<int> m_nextListenerID;									//!< ID given to next registering listener
-	static std::map<const eventType, eventListenerVector> m_eventListenerMap;	//!< Map tracking which delegates listen to which events
-	static std::queue<eventDataPtr> m_eventQueue;								//!< Queue for events
+	static std::map<const EventType, EventListenerVector> m_eventListenerMap;	//!< Map tracking which delegates listen to which events
+	static std::queue<EventDataPtr> m_eventQueue;								//!< Queue for events
 	static std::mutex m_mapMtx;													//!< Mutex used when accessing m_eventListenerMap
 	static std::mutex m_queueMtx;												//!< Mutex used when accessing m_eventQueue
 };

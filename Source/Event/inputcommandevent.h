@@ -6,7 +6,7 @@
 
 class InputCommandEvent : public Event {
 public:
-	static const eventType m_eventType; //!< uint32_t representation of event GUID. Public so that registering for this event would be easier
+	static const EventType eventType; //!< uint32_t representation of event GUID. Public so that registering for this event would be easier
 
 	/**
 	 * \brief Builder. Creates valid object
@@ -20,7 +20,7 @@ public:
 	 * \brief Destructor
 	 * \return uint32_t value representing GUID
 	 */
-	eventType vGetEventType() const override final;
+	EventType vGetEventType() const override final;
 
 	/**
 	 * \brief Returns event name in plain text
@@ -29,6 +29,6 @@ public:
 	std::string vGetEventName() const override final;
 
 private:
-	static const std::string m_eventName;	//!< Event name in plain text
+	static const std::string m_eventName;		//!< Event name in plain text
 	const std::string m_pressedKey;			//!< Key pressed. Event payload
 };

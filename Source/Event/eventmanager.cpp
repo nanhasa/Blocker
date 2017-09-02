@@ -1,21 +1,19 @@
 #include <algorithm>
 #include <iostream>
 
-#include "contract.h"
 #include "Event/eventmanager.h"
-#include "utility.h"
+#include "Utility/contract.h"
+#include "Utility/utility.h"
 
-std::atomic<listenerID> EventManager::m_nextListenerID(0);
+std::atomic<ListenerId> EventManager::m_nextListenerID(0);
 std::mutex EventManager::m_mapMtx;
 std::mutex EventManager::m_queueMtx;
-std::map<const eventType, eventListenerVector> EventManager::m_eventListenerMap;
-std::queue<eventDataPtr> EventManager::m_eventQueue;
+std::map<const EventType, EventListenerVector> EventManager::m_eventListenerMap;
+std::queue<EventDataPtr> EventManager::m_eventQueue;
 
-const listenerID ERRORID = -1;
+ListenerId EventManager::registerListener() { return m_nextListenerID++; }
 
-listenerID EventManager::registerListener() { return m_nextListenerID++; }
-
-bool EventManager::addListener(const eventType evtType, const listenerID listener, const eventDelegate evtDelegate)
+bool EventManager::addListener(const EventType evtType, const ListenerId listener, const EventDelegate evtDelegate)
 {
 	REQUIRE(evtDelegate);
 	if (!evtDelegate) {
@@ -31,7 +29,7 @@ bool EventManager::addListener(const eventType evtType, const listenerID listene
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
 		// New event type
-		m_eventListenerMap.emplace(evtType, eventListenerVector({std::make_tuple(listener, evtDelegate)}));
+		m_eventListenerMap.emplace(evtType, EventListenerVector({std::make_tuple(listener, evtDelegate)}));
 	}
 	else {
 		// Event type already exists, make sure that the delegate does not already exist
@@ -53,7 +51,7 @@ bool EventManager::addListener(const eventType evtType, const listenerID listene
 	return true;
 }
 
-bool EventManager::removeListener(const eventType evtType, const listenerID listener)
+bool EventManager::removeListener(const EventType evtType, const ListenerId listener)
 {
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
@@ -93,7 +91,7 @@ bool EventManager::removeListener(const eventType evtType, const listenerID list
 	return true;
 }
 
-void EventManager::triggerEvent(eventDataPtr pEvent)
+void EventManager::triggerEvent(EventDataPtr pEvent)
 {
 	REQUIRE(pEvent != nullptr);
 	if (!pEvent) {
@@ -103,7 +101,7 @@ void EventManager::triggerEvent(eventDataPtr pEvent)
 
 	std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
 
-	const eventType evtType = pEvent->vGetEventType();
+	const EventType evtType = pEvent->vGetEventType();
 	auto it = m_eventListenerMap.find(evtType);
 	if (it == m_eventListenerMap.end()) {
 		std::cerr << "Attempting to trigger event type " << std::hex << evtType << " with no delegates" << std::endl;
@@ -122,7 +120,7 @@ void EventManager::triggerEvent(eventDataPtr pEvent)
 	std::for_each(it->second.begin(), it->second.end(), execute);
 }
 
-bool EventManager::queueEvent(eventDataPtr pEvent)
+bool EventManager::queueEvent(EventDataPtr pEvent)
 {
 	REQUIRE(pEvent != nullptr);
 	if (!pEvent) {
