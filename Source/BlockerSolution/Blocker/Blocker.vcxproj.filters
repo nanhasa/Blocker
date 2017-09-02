@@ -40,12 +40,15 @@
     <Filter Include="Source Files\Event">
       <UniqueIdentifier>{d32b0559-bebc-4699-8fc4-636bcf51d77e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{5962236b-701b-4eae-9726-666c5f3a1009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{73d0978c-6c86-4e4f-8249-7e9fe42f0f9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\contract.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp">
@@ -72,20 +75,26 @@
     <ClCompile Include="..\..\Event\event.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\utility.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Event\inputcommandevent.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Event\eventlistener.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Utility\config.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Utility\contract.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Utility\utility.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Utility\logger.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\contract.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\interfaces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -113,14 +122,23 @@
     <ClInclude Include="..\..\Event\event.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\utility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Event\inputcommandevent.h">
       <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Event\eventlistener.h">
       <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Utility\config.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Utility\contract.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Utility\utility.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Utility\logger.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

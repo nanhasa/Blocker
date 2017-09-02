@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-#include "utility.h"
+#include "Utility/utility.h"
 
 float utility::getTimestamp()
 {

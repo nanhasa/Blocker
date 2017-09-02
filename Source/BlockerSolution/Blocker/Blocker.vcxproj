@@ -188,7 +188,6 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\contract.cpp" />
     <ClCompile Include="..\..\Event\event.cpp" />
     <ClCompile Include="..\..\Event\eventlistener.cpp" />
     <ClCompile Include="..\..\Event\eventmanager.cpp" />
@@ -200,10 +199,12 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClCompile Include="..\..\Renderer\renderer.cpp" />
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
     <ClCompile Include="..\..\Renderer\texture.cpp" />
-    <ClCompile Include="..\..\utility.cpp" />
+    <ClCompile Include="..\..\Utility\config.cpp" />
+    <ClCompile Include="..\..\Utility\contract.cpp" />
+    <ClCompile Include="..\..\Utility\logger.cpp" />
+    <ClCompile Include="..\..\Utility\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\contract.h" />
     <ClInclude Include="..\..\Event\event.h" />
     <ClInclude Include="..\..\Event\eventlistener.h" />
     <ClInclude Include="..\..\Event\eventmanager.h" />
@@ -215,7 +216,10 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClInclude Include="..\..\Renderer\renderer.h" />
     <ClInclude Include="..\..\Renderer\shaderprogram.h" />
     <ClInclude Include="..\..\Renderer\texture.h" />
-    <ClInclude Include="..\..\utility.h" />
+    <ClInclude Include="..\..\Utility\config.h" />
+    <ClInclude Include="..\..\Utility\contract.h" />
+    <ClInclude Include="..\..\Utility\logger.h" />
+    <ClInclude Include="..\..\Utility\utility.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag" />
