@@ -28,13 +28,13 @@ public:
 	virtual int vGetWidth() const = 0;
 };
 
-using eventType = uint32_t;
+using EventType = uint32_t;
 
 class IEvent {
 public: 
 	virtual ~IEvent() {};
 
-	virtual eventType vGetEventType() const = 0;
+	virtual EventType vGetEventType() const = 0;
 	virtual float vGetCreateTime() const = 0;
 	virtual std::string vGetEventName() const = 0;
 };
