@@ -4,8 +4,8 @@
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
 #pragma warning (pop)      // Restore back
 
-#include "contract.h"
 #include "Renderer/camera.h"
+#include "Utility/contract.h"
 
 Camera::Camera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
 	: m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), m_zoom(1.0f), m_minZoom(2.0f),

@@ -8,7 +8,7 @@
 //GLFW
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
-#include <3rdParty/glm/gtc/type_ptr.hpp>
+#include <3rdParty/glm/glm.hpp>
 #pragma warning (pop)      // Restore back
 
 

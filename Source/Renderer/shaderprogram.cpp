@@ -3,8 +3,12 @@
 #include <fstream>
 #include <sstream>
 
+#pragma warning (push, 2)  // Temporarily set warning level 2
+#include <3rdParty/glm/gtc/type_ptr.hpp>
+#pragma warning (pop)      // Restore back
+
 #include "Renderer/shaderprogram.h"
-#include "contract.h"
+#include "Utility/contract.h"
 
 ShaderProgram::ShaderProgram() { m_id = glCreateProgram(); }
 

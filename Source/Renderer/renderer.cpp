@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "contract.h"
 #include "Event/eventmanager.h"
 #include "Event/inputcommandevent.h"
 #include "Renderer/renderer.h"
 #include "Renderer/texture.h"
-#include "utility.h"
+#include "Utility/contract.h"
+#include "Utility/utility.h"
 
 Renderer::Renderer()
 	: m_window(nullptr), m_shaderProgram(nullptr),
