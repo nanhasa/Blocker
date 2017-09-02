@@ -16,10 +16,10 @@ bool GameManager::start()
 	m_renderer = std::make_unique<Renderer>();
 	if (m_renderer->vInitialize("Blocker", 800, 600,
 	                            std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
-		//EventManager::addListener(InputCommandEvent::m_eventType,
+		//EventManager::addListener(InputCommandEvent::eventType,
 		//	std::bind(&GameManager::testDelegate, this, std::placeholders::_1));
 
-		//EventManager::removeListener(InputCommandEvent::m_eventType,
+		//EventManager::removeListener(InputCommandEvent::eventType,
 		//	std::bind(&GameManager::testDelegate, this, std::placeholders::_1));
 
 		m_renderer->vStartMainLoop(); //Start main loop
