@@ -111,6 +111,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +154,8 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
       <TreatWarningAsError>true</TreatWarningAsError>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
