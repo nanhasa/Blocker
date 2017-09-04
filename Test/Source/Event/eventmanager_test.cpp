@@ -133,23 +133,23 @@ namespace {
 	TEST_F(EventManagerTest, onUpdateInvalidProcessTime) { // This test breaks precondition and therefore cannot be run in debug mode
 		EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
 		unsigned int queueBefore = DerivedEventManager::getQueueLength();
-		EventManager::onUpdate(-1.0f);
+		EventManager::onUpdate(-1);
 		EXPECT_EQ(DerivedEventManager::getQueueLength(), queueBefore);
 	}
 #endif // RELEASE
 
 	TEST_F(EventManagerTest, onUpdateProcessTime) {
 		// Populate queue
-		for (unsigned int i = 0; i < 1000; ++i) {
+		for (unsigned int i = 0; i < 100000; ++i) {
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent2>()));
 		}
-		const float startTime = utility::getTimestamp();
-		float processTime = 50.0f;
+		const long startTime = utility::timestampMs();
+		const int processTime = 50;
 		DerivedEventManager::onUpdate(processTime);
-		float delta = utility::getTimestamp() - startTime;
+		const int delta = utility::deltaTimeMs(startTime);
 		EXPECT_GT(DerivedEventManager::getQueueLength(), static_cast<unsigned int>(0)); // Make sure the processing ended to process time and not because queue was empty
-		EXPECT_NEAR(processTime, delta, 3.0f); // Actual processing time varies from given time the amount it takes to process one event
+		EXPECT_NEAR(processTime, delta, 3); // Actual processing time varies from given time the amount it takes to process one event
 	}
 
 	TEST_F(EventManagerTest, onUpdateUntilQueueEmpty) {
@@ -158,7 +158,7 @@ namespace {
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent2>()));
 		}
-		const float processTime = 1000.0f;
+		const int processTime = 1000;
 		DerivedEventManager::onUpdate(processTime);
 		EXPECT_EQ(DerivedEventManager::getQueueLength(), static_cast<unsigned int>(0));
 	}
