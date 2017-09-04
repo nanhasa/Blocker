@@ -35,6 +35,6 @@ public:
 	virtual ~IEvent() {};
 
 	virtual EventType vGetEventType() const = 0;
-	virtual float vGetCreateTime() const = 0;
+	virtual long vGetCreateTime() const = 0;
 	virtual std::string vGetEventName() const = 0;
 };
