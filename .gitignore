@@ -11,6 +11,7 @@
 Temp/
 Game/Win32Debug/
 Game/Win32Release/
+Game/Data/Log/
 
 # Test build results
 Test/Output/Win32Debug/
@@ -32,10 +33,7 @@ Libs/**/*.lib
 Docs/HTML/
 
 #Scripts used in the project
-Scripts/**
-!Scripts/**/
-!*.md
-!*.bat
+Scripts/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
