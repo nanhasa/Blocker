@@ -14,12 +14,12 @@ public:
 	 * \brief Used to access time of event creation
 	 * \return Timestamp in milliseconds
 	 */
-	float vGetCreateTime() const override final;
+	long vGetCreateTime() const override final;
 
 	std::string vGetEventName() const override = 0;
 
 protected:
-	float m_createTimestamp; //!< Timestamp in milliseconds when event was created
+	long m_createTimestamp; //!< Timestamp in milliseconds when event was created
 
 	/**
 	 * \brief Builder hidden so that this base class cannot be instantiated
