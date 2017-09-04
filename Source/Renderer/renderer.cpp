@@ -374,10 +374,10 @@ void Renderer::vStartMainLoop()
 	};
 
 	std::cout << "Started main loop" << std::endl;
-	float previousTick = utility::getTimestamp();
+	long previousTick = utility::timestampMs();
 	while (!glfwWindowShouldClose(m_window)) {
-		const float currentTick = utility::getTimestamp();
-		const float deltaTime = currentTick - previousTick;
+		const long currentTick = utility::timestampMs();
+		const float deltaTime = static_cast<float>((currentTick - previousTick) / 1000);
 
 		glfwPollEvents();
 
