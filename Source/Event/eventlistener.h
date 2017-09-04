@@ -19,6 +19,10 @@ public:
 	 */
 	~EventListener();
 
+	// Delete copy and move constructors
+	EventListener(EventListener const&) = delete;
+	EventListener& operator=(EventListener const&) = delete;
+
 	/**
 	 * \brief Registers delegate function for event
 	 * \param evtType Event type to be listened
