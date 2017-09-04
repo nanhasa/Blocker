@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "interfaces.h"
+#include "Utility/logger.h"
 
 using ListenerId = int;
 using EventDataPtr = std::shared_ptr<IEvent>;
@@ -70,10 +71,10 @@ public:
 
 	/**
 	 * \brief Processes event queue until the queue is empty or the function has run out of time given to it. Thread safe
-	 * \param timeToProcess Time in milliseconds to process queue
+	 * \param msToProcess Time in milliseconds to process queue
 	 * \pre timeToProcess >= 0.0f
 	 */
-	static void onUpdate(float timeToProcess);
+	static void onUpdate(int msToProcess);
 
 	/**
 	 * \brief Used to get the count of events in event queue. Thread safe
@@ -87,4 +88,5 @@ protected: // Protected for testing purposes
 	static std::queue<EventDataPtr> m_eventQueue;								//!< Queue for events
 	static std::mutex m_mapMtx;													//!< Mutex used when accessing m_eventListenerMap
 	static std::mutex m_queueMtx;												//!< Mutex used when accessing m_eventQueue
+	static Logger m_log;
 };
