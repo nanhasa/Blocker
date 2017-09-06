@@ -1,0 +1,26 @@
+{
+  "Texture": {
+  "file": "texture_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "Renderer": {
+  "file": "renderer_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "EventManager": {
+  "file": "eventmanager_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "GameManager": {
+  "file": "gamemanager_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "Contract": {
+  "file": "contract_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "ShaderProgram": {
+  "file": "shaderprogram_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  }
+}
