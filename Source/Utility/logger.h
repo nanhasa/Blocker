@@ -19,31 +19,6 @@ public:
 	void error(const std::string& message) const;
 	void fatal(const std::string& message) const;
 
-	template<typename T>
-	static std::string Logger::toHex(T&& num)
-	{
-		std::stringstream ss;
-		ss << "0x" << std::hex << std::forward<T>(num);
-		return ss.str();
-	}
-
-	template<typename T>
-	static std::string Logger::toDec(T&& num)
-	{
-		std::stringstream ss;
-		ss << std::dec << std::forward<T>(num);
-		return ss.str();
-	}
-
-	template<typename T>
-	static std::string toStr(T&& num) 
-	{
-		#pragma warning(suppress: 4127)
-		if (!std::is_integral<T>::value && !std::is_floating_point<T>::value)
-			return std::string();
-		return std::to_string(std::forward<T>(num));
-	}
-
 private:
 	enum LOGGING_LEVEL {DEBUG, INFO, WARN, ERROR, FATAL};
 	std::vector<LOGGING_LEVEL> m_enabledLogLevels;
@@ -56,3 +31,29 @@ private:
 	std::string datetime() const;
 	std::string levelToFixedString(LOGGING_LEVEL lvl) const;
 };
+
+
+template<typename T>
+std::string toHex(T&& num)
+{
+	std::stringstream ss;
+	ss << "0x" << std::hex << std::forward<T>(num);
+	return ss.str();
+}
+
+template<typename T>
+std::string toDec(T&& num)
+{
+	std::stringstream ss;
+	ss << std::dec << std::forward<T>(num);
+	return ss.str();
+}
+
+template<typename T>
+std::string toStr(T&& num)
+{
+#pragma warning(suppress: 4127)
+	if (!std::is_integral<T>::value && !std::is_floating_point<T>::value)
+		return std::string();
+	return std::to_string(std::forward<T>(num));
+}

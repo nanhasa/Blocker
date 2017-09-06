@@ -96,32 +96,32 @@ Logger::~Logger() {}
 
 void Logger::debug(const std::string & message) const
 {
-	isEnabled(DEBUG);
-	write(DEBUG, message);
+	if (isEnabled(DEBUG))
+		write(DEBUG, message);
 }
 
 void Logger::info(const std::string & message) const
 {
-	isEnabled(INFO);
-	write(INFO, message);
+	if (isEnabled(INFO))
+		write(INFO, message);
 }
 
 void Logger::warn(const std::string & message) const
 {
-	isEnabled(WARN);
-	write(WARN, message);
+	if (isEnabled(WARN))
+		write(WARN, message);
 }
 
 void Logger::error(const std::string & message) const
 {
-	isEnabled(ERROR);
-	write(ERROR, message);
+	if (isEnabled(ERROR))
+		write(ERROR, message);
 }
 
 void Logger::fatal(const std::string & message) const
 {
-	isEnabled(FATAL);
-	write(FATAL, message);
+	if (isEnabled(FATAL))
+		write(FATAL, message);
 }
 
 bool Logger::isEnabled(LOGGING_LEVEL lvl) const
