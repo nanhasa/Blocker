@@ -11,7 +11,8 @@
 Temp/
 Game/Win32Debug/
 Game/Win32Release/
-Game/Data/Log/
+Game/Data/Log/**
+!logconfig.json
 
 # Test build results
 Test/Output/Win32Debug/
