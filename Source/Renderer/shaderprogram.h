@@ -9,6 +9,7 @@
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/glm.hpp>
+#include "Utility/logger.h"
 #pragma warning (pop)      // Restore back
 
 
@@ -155,7 +156,8 @@ public:
 	void setMat4(const std::string &name, const glm::mat4 &mat) const;
 
 private:
-	GLuint m_id; //!< Shader program ID
+	GLuint m_id;	//!< Shader program ID
+	Logger m_log;	//!< Logger
 
 	/**
 	 * \brief Loads shader file into shaderSource parameter string
@@ -175,5 +177,5 @@ private:
 	 * \pre object != 0
 	 * \return true if loading was successful, otherwise false
 	 */
-	static bool validateShaderObject(GLuint object, GLenum paramType);
+	bool validateShaderObject(GLuint object, GLenum paramType) const;
 };

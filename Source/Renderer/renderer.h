@@ -139,5 +139,7 @@ private:
 	glm::mat4 m_view;		//!< Matcice From world space to view space
 	glm::mat4 m_projection;	//!< Matrice From view space to clip space
 
+	Logger m_log;
+
 	std::function<void(float)> m_gameLogic; //!< Function object used to update game logic
 };

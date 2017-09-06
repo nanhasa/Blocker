@@ -10,7 +10,7 @@
 Renderer::Renderer()
 	: m_window(nullptr), m_shaderProgram(nullptr),
 	  m_VBO(0), m_VAO(0), m_EBO(0), m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-	  m_firstMouseMovement(true), m_mousexPos(0), m_mouseyPos(0) {}
+	  m_firstMouseMovement(true), m_mousexPos(0), m_mouseyPos(0), m_log("Renderer") {}
 
 Renderer::~Renderer()
 {
@@ -23,19 +23,14 @@ Renderer::~Renderer()
 bool Renderer::vInitialize(std::string&& windowName, int width, int height,
                            std::function<void(float)>&& gameLogic)
 {
-	REQUIRE(!windowName.empty());
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
-	if (windowName.empty()) {
-		std::cout << "Missing window name" << std::endl;
-		return false;
-	}
 	if (width < 0 || height < 0) {
-		std::cout << "Invalid screen size" << std::endl;
+		m_log.fatal("Invalid screen size");
 		return false;
 	}
 
-	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
+	m_log.info("Starting GLFW context, OpenGL 3.3");
 
 	m_gameLogic = gameLogic;
 
@@ -48,9 +43,9 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 
 	// Create a GLFWwindow object to for GLFW's functions
 	// TODO - read the size from config file
-	m_window = glfwCreateWindow(width, height, std::move(windowName.c_str()), nullptr, nullptr);
+	m_window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
 	if (m_window == nullptr) {
-		std::cerr << "\tFailed to create GLFW window" << std::endl;
+		m_log.fatal("Failed to create GLFW window");
 		return false;
 	}
 	glfwMakeContextCurrent(m_window);
@@ -58,7 +53,7 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	glewExperimental = GL_TRUE; // Uses more modern techniques for managing OpenGL functionality
 	if (glewInit() != GLEW_OK) {
 		// Initialize GLEW to setup the OpenGL Function pointers
-		std::cerr << "\tFailed to initialize GLEW" << std::endl;
+		m_log.fatal("Failed to initialize GLEW");
 		return false;
 	}
 	int frameBufferWidth = 0;
@@ -325,7 +320,7 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	ENSURE(m_shaderProgram != nullptr);
 	ENSURE(m_shaderProgram->validate());
 	ENSURE(m_window != nullptr);
-	std::cout << "\tOpenGL initialized succesfully" << std::endl;
+	m_log.info("OpenGL initialized succesfully");
 
 	return true;
 }
@@ -336,7 +331,7 @@ void Renderer::vStartMainLoop()
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
 	if (m_window == nullptr || m_shaderProgram == nullptr || !m_shaderProgram->validate()) {
-		std::cout << "OpenGL not properly initialized before calling vStartMainLoop" << std::endl;
+		m_log.error("OpenGL not properly initialized before calling vStartMainLoop");
 		return;
 	}
 
@@ -373,7 +368,7 @@ void Renderer::vStartMainLoop()
 		glm::vec3(-1.3f, 1.0f, -1.5f)
 	};
 
-	std::cout << "Started main loop" << std::endl;
+	m_log.info("Started main loop");
 	long previousTick = utility::timestampMs();
 	while (!glfwWindowShouldClose(m_window)) {
 		const long currentTick = utility::timestampMs();
@@ -416,15 +411,13 @@ void Renderer::vStartMainLoop()
 
 		previousTick = currentTick;
 	}
-
-	std::cout << "Leaving from main loop" << std::endl;
+	m_log.info("Leaving from main loop");
 }
 
 void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	REQUIRE(window != nullptr);
 	if (window == nullptr) {
-		std::cout << "window parameter invalid in staticKeyCallback" << std::endl;
 		return;
 	}
 
@@ -436,7 +429,7 @@ void Renderer::keyCallback(int key, int scancode, int action, int mode) const
 {
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
-		std::cout << "OpenGL not properly initialized before calling keyCallback" << std::endl;
+		m_log.error("OpenGL not properly initialized before calling keyCallback");
 		return;
 	}
 
@@ -472,7 +465,6 @@ void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	REQUIRE(window != nullptr);
 	if (window == nullptr) {
-		std::cout << "window parameter invalid in staticMouseCallback" << std::endl;
 		return;
 	}
 
@@ -501,11 +493,9 @@ void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int 
 	REQUIRE(width >= 0);
 	REQUIRE(height >= 0);
 	if (window == nullptr) {
-		std::cout << "window parameter invalid in staticFramebufferSizeCallback" << std::endl;
 		return;
 	}
 	if (width < 0 || height < 0) {
-		std::cout << "Invalid size " << std::endl;
 		return;
 	}
 
@@ -517,7 +507,7 @@ void Renderer::framebufferSizeCallback(int width, int height) const
 {
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
-		std::cout << "OpenGL not properly initialized before calling framebufferSizeCallback" << std::endl;
+		m_log.error("OpenGL not properly initialized before calling framebufferSizeCallback");
 		return;
 	}
 

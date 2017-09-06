@@ -3,6 +3,7 @@
 #include "Interfaces.h"
 
 #include <memory>
+#include "Utility/logger.h"
 
 
 // Without the pragma, the unsigned short fields are being padded to 4 bytes.
@@ -43,7 +44,7 @@ public:
 	/**
 	 * \brief Builder. Call loadFile afterwards to actually initialize.
 	 */
-	BMP();
+	explicit BMP(const Logger& log);
 
 	/**
 	 * \brief Destructor
@@ -62,7 +63,7 @@ public:
 	bool vLoadFile(std::ifstream& stream) override;
 
 	/**
-	 * \brief Get decoded image data in RGB format. Empties the data stored in this object.
+	 * \brief Get decoded image data in RGB format
 	 * \pre m_fileheader != nullptr
 	 * \pre m_infoheader != nullptr
 	 * \pre m_data != nullptr
@@ -88,4 +89,5 @@ private:
 	std::unique_ptr<BITMAPFILEHEADER> m_fileheader; //!< Pointer to file header object
 	std::unique_ptr<BITMAPINFOHEADER> m_infoheader; //!< Pointer to info header object
 	std::unique_ptr<uint8_t[]> m_data;				//!< Pointer to image payload BGR byte array
+	const Logger* const m_log;						//!< Pointer to texture logging, is not managed here
 };

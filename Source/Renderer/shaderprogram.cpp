@@ -10,7 +10,7 @@
 #include "Renderer/shaderprogram.h"
 #include "Utility/contract.h"
 
-ShaderProgram::ShaderProgram() { m_id = glCreateProgram(); }
+ShaderProgram::ShaderProgram() : m_id(glCreateProgram()), m_log("ShaderProgram") {}
 
 ShaderProgram::~ShaderProgram() { glDeleteProgram(m_id); }
 
@@ -19,10 +19,8 @@ GLuint ShaderProgram::getID() const { return m_id; }
 bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType) const
 {
 	REQUIRE(!filename.empty());
-	REQUIRE(shaderType != NULL);
 
-
-	std::cout << "\tStarted attaching shader" << std::endl;
+	m_log.info("Started attaching shader");
 
 	// Create shader
 	const GLuint shader = glCreateShader(shaderType);
@@ -39,17 +37,17 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 		glDeleteShader(shader);
 		return false;
 	}
-	std::cout << "\tShader compilation successful" << std::endl;
+	m_log.info("Shader compilation successful");
 
 	// Attach shader to shader program and delete shader afterwards
 	glAttachShader(m_id, shader);
 	glDeleteShader(shader);
 
-	std::cout << "\t" << filename + " successfully attached to shaderprogram " << m_id << std::endl;
+	m_log.info(filename + " successfully attached to shaderprogram " + toStr(m_id));
 
 	glLinkProgram(m_id);
 
-	// TODO Ensure that there is one more shader than at the beginning
+	// TODO: Ensure that there is one more shader than at the beginning
 
 	return validateShaderObject(m_id, GL_LINK_STATUS); // Validate program linking
 }
@@ -57,7 +55,7 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 bool ShaderProgram::validate() const
 {
 	if (!glIsProgram(m_id)) {
-		std::cout << "\tShader program not valid" << std::endl;
+		m_log.error("Shader program not valid");
 		return false;
 	}
 	return validateShaderObject(m_id, GL_LINK_STATUS);
@@ -69,7 +67,7 @@ void ShaderProgram::setBool(const std::string& name, bool value) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetBool" << std::endl;
+		m_log.error("Invalid name in SetBool");
 		return;
 	}
 
@@ -80,7 +78,7 @@ void ShaderProgram::setInt(const std::string& name, int value) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetInt" << std::endl;
+		m_log.error("Invalid name in SetInt");
 		return;
 	}
 
@@ -91,7 +89,7 @@ void ShaderProgram::setFloat(const std::string& name, float value) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetFloat" << std::endl;
+		m_log.error("Invalid name in SetFloat");
 		return;
 	}
 
@@ -102,7 +100,7 @@ void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) con
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetBool" << std::endl;
+		m_log.error("Invalid name in SetVec2");
 		return;
 	}
 
@@ -113,7 +111,7 @@ void ShaderProgram::setVec2(const std::string& name, float x, float y) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetVec2" << std::endl;
+		m_log.error("Invalid name in SetVec2");
 		return;
 	}
 
@@ -124,7 +122,7 @@ void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) con
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetVec3" << std::endl;
+		m_log.error("Invalid name in SetVec3");
 		return;
 	}
 
@@ -135,7 +133,7 @@ void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) 
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetVec3" << std::endl;
+		m_log.error("Invalid name in SetVec3");
 		return;
 	}
 
@@ -146,7 +144,7 @@ void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) con
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetVec4" << std::endl;
+		m_log.error("Invalid name in SetVec4");
 		return;
 	}
 
@@ -157,7 +155,7 @@ void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, 
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetVec4" << std::endl;
+		m_log.error("Invalid name in SetVec4");
 		return;
 	}
 
@@ -168,7 +166,7 @@ void ShaderProgram::setMat2(const std::string& name, const glm::mat2& mat) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetMat2" << std::endl;
+		m_log.error("Invalid name in SetMat2");
 		return;
 	}
 
@@ -179,7 +177,7 @@ void ShaderProgram::setMat3(const std::string& name, const glm::mat3& mat) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetMat3" << std::endl;
+		m_log.error("Invalid name in SetMat3");
 		return;
 	}
 
@@ -190,7 +188,7 @@ void ShaderProgram::setMat4(const std::string& name, const glm::mat4& mat) const
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "Invalid name in SetMat4" << std::endl;
+		m_log.error("Invalid name in SetMat4");
 		return;
 	}
 
@@ -201,18 +199,18 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 {
 	REQUIRE(!name.empty());
 	if (name.empty()) {
-		std::cerr << "\tInvalid name in loadShader" << std::endl;
+		m_log.error("Invalid name in loadShader");
 		return false;
 	}
 
-	std::cout << "\tLoading shader file: " << name << std::endl;
+	m_log.info("Loading shader file: " + name);
 
 	if (!shaderSource.empty())
 		shaderSource.clear();
 
-	std::ifstream file("../Data/Shaders/" + name);
+	std::ifstream file("../Data/Shaders/" + name); // TODO: load path from config
 	if (!file.is_open()) {
-		std::cerr << "\tCould not open shader: " + name << std::endl;
+		m_log.error("Could not open shader: " + name);
 		return false;
 	}
 
@@ -231,23 +229,23 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	ENSURE(shaderSource.size() + newLines == static_cast<unsigned int>(filesize));
 
 	if (shaderSource.empty()) {
-		std::cerr << "\tEmpty shader file: " + name << std::endl;
+		m_log.error("Empty shader file : " + name);
 		return false;
 	}
 	if (shaderSource.size() + newLines != static_cast<unsigned int>(filesize)) {
-		std::cerr << "\tShader loaded does not match shader file: " + name << std::endl;
+		m_log.error("Shader loaded does not match shader file: " + name);
 		return false;
 	}
-	std::cout << "\tShader file loaded successfully" << std::endl;
+	m_log.info("Shader file loaded successfully");
 
 	return true;
 }
 
-bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType)
+bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType) const
 {
 	REQUIRE(object != 0);
 	if (object == 0) {
-		std::cerr << "\tObject not valid" << std::endl;
+		m_log.error("Shader object not valid");
 		return false;
 	}
 
@@ -257,18 +255,17 @@ bool ShaderProgram::validateShaderObject(GLuint object, GLenum paramType)
 		glGetShaderiv(object, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(object, 1024, NULL, infoLog);
-			std::cout << "SHADER_COMPILATION_ERROR: \n\t" << infoLog << std::endl;
+			m_log.error("SHADER_COMPILATION_ERROR: " + std::string(infoLog));
 			return false;
 		}
 		return true;
 	}
-	else {
-		glGetProgramiv(object, GL_LINK_STATUS, &success);
-		if (!success) {
-			glGetProgramInfoLog(object, 1024, NULL, infoLog);
-			std::cout << "ERROR::PROGRAM_LINKING_ERROR: \n\t" << infoLog << std::endl;
-			return false;
-		}
-		return true;
+
+	glGetProgramiv(object, GL_LINK_STATUS, &success);
+	if (!success) {
+		glGetProgramInfoLog(object, 1024, NULL, infoLog);
+		m_log.error("ERROR::PROGRAM_LINKING_ERROR: " + std::string(infoLog));
+		return false;
 	}
+	return true;
 }

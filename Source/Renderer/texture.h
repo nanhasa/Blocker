@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 
+#include "interfaces.h"
+
 // Namespace to group image loading functionality
 namespace texture {
 
@@ -18,6 +20,8 @@ namespace texture {
 		 * \param height Image height in pixels
 		 */
 		Image(std::unique_ptr<uint8_t[]> data, int width, int height);
+
+		Image(std::unique_ptr<IImageType> imagetype);
 
 		/**
 		 * \brief Destructor

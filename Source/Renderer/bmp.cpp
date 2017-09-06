@@ -5,21 +5,15 @@
 #include "Renderer/texture.h"
 #include "Utility/contract.h"
 
-BMP::BMP()
-{
-	m_data = nullptr;
-	m_fileheader = nullptr;
-	m_infoheader = nullptr;
-}
+BMP::BMP(const Logger& log) : m_fileheader(nullptr), m_infoheader(nullptr), m_data(nullptr), m_log(&log) {}
 
 BMP::~BMP() {}
 
 bool BMP::vLoadFile(std::ifstream& stream)
 {
 	REQUIRE(stream.is_open());
-
 	if (!stream.is_open()) {
-		std::cout << "\tCould not read BMP File, because stream provided is not open" << std::endl;
+		m_log->error("Could not read BMP File, because stream provided is not open");
 		return false;
 	}
 
@@ -28,8 +22,8 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	const auto size = texture::getFileSize(stream);
 	if (size < 54) {
 		// Offset of BMP file
-		std::cerr << "\tCannot read file, because file is smaller than BMP header size (54B): "
-			<< size << "B" << std::endl;
+		m_log->error("Cannot read file, because file is smaller than BMP header size (54B): " + toStr(size) + "B");
+		return false;
 	}
 
 	// Allocate byte memory that will hold the two headers
@@ -37,16 +31,16 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	auto info = std::make_unique<uint8_t[]>(sizeof(BITMAPINFOHEADER));
 
 	// Read file into header buffers
-	stream.read((char*)header.get(), sizeof(BITMAPFILEHEADER));
-	stream.read((char*)info.get(), sizeof(BITMAPINFOHEADER));
+	stream.read(reinterpret_cast<char*>(header.get()), sizeof(BITMAPFILEHEADER));
+	stream.read(reinterpret_cast<char*>(info.get()), sizeof(BITMAPINFOHEADER));
 
 	// Construct headers
-	m_fileheader = std::unique_ptr<BITMAPFILEHEADER>((BITMAPFILEHEADER*)header.release());
-	m_infoheader = std::unique_ptr<BITMAPINFOHEADER>((BITMAPINFOHEADER*)info.release());
+	m_fileheader = std::unique_ptr<BITMAPFILEHEADER>(reinterpret_cast<BITMAPFILEHEADER*>(header.release()));
+	m_infoheader = std::unique_ptr<BITMAPINFOHEADER>(reinterpret_cast<BITMAPINFOHEADER*>(info.release()));
 
 	// Check if the file is a BMP file
 	if (m_fileheader->bfType != BF_TYPE_MB) {
-		std::cerr << "\tFile does not contain BMP file" << std::endl;
+		m_log->error("File does not contain BMP file");
 		m_fileheader = nullptr;
 		m_infoheader = nullptr;
 		return false;
@@ -54,7 +48,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 
 	// Check if file is 24 bits per pixel
 	if (m_infoheader->biBitCount != BIT_COUNT_24) {
-		std::cerr << "\tCannot read file, because only 24bit BMP files are supported" << std::endl;
+		m_log->error("Cannot read file, because only 24bit BMP files are supported");
 		m_fileheader = nullptr;
 		m_infoheader = nullptr;
 		return false;
@@ -64,7 +58,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	// If the size in header is zero, use calculated value based on offset to data and file size
 	unsigned int imageSize = m_infoheader->biSizeImage;
 	if (imageSize == 0) {
-		std::cerr << "\tWarning! File header does not show the size of the file" << std::endl;
+		m_log->warn("Warning! BMP file header does not show the size of the file");
 		imageSize = m_fileheader->bfSize - m_fileheader->bfOffBits;
 		m_infoheader->biSizeImage = imageSize;
 	}
@@ -76,12 +70,12 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	stream.seekg(m_fileheader->bfOffBits);
 
 	// Read image data
-	stream.read((char*)m_data.get(), imageSize);
+	stream.read(reinterpret_cast<char*>(m_data.get()), imageSize);
 
 	ENSURE(m_fileheader != nullptr);
 	ENSURE(m_infoheader != nullptr);
 	ENSURE(m_data != nullptr);
-	std::cout << "\tFile load was successful" << std::endl;
+	m_log->info("BMP file load was successful");
 
 	return true;
 }
@@ -93,7 +87,7 @@ std::unique_ptr<uint8_t[]> BMP::vDecode()
 	REQUIRE(m_data != nullptr);
 
 	if (m_fileheader == nullptr || m_infoheader == nullptr || m_data == nullptr) {
-		std::cerr << "\tImagetype not properly initialized before calling decode" << std::endl;
+		m_log->error("BMP not properly initialized before calling decode");
 		return nullptr;
 	}
 
@@ -102,18 +96,11 @@ std::unique_ptr<uint8_t[]> BMP::vDecode()
 	const unsigned int height = m_infoheader->biHeight;
 	const unsigned int imageSize = width * height * 3;
 
-	// Padding bytes count
-	const unsigned int pad = 4 - m_infoheader->biWidth % 4;
-	if (pad == 4) {
-		// No need to remove padding so optimize the decode from BGR to RGB
-		for (unsigned int i = 0; i < imageSize; i += 3) { std::swap(m_data[i], m_data[i + 2]); }
-		m_fileheader.reset();
-		m_infoheader.reset();
-		return std::move(m_data);
-	}
+	auto decode = std::make_unique<uint8_t[]>(imageSize); // Create pointer to copied data
+	unsigned int pad = 4 - m_infoheader->biWidth % 4; // Padding bytes count
+	if (pad == 4) pad = 0;
 
 	// Copy data
-	auto decode = std::make_unique<uint8_t[]>(imageSize);
 	for (unsigned int i = 0, row = 0, w = width * 3; row < height; ++row) {
 		for (unsigned int j = 0; j < w; j += 3 , i += 3) {
 			// 3 bytes per pixel
@@ -124,17 +111,14 @@ std::unique_ptr<uint8_t[]> BMP::vDecode()
 		}
 	}
 
-	m_fileheader.reset();
-	m_infoheader.reset();
 	return std::move(decode);
 }
 
 int BMP::vGetHeight() const
 {
 	REQUIRE(m_infoheader != nullptr);
-
 	if (m_infoheader == nullptr) {
-		std::cerr << "\tImagetype not properly initialized before calling getHeight" << std::endl;
+		m_log->error("BMP not properly initialized before calling getHeight");
 		return 0;
 	}
 
@@ -144,9 +128,8 @@ int BMP::vGetHeight() const
 int BMP::vGetWidth() const
 {
 	REQUIRE(m_infoheader != nullptr);
-
 	if (m_infoheader == nullptr) {
-		std::cerr << "\tImagetype not properly initialized before calling getWidth" << std::endl;
+		m_log->error("BMP not properly initialized before calling getWidth");
 		return 0;
 	}
 

@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "interfaces.h"
+#include "Utility/logger.h"
 
 class GameManager {
 public:
@@ -29,12 +30,7 @@ public:
 	 */
 	void onUpdate(float deltatime);
 
-	/**
-	 * \brief Function used to test event system delegates. Will be deleted soon.
-	 * \param eventData Pointer to the event data object
-	 */
-	void testDelegate(std::shared_ptr<IEvent> eventData);
-
 private:
 	std::unique_ptr<IRenderer> m_renderer; //!< Pointer to renderer component
+	Logger m_log;
 };
