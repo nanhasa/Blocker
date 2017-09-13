@@ -230,6 +230,8 @@ def divideIntoCodeBlocks(cleanedcppfile):
 
             if (blockBracketsOpen > 0 and blockBracketsOpen == blockBracketsClosed):
                 #One line block so do not set block as started
+                blockBracketsOpen = 0
+                blockBracketsClosed = 0
                 continue
 
             blockStarted = True
