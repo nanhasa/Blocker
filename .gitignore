@@ -31,10 +31,7 @@ Test/Source/3rdParty/**
 Libs/**/*.lib
 
 # Doxygen output
-Docs/HTML/
-
-#Scripts used in the project
-Scripts/
+Docs/html/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
