@@ -9,7 +9,7 @@ class GameManager {
 public:
 
 	/**
-	 * \brief Builder. Call start to start the game logic
+	 * \brief Constructor. Call start to start the game logic
 	 */
 	GameManager();
 
@@ -31,6 +31,6 @@ public:
 	void onUpdate(float deltatime);
 
 private:
-	std::unique_ptr<IRenderer> m_renderer; //!< Pointer to renderer component
-	Logger m_log;
+	std::unique_ptr<IRenderer> m_renderer;	//!< Pointer to renderer component
+	Logger m_log;							//!< Logger object used to write log entries
 };

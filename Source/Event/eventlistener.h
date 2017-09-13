@@ -10,7 +10,7 @@ class EventListener {
 public:
 
 	/**
-	 * \brief Builder. Creates valid event listener by getting ListenerId from event manager.
+	 * \brief Constructor. Creates valid event listener by getting ListenerId from event manager.
 	 */
 	EventListener();
 

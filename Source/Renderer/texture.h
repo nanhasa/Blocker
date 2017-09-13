@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <memory>
 #include <string>
 
@@ -14,14 +13,18 @@ namespace texture {
 	public:
 
 		/**
-		 * \brief Builder. Creates valid object
+		 * \brief Constructor. Creates valid object
 		 * \param data Image RGB byte array
 		 * \param width Image width in pixels
 		 * \param height Image height in pixels
 		 */
 		Image(std::unique_ptr<uint8_t[]> data, int width, int height);
 
-		Image(std::unique_ptr<IImageType> imagetype);
+		/**
+		 * \brief Constructor. Creates valid object
+		 * \param imagetype Pointer to initialized imagetype
+		 */
+		explicit Image(std::unique_ptr<IImageType> imagetype);
 
 		/**
 		 * \brief Destructor
@@ -42,17 +45,17 @@ namespace texture {
 
 		/**
 		 * \brief Get image RGB byte array data
-		 * \return
+		 * \return raw pointer to data. Does not pass ownership.
 		 */
 		uint8_t* getData() const;
 
 		/**
-		 * \brief Reverse image vertically
+		 * \brief Reverses image vertically
 		 */
 		void flipVertically();
 
 		/**
-		 * \brief Reverse image horizontally
+		 * \brief Reverses image horizontally
 		 */
 		void flipHorizontally();
 

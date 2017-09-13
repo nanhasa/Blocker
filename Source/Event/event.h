@@ -8,6 +8,7 @@ class Event : public IEvent {
 public:
 	virtual ~Event() {};
 
+	// Implemented by subclasses
 	EventType vGetEventType() const override = 0;
 
 	/**
@@ -16,6 +17,7 @@ public:
 	 */
 	long vGetCreateTime() const override final;
 
+	// Implemented by subclasses
 	std::string vGetEventName() const override = 0;
 
 protected:

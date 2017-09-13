@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cctype>
+#include <fstream>
 
 #include "Renderer/bmp.h"
 #include "Renderer/texture.h"

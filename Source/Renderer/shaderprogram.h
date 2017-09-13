@@ -37,14 +37,13 @@ public:
 	 * \param filename Name of the shader source file, default path is Game/Data/Shaders/
 	 * \param shaderType GLenum that identifies which type of shader is loaded
 	 * \pre !filename.empty()
-	 * \pre shaderType != NULL
 	 * \return true if everything was successful
 	 */
 	bool attachShader(const std::string& filename, GLenum shaderType) const;
 
 	/**
 	 * \brief Validates shader program linking and is it recognized by glfw
-	 * \return true if valid
+	 * \return true if valid, otherwise false
 	 */
 	bool validate() const;
 

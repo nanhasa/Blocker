@@ -42,7 +42,8 @@ class BMP : public IImageType {
 public:
 
 	/**
-	 * \brief Builder. Call loadFile afterwards to actually initialize.
+	 * \brief Constructor. Call loadFile afterwards to actually initialize.
+	 * \param log Initialized Logger used to write log entries
 	 */
 	explicit BMP(const Logger& log);
 

@@ -38,7 +38,6 @@ public:
 	 * \param width Width of window
 	 * \param height Height of window
 	 * \param gameLogic Callback function used to update game logic on every tick
-	 * \pre !windowName.empty()
 	 * \pre width >= 0
 	 * \pre height >= 0
 	 * \post m_shaderProgram != nullptr

@@ -23,7 +23,7 @@ using EventListenerVector = std::vector<std::tuple<ListenerId, std::function<voi
 // Allows objects to have only one delegate per event type
 class EventManager {
 public:
-	EventManager() = delete;
+	EventManager() = delete; // Constructore deleted because this class is fully static
 
 	/**
 	 * \brief Used to get listener ID when registering new listener. DO NOT EXPLICITLY CALL! EventListener class calls this in its builder. Thread safe
@@ -72,7 +72,7 @@ public:
 	/**
 	 * \brief Processes event queue until the queue is empty or the function has run out of time given to it. Thread safe
 	 * \param msToProcess Time in milliseconds to process queue
-	 * \pre timeToProcess >= 0.0f
+	 * \pre msToProcess >= 0
 	 */
 	static void onUpdate(int msToProcess);
 
