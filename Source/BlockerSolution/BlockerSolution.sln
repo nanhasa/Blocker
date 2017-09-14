@@ -1,11 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Blocker", "Blocker\Blocker.vcxproj", "{8732B38D-5B16-46A5-BC9A-A10B4D8A84C1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlockerTest", "..\..\Test\BlockerTest\BlockerTest.vcxproj", "{B2478BCF-3019-4ABD-93AD-E439EC4DA3E0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{A9E449D5-721E-4676-BA5D-A2A073FC3C79}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Batch", "Batch", "{B6478A51-252B-4B2C-8C55-BA46250A6E92}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat = ..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat
+		..\..\Scripts\BatchFiles\blocker_post_build_start_doxygen.bat = ..\..\Scripts\BatchFiles\blocker_post_build_start_doxygen.bat
+		..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat = ..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PyCppUtility", "PyCppUtility", "{5A7FC226-DB24-4448-821E-E485C9DC5B1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeCommenter", "CodeCommenter", "{4E146C7A-B9FD-4AB8-B359-90CA2C1DB9F3}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Scripts\PyCppUtility\CodeCommenter\codeCommenter.py = ..\..\Scripts\PyCppUtility\CodeCommenter\codeCommenter.py
+		..\..\Scripts\PyCppUtility\CodeCommenter\README.md = ..\..\Scripts\PyCppUtility\CodeCommenter\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObjDependencyUpdated", "ObjDependencyUpdated", "{DB641B70-4833-4EF2-B3E1-F9D5811247F6}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Scripts\PyCppUtility\ObjDependencyUpdater\dependencyUpdater.py = ..\..\Scripts\PyCppUtility\ObjDependencyUpdater\dependencyUpdater.py
+		..\..\Scripts\PyCppUtility\ObjDependencyUpdater\README.md = ..\..\Scripts\PyCppUtility\ObjDependencyUpdater\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +47,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B6478A51-252B-4B2C-8C55-BA46250A6E92} = {A9E449D5-721E-4676-BA5D-A2A073FC3C79}
+		{5A7FC226-DB24-4448-821E-E485C9DC5B1D} = {A9E449D5-721E-4676-BA5D-A2A073FC3C79}
+		{4E146C7A-B9FD-4AB8-B359-90CA2C1DB9F3} = {5A7FC226-DB24-4448-821E-E485C9DC5B1D}
+		{DB641B70-4833-4EF2-B3E1-F9D5811247F6} = {5A7FC226-DB24-4448-821E-E485C9DC5B1D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0DC0452A-4F61-4128-A295-DA418E1341F3}
 	EndGlobalSection
 EndGlobal

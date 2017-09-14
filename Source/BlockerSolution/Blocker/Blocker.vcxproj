@@ -228,6 +228,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
   <ItemGroup>
     <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag" />
     <None Include="..\..\..\Game\Data\Shaders\vertex_basic.vert" />
+    <None Include="..\..\..\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
