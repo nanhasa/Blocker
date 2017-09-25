@@ -71,7 +71,7 @@ Logger::Logger(const std::string & name) : m_enabledLogLevels(), m_logName(name)
 			if (str == "DEBUG") m_enabledLogLevels.emplace_back(DEBUG);
 			else if (str == "INFO") m_enabledLogLevels.emplace_back(INFO);
 			else if (str == "WARN") m_enabledLogLevels.emplace_back(WARN);
-			else if (str == "ERROR") m_enabledLogLevels.emplace_back(ERROR);
+			else if (str == "ERROR") m_enabledLogLevels.emplace_back(ERR);
 			else if (str == "FATAL") m_enabledLogLevels.emplace_back(FATAL);
 		}
 
@@ -114,8 +114,8 @@ void Logger::warn(const std::string & message) const
 
 void Logger::error(const std::string & message) const
 {
-	if (isEnabled(ERROR))
-		write(ERROR, message);
+	if (isEnabled(ERR))
+		write(ERR, message);
 }
 
 void Logger::fatal(const std::string & message) const

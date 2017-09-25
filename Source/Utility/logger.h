@@ -53,7 +53,7 @@ public:
 	void fatal(const std::string& message) const;
 
 private:
-	enum LOGGING_LEVEL {DEBUG, INFO, WARN, ERROR, FATAL};
+	enum LOGGING_LEVEL {DEBUG, INFO, WARN, ERR, FATAL};
 	std::vector<LOGGING_LEVEL> m_enabledLogLevels;
 	std::string m_logName;
 	std::string m_filename;
