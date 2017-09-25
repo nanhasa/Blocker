@@ -17,3 +17,28 @@ Contents:
 - Source: 	Holds source files and includes used in this game   
 - Temp: 	Holds all the intermediate files used in building the game   
 - Test: 	Holds everything that concerns testing the game   
+   
+   
+   
+How to build:   
+install python, make sure it is in path (https://www.python.org/downloads/)    
+install doxygen, make sure it is in path (https://sourceforge.net/projects/doxygen/)    
+    
+Build dependencies     
+- release build multi-threaded dll, debug multi-threaded debug dll     
+- only win32 target    
+- Place .lib files to Libs/x86/[Debug|Release]/    
+    
+Following above instruction build    
+- glew 2.1.0 (http://glew.sourceforge.net/)      
+- glfw 3.2.1 (http://www.glfw.org/)    
+- glm 0.9.8.4 (https://glm.g-truc.net/0.9.8/index.html)    
+- googletest (https://github.com/google/googletest)     
+     
+Add main project dependency include files to Source/3rdParty/x/     
+- glew (GL)    
+- glfw (GLFW)    
+- glm (glm)     
+- rapidjson (rapidjson)    
+Add test project dependency include files to Test/Source/3rdParty/x/   
+- googletest (gtest)       
