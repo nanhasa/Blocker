@@ -1,38 +1,18 @@
-#include <iostream>
+#include "Renderer/camera.h"
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
 #pragma warning (pop)      // Restore back
 
-#include "Renderer/camera.h"
 #include "Utility/contract.h"
 
-Camera::Camera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ)
-	: m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)), m_zoom(1.0f), m_minZoom(2.0f),
-	  m_maxZoom(30.0f), m_mouseSensitivity(0.1f)
+Camera::Camera(Transform transform)
+	: transform(transform), m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f))
 {
-	m_position = glm::vec3(posX, posY, posZ);
-	m_cameraFront = glm::normalize(glm::vec3(targetX, targetY, targetZ));
-	const glm::vec3 directionToCamera = glm::normalize(m_position - m_cameraFront);
+	calculateCameraFront();
+	const glm::vec3 directionToCamera = glm::normalize(transform.position - m_cameraFront);
 	m_cameraRight = glm::normalize(glm::cross(m_worldUp, directionToCamera));
 	m_cameraUp = glm::cross(directionToCamera, m_cameraRight);
-
-	m_pitch = 0.0f;
-	m_yaw = -90.0f;
-
-	m_dirtyFlag = true;
-}
-
-Camera::Camera(glm::vec3 position, glm::vec3 target)
-	: m_position(position), m_cameraFront(glm::normalize(target)), m_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-	  m_zoom(1.0f), m_minZoom(2.0f), m_maxZoom(30.0f), m_mouseSensitivity(0.1f)
-{
-	const glm::vec3 directionToCamera = glm::normalize(m_position - m_cameraFront);
-	m_cameraRight = glm::normalize(glm::cross(m_worldUp, directionToCamera));
-	m_cameraUp = glm::cross(directionToCamera, m_cameraRight);
-
-	m_pitch = 0.0f;
-	m_yaw = -90.0f;
 
 	m_dirtyFlag = true;
 }
@@ -44,7 +24,7 @@ glm::mat4 Camera::getViewMatrix()
 	if (m_dirtyFlag)
 		updateVectors();
 
-	return glm::lookAt(m_position, m_position + m_cameraFront, m_worldUp);
+	return glm::lookAt(transform.position, transform.position + m_cameraFront, m_worldUp);
 }
 
 glm::vec3 Camera::getCameraFront()
@@ -55,55 +35,35 @@ glm::vec3 Camera::getCameraFront()
 	return m_cameraFront;
 }
 
-void Camera::updatePosition(glm::vec3 position)
+glm::vec3 Camera::getCameraRight()
 {
-	if (m_position == position)
-		return;
+	if (m_dirtyFlag)
+		updateVectors();
 
-	m_position = position;
-	m_dirtyFlag = true;
+	return m_cameraRight;
 }
 
-void Camera::processMouseMovement(double xOffset, double yOffset)
+glm::vec3 Camera::getCameraUp()
 {
-	xOffset *= m_mouseSensitivity;
-	yOffset *= m_mouseSensitivity;
+	if (m_dirtyFlag)
+		updateVectors();
 
-	const double yaw = m_yaw;
-	const double pitch = m_pitch;
-
-	m_yaw += xOffset;
-	m_pitch += yOffset;
-
-	// Limit pitch value
-	if (m_pitch > 89.0f)
-		m_pitch = 89.0f;
-	if (m_pitch < -89.0f)
-		m_pitch = -89.0f;
-
-	//Check if it is necessary to update dirtyFlag
-	if (yaw == m_yaw && pitch == m_pitch)
-		return;
-
-	m_dirtyFlag = true;
+	return m_cameraUp;
 }
 
-void Camera::processScroll(float scrollOffset)
+void Camera::updateTransform(const Transform& transf)
 {
-	m_zoom -= scrollOffset;
-	if (m_zoom > m_maxZoom)
-		m_zoom = m_maxZoom;
-	if (m_zoom < m_minZoom)
-		m_zoom = m_minZoom;
+	if (transform.position == transf.position && transform.rotation == transf.rotation)
+		return;
+
+	transform = transf;
+	m_dirtyFlag = true;
 }
 
 void Camera::updateVectors()
 {
-	// Calculate the new m_cameraFront vector
-	m_cameraFront.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-	m_cameraFront.y = static_cast<float>(sin(glm::radians(m_pitch)));
-	m_cameraFront.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-	m_cameraFront = glm::normalize(m_cameraFront);
+	// Calculate new camera front direction
+	calculateCameraFront();
 
 	// Also re-calculate the cameraRight and cameraUp vectors
 	// Normalize the vectors, because their length gets closer to 0 
@@ -114,4 +74,14 @@ void Camera::updateVectors()
 	m_dirtyFlag = false;
 
 	ENSURE(!m_dirtyFlag);
+}
+
+void Camera::calculateCameraFront()
+{
+	m_cameraFront.x = static_cast<float>(cos(glm::radians(transform.rotation.y)) * cos(glm::radians(transform.rotation.x)));
+	m_cameraFront.y = static_cast<float>(sin(glm::radians(transform.rotation.x)));
+	m_cameraFront.z = static_cast<float>(sin(glm::radians(transform.rotation.y)) * cos(glm::radians(transform.rotation.x)));
+	m_cameraFront = glm::normalize(m_cameraFront);
+
+	m_dirtyFlag = true;
 }

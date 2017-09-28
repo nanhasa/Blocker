@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 //GLEW must be included before GLFW
 #define GLEW_STATIC
@@ -12,11 +13,9 @@
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/glm.hpp>
-#include <3rdParty/glm/gtc/matrix_transform.hpp>
 #pragma warning (pop)      // Restore back
 
 #include "interfaces.h"
-#include "Renderer/camera.h"
 #include "Renderer/shaderprogram.h"
 
 class Renderer : public IRenderer {
@@ -75,27 +74,15 @@ public:
 	 * \param mode Mode of key input
 	 * \pre m_window != nullptr
 	 */
-	void keyCallback(int key, int scancode, int action, int mode) const;
+	void keyCallback(int key, int scancode, int action, int mode);
+
+	//static void staticMouseCallback(GLFWwindow* window, double xpos, double ypos);
+
+	//void mouseCallback(double xpos, double ypos);
 
 	/**
 	 * \brief Callback for mouse events and movement
 	 * \param window Window that received input
-	 * \param xpos Current mouse position on x-axis
-	 * \param ypos Current mouse position on y-axis
-	 * \pre window != nullptr
-	 */
-	static void staticMouseCallback(GLFWwindow* window, double xpos, double ypos);
-
-	/**
-	 * \brief Member mouse input function called by staticMouseCallback
-	 * \param xpos Current mouse position on x-axis
-	 * \param ypos Current mouse position on y-axis
-	 */
-	void mouseCallback(double xpos, double ypos);
-
-	/**
-	 * \brief Callback to adjust frame buffer size
-	 * \param window Window that was resized
 	 * \param width New frame buffer width
 	 * \param height New frame buffer height
 	 * \pre window != nullptr
@@ -115,10 +102,25 @@ public:
 	void framebufferSizeCallback(int width, int height) const;
 
 	/**
-	 * \brief Used to access the direction the camera is facing (This function will probably be removed once player class is implemented)
-	 * \return Normalized glm::Vec3 pointing where camera is looking at
+	 * \brief vSetViewMatrice
+	 * \param viewMatrix
 	 */
-	glm::vec3 vGetCameraFront() override;
+	void vSetViewMatrix(const glm::mat4& viewMatrix) override;
+
+	/**
+	 * \brief vGetMouseOffset
+	 * \pre m_window
+	 * \return
+	 */
+	std::tuple<double, double> vGetMousePosition() override;
+
+	/**
+	 * \brief vGetKeyInput
+	 * \param key
+	 * \pre m_window
+	 * \return
+	 */
+	bool vKeyPressed(int key) override;
 
 private:
 	GLFWwindow* m_window; //!< Pointer to GLFW window object
@@ -128,11 +130,6 @@ private:
 	GLuint m_VBO; //!< vertex buffer object
 	GLuint m_VAO; //!< vertex array object
 	GLuint m_EBO; //!< vertex element object
-
-	Camera m_camera;					//!< Main camera
-	bool m_firstMouseMovement = true;	//!< Used to avoid glitches when starting the game
-	double m_mousexPos;					//!< Last recorded mouse position on x-axis
-	double m_mouseyPos;					//!< Last recorded mouse position on y-axis
 
 	glm::mat4 m_model;		//!< Matrice From local space to world space
 	glm::mat4 m_view;		//!< Matcice From world space to view space

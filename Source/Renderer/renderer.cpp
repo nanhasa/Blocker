@@ -1,16 +1,18 @@
-#include <iostream>
+#include "Renderer/renderer.h"
+
+#pragma warning (push, 2)  // Temporarily set warning level 2
+#include <3rdParty/glm/gtc/matrix_transform.hpp>
+#pragma warning (pop)      // Restore back
 
 #include "Event/eventmanager.h"
 #include "Event/inputcommandevent.h"
-#include "Renderer/renderer.h"
 #include "Renderer/texture.h"
 #include "Utility/contract.h"
 #include "Utility/utility.h"
 
 Renderer::Renderer()
 	: m_window(nullptr), m_shaderProgram(nullptr),
-	  m_VBO(0), m_VAO(0), m_EBO(0), m_camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-	  m_firstMouseMovement(true), m_mousexPos(0), m_mouseyPos(0), m_log("Renderer") {}
+	m_VBO(0), m_VAO(0), m_EBO(0), m_log("Renderer") {}
 
 Renderer::~Renderer()
 {
@@ -64,7 +66,7 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	// Set callback functions to static functions
 	glfwSetFramebufferSizeCallback(m_window, Renderer::staticFramebufferSizeCallback); // Resize
 	glfwSetKeyCallback(m_window, Renderer::staticKeyCallback); // Key
-	glfwSetCursorPosCallback(m_window, Renderer::staticMouseCallback); // Mouse 
+
 	// Cannot bind member functions to callbacks so bind window with pointer to this
 	// With this we can call member functions from static callback functions
 	glfwSetWindowUserPointer(m_window, this);
@@ -307,7 +309,6 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 
 	// Initialize member matrices
 	m_model = glm::rotate(glm::mat4(), glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	m_view = glm::translate(glm::mat4(), glm::vec3(0.0f, 0.0f, -3.0f));
 	// Translate scene in the reverse direction of where we want to move
 	m_projection = glm::perspective(glm::radians(45.0f),
 	                                static_cast<float>(width / height), 0.1f, 100.0f);
@@ -369,14 +370,14 @@ void Renderer::vStartMainLoop()
 	};
 
 	m_log.info("Started main loop");
-	long previousTick = utility::timestampMs();
+	int previousTick = utility::timestampMs();
 	while (!glfwWindowShouldClose(m_window)) {
-		const long currentTick = utility::timestampMs();
-		const float deltaTime = static_cast<float>((currentTick - previousTick) / 1000);
+		const int currentTick = utility::timestampMs();
+		float const deltatime = static_cast<float>(currentTick - previousTick) / 1000;
 
 		glfwPollEvents();
 
-		m_gameLogic(deltaTime);
+		m_gameLogic(deltatime);
 
 		// Clear depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -390,7 +391,6 @@ void Renderer::vStartMainLoop()
 		m_shaderProgram->use();
 
 		// Set uniforms
-		m_view = m_camera.getViewMatrix();
 		m_shaderProgram->setMat4("view", m_view);
 		m_shaderProgram->setMat4("projection", m_projection);
 
@@ -398,11 +398,7 @@ void Renderer::vStartMainLoop()
 		glBindVertexArray(m_VAO);
 		for (const auto cube : cubePositions) {
 			m_model = glm::translate(glm::mat4(), cube);
-			const float angle = 20.0f * static_cast<float>(glfwGetTime());
-			m_model = glm::rotate(m_model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-
 			m_shaderProgram->setMat4("model", m_model);
-
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
@@ -425,7 +421,7 @@ void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int 
 	r->keyCallback(key, scancode, action, mode);
 }
 
-void Renderer::keyCallback(int key, int scancode, int action, int mode) const
+void Renderer::keyCallback(int key, int scancode, int action, int mode)
 {
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
@@ -437,6 +433,7 @@ void Renderer::keyCallback(int key, int scancode, int action, int mode) const
 	(void)mode;
 	(void)scancode;
 
+	// Handle general input
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		glfwSetWindowShouldClose(m_window, GL_TRUE); // Close window on ESC
 		return;
@@ -450,42 +447,48 @@ void Renderer::keyCallback(int key, int scancode, int action, int mode) const
 		return;
 	}
 
-	// Handle events
-	std::shared_ptr<IEvent> evt = nullptr;
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("W"); }
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("A"); }
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("S"); }
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) { evt = std::make_shared<InputCommandEvent>("D"); }
-
-	if (evt)
-		EventManager::triggerEvent(evt);
+	//// Handle gameplay input
+	//if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("W");
+	//if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("A");
+	//if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("S");
+	//if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("D");
+	//
+	////Handle additional gameplay input
+	//if (key == GLFW_KEY_LEFT_SHIFT && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("LEFT_SHIFT");
+	//if (key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("LEFT_CTRL");
+	//if (key == GLFW_KEY_LEFT_ALT && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
+	//	m_keyInput.emplace_back("LEFT_ALT");
 }
 
-void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos)
-{
-	REQUIRE(window != nullptr);
-	if (window == nullptr) {
-		return;
-	}
-
-	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
-	r->mouseCallback(xpos, ypos);
-}
-
-void Renderer::mouseCallback(double xpos, double ypos)
-{
-	if (m_firstMouseMovement) {
-		m_mousexPos = xpos;
-		m_mouseyPos = ypos;
-		m_firstMouseMovement = false;
-	}
-	const double xoffset = xpos - m_mousexPos;
-	const double yoffset = m_mouseyPos - ypos; // Reversed since y-coordinates go from bottom to up
-	m_mousexPos = xpos;
-	m_mouseyPos = ypos;
-
-	m_camera.processMouseMovement(xoffset, yoffset);
-}
+//void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos)
+//{
+//	REQUIRE(window != nullptr);
+//	if (window == nullptr) {
+//		return;
+//	}
+//
+//	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
+//	r->mouseCallback(xpos, ypos);
+//}
+//
+//void Renderer::mouseCallback(double xpos, double ypos)
+//{
+//	if (m_firstMouseMovement) {
+//		m_mousexPos = xpos;
+//		m_mouseyPos = ypos;
+//		m_firstMouseMovement = false;
+//	}
+//	m_mousexOffset = xpos - m_mousexPos;
+//	m_mouseyOffset = m_mouseyPos - ypos; // Reversed since y-coordinates go from bottom to up
+//	m_mousexPos = xpos;
+//	m_mouseyPos = ypos;
+//}
 
 void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -520,4 +523,31 @@ void Renderer::framebufferSizeCallback(int width, int height) const
 	ENSURE(framebufferHeight == height);
 }
 
-glm::vec3 Renderer::vGetCameraFront() { return m_camera.getCameraFront(); }
+void Renderer::vSetViewMatrix(const glm::mat4& viewMatrix)
+{
+	m_view = viewMatrix;
+}
+
+std::tuple<double, double> Renderer::vGetMousePosition()
+{
+	REQUIRE(m_window);
+	if (!m_window) {
+		m_log.error("OpenGL not properly initialized before calling vGetMousePosition");
+		return {-1, -1};
+	}
+	double xpos = 0;
+	double ypos = 0;
+	glfwGetCursorPos(m_window, &xpos, &ypos);
+	return {xpos, ypos};
+}
+
+bool Renderer::vKeyPressed(int key)
+{
+	REQUIRE(m_window);
+	if (!m_window) {
+		m_log.error("OpenGL not properly initialized before calling vGetKeyState");
+		return false;
+	}
+
+	return glfwGetKey(m_window, key) == GLFW_PRESS;
+}

@@ -4,32 +4,23 @@
 #include <3rdParty/glm/glm.hpp>
 #pragma warning (pop)      // Restore back
 
+#include "Actor/transform.h"
 
 class Camera {
 public:
 
 	/**
-	 * \brief Builder. Creates valid camera object
-	 * \param posX Start position on x-axis
-	 * \param posY Start position on y-axis
-	 * \param posZ Start position on z-axis
-	 * \param targetX Start position where camera looks at on x-axis
-	 * \param targetY Start position where camera looks at on y-axis
-	 * \param targetZ Start position where camera looks at on z-axis
+	 * \brief Camera
+	 * \param transform
 	 */
-	Camera(float posX, float posY, float posZ, float targetX, float targetY, float targetZ);
-
-	/**
-	 * \brief Builder. Creates valid camera object
-	 * \param position Start position
-	 * \param target Start position where camera looks at
-	 */
-	Camera(glm::vec3 position, glm::vec3 target);
+	Camera(Transform transform);
 
 	/**
 	 * \brief Desctructor
 	 */
 	~Camera();
+
+	Transform transform;
 
 	// Prevent copy and assignment
 	Camera(const Camera&) = delete;
@@ -48,44 +39,39 @@ public:
 	glm::vec3 getCameraFront();
 
 	/**
+	 * \brief getCameraRight
+	 * \return
+	 */
+	glm::vec3 getCameraRight();
+
+	/**
+	 * \brief getCameraUp
+	 * \return
+	 */
+	glm::vec3 getCameraUp();
+
+	/**
 	 * \brief Updates camera's position
-	 * \param position
+	 * \param transf
 	 */
-	void updatePosition(glm::vec3 position);
-
-	/**
-	 * \brief Updates m_pitch and m_yaw based on mouse movement offset
-	 * \param xOffset The amount mouse moved on x-axis since last update
-	 * \param yOffset The amount mouse moved on y-axis since last update
-	 */
-	void processMouseMovement(double xOffset, double yOffset);
-
-	/**
-	 * \brief Used to zoom in and out
-	 * \param scrollOffset
-	 */
-	void processScroll(float scrollOffset);
+	void updateTransform(const Transform& transf);
 
 private:
-	glm::vec3 m_position;		//!< Camera position
 	glm::vec3 m_cameraUp;		//!< Normalized vector of camera's up direction
 	glm::vec3 m_cameraRight;	//!< Normalized vector of camera's right direction
 	glm::vec3 m_cameraFront;	//!< Normalized vector of where camera is looking at
 	const glm::vec3 m_worldUp;	//!< Normalized constant vector pointing up in world coordinates
 
-	double m_pitch;	//!< Current rotation on x-axis
-	double m_yaw;	//!< Current rotation on y-axis
-	float m_zoom;	//!< Current zoom value
-
 	bool m_dirtyFlag; //!< Vectors need updating if true
-
-	const float m_minZoom;			//!< Limit on minimum zoom
-	const float m_maxZoom;			//!< Limit on maximum zoom
-	const float m_mouseSensitivity;	//!< Multiplier used to make camera movement more or less sensitive
 
 	/**
 	 * \brief Used to update camera vectors. Sets m_dirtyflag to false
 	 * \post !m_dirtyFlag
 	 */
 	void updateVectors();
+
+	/**
+	 * \brief calculateCameraFront
+	 */
+	void calculateCameraFront();
 };
