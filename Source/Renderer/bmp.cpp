@@ -1,7 +1,7 @@
-#include <fstream>
-#include <iostream>
-
 #include "Renderer/bmp.h"
+
+#include <fstream>
+
 #include "Renderer/texture.h"
 #include "Utility/contract.h"
 
