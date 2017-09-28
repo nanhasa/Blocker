@@ -3,6 +3,8 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <tuple>
+#include <vector>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/glm.hpp>
@@ -15,7 +17,9 @@ public:
 	virtual bool vInitialize(std::string&& windowName, int width, int height, 
 		std::function<void(float)>&& gameLogic) = 0;
 	virtual void vStartMainLoop() = 0;
-	virtual glm::vec3 vGetCameraFront() = 0;
+	virtual void vSetViewMatrix(const glm::mat4& viewMatrix) = 0;
+	virtual std::tuple<double, double> vGetMousePosition() = 0;
+	virtual bool vKeyPressed(int key) = 0;
 };
 
 class IImageType {
