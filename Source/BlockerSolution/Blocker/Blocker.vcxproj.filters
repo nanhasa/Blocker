@@ -46,6 +46,18 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{73d0978c-6c86-4e4f-8249-7e9fe42f0f9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Actor">
+      <UniqueIdentifier>{730433a5-f347-470b-a4a0-21e3acfd7d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Actor">
+      <UniqueIdentifier>{43fb458b-af87-4f78-aeed-db8f15d31ee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Actor\Component">
+      <UniqueIdentifier>{5dd40a89-1c1a-41e3-b64c-2838d67b6cf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Actor\Component">
+      <UniqueIdentifier>{0e7cb19a-6dd9-4c1b-92a6-f42306550b45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\main.cpp">
@@ -93,6 +105,15 @@
     <ClCompile Include="..\..\Utility\logger.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Actor\player.cpp">
+      <Filter>Source Files\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Actor\transform.cpp">
+      <Filter>Source Files\Actor\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Actor\inputmanager.cpp">
+      <Filter>Source Files\Actor\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\interfaces.h">
@@ -134,11 +155,20 @@
     <ClInclude Include="..\..\Utility\contract.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Utility\logger.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Actor\player.h">
+      <Filter>Header Files\Actor</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Utility\utility.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Utility\logger.h">
-      <Filter>Header Files\Utility</Filter>
+    <ClInclude Include="..\..\Actor\transform.h">
+      <Filter>Header Files\Actor\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Actor\inputmanager.h">
+      <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

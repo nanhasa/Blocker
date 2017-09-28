@@ -192,6 +192,9 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Actor\inputmanager.cpp" />
+    <ClCompile Include="..\..\Actor\player.cpp" />
+    <ClCompile Include="..\..\Actor\transform.cpp" />
     <ClCompile Include="..\..\Event\event.cpp" />
     <ClCompile Include="..\..\Event\eventlistener.cpp" />
     <ClCompile Include="..\..\Event\eventmanager.cpp" />
@@ -209,6 +212,9 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClCompile Include="..\..\Utility\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Actor\inputmanager.h" />
+    <ClInclude Include="..\..\Actor\player.h" />
+    <ClInclude Include="..\..\Actor\transform.h" />
     <ClInclude Include="..\..\Event\event.h" />
     <ClInclude Include="..\..\Event\eventlistener.h" />
     <ClInclude Include="..\..\Event\eventmanager.h" />
