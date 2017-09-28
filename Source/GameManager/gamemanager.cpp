@@ -1,13 +1,10 @@
-#include <functional>
-#include <iostream>
-
-#pragma warning (push, 2)  // Temporarily set warning level 2
-#pragma warning (pop)      // Restore back
-
 #include "GameManager/gamemanager.h"
+
+#include <functional>
+
 #include "Renderer/renderer.h"
 
-GameManager::GameManager(): m_log("GameManager") {}
+GameManager::GameManager(): m_player(Transform(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)), m_log("GameManager") {}
 
 GameManager::~GameManager() {}
 
@@ -25,7 +22,6 @@ bool GameManager::start()
 
 void GameManager::onUpdate(float deltatime)
 {
-	(void)deltatime;
-	//auto camera = m_renderer->vGetCameraFront();
-	//std::cout << "delta: " << deltatime << " Camera front: " << camera.x << "f " << camera.y << "f " << camera.z << "f" << std::endl;
+	//m_player.processInput(m_renderer->vGetMouseOffset(), m_renderer->vGetKeyInput());
+	m_player.onUpdate(*m_renderer.get(), deltatime);
 }

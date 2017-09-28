@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "Actor/player.h"
 #include "interfaces.h"
 #include "Utility/logger.h"
 
@@ -32,5 +33,6 @@ public:
 
 private:
 	std::unique_ptr<IRenderer> m_renderer;	//!< Pointer to renderer component
+	Player m_player;
 	Logger m_log;							//!< Logger object used to write log entries
 };
