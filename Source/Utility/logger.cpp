@@ -1,3 +1,5 @@
+#include "Utility/logger.h"
+
 #include <algorithm>
 #include <vector>
 #include <chrono>
@@ -9,7 +11,6 @@
 #include <3rdParty/rapidjson/istreamwrapper.h>
 
 #include "Utility/contract.h"
-#include "Utility/logger.h"
 
 
 Logger::Logger(const std::string & name) : m_enabledLogLevels(), m_logName(name), m_filename(""), m_configFilename("logconfig.json")

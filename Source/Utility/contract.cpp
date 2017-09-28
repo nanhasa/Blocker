@@ -1,7 +1,8 @@
+#include "Utility/contract.h"
+
 #include <cstdio>
 #include <cstdlib>
 
-#include "Utility/contract.h"
 #include "Utility/logger.h"
 
 void abortProgram(const char* file, const int line, const char* condition, const char* type)
