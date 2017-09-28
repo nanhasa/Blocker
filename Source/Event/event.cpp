@@ -1,4 +1,5 @@
 #include "Event/event.h"
+
 #include "Utility/utility.h"
 
 long Event::vGetCreateTime() const { return m_createTimestamp; }

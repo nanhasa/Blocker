@@ -1,6 +1,7 @@
+#include "Event/eventlistener.h"
+
 #include <algorithm>
 
-#include "Event/eventlistener.h"
 #include "Event/eventManager.h"
 
 EventListener::EventListener() : m_listenerId(EventManager::registerListener()) {}

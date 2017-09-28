@@ -1,7 +1,7 @@
-#include <algorithm>
-#include <iostream>
-
 #include "Event/eventmanager.h"
+
+#include <algorithm>
+
 #include "Utility/contract.h"
 #include "Utility/utility.h"
 
@@ -146,7 +146,7 @@ void EventManager::onUpdate(int msToProcess)
 	m_log.debug("Processing events from event queue");
 	// Process events from queue until queue is empty or all the time given to process is used
 	int elapsedMs = 0;
-	const long startTime = utility::timestampMs();
+	const int startTime = utility::timestampMs();
 	while (!m_eventQueue.empty() && elapsedMs < msToProcess) {
 		// Get first event from queue and trigger it
 		triggerEvent(m_eventQueue.front());
