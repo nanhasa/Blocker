@@ -1,5 +1,6 @@
+#include "Renderer/shaderprogram.h"
+
 #include <algorithm>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 
@@ -7,7 +8,6 @@
 #include <3rdParty/glm/gtc/type_ptr.hpp>
 #pragma warning (pop)      // Restore back
 
-#include "Renderer/shaderprogram.h"
 #include "Utility/contract.h"
 
 ShaderProgram::ShaderProgram() : m_id(glCreateProgram()), m_log("ShaderProgram") {}

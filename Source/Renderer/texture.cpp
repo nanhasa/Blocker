@@ -1,9 +1,10 @@
+#include "Renderer/texture.h"
+
 #include <algorithm>
 #include <cctype>
 #include <fstream>
 
 #include "Renderer/bmp.h"
-#include "Renderer/texture.h"
 #include "Utility/contract.h"
 #include "Utility/logger.h"
 
