@@ -41,4 +41,8 @@ Add main project dependency include files to Source/3rdParty/x/
 - glm (glm)     
 - rapidjson (rapidjson)    
 Add test project dependency include files to Test/Source/3rdParty/x/   
-- googletest (gtest)       
+- googletest (gtest)  
+     
+If Blocker is being run through Visual Studio:
+- In Visual Studio, change the working directory for Blocker project
+	Settings > Project Settings > Debugging > Working Directory to $(TargetDir)
