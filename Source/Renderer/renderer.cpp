@@ -43,6 +43,10 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
+	const GLFWvidmode* m = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	m_screenResolutionWidth = m->width;
+	m_screenResolutionHeight = m->height;
+
 	// Create a GLFWwindow object to for GLFW's functions
 	// TODO - read the size from config file
 	m_window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
@@ -71,19 +75,20 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	// With this we can call member functions from static callback functions
 	glfwSetWindowUserPointer(m_window, this);
 
-	#ifdef _DEBUG
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN); // For debugging use disabled cursor
-	#else
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // For release do not let cursor out of the screen
-	#endif
+	// Do not let cursor out of the screen
+	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST); // Enable depth testing
 
 	// Create shader program by attaching and linking shaders to it
 	m_shaderProgram = std::make_unique<ShaderProgram>();
-	if (!m_shaderProgram->attachShader("vertex_basic.vert", GL_VERTEX_SHADER))
+	if (!m_shaderProgram->attachShader("vertex_basic.vert", GL_VERTEX_SHADER)) {
+		m_log.fatal("Could not attach shader: vertex_basic.vert");
 		return false;
-	if (!m_shaderProgram->attachShader("fragment_basic.frag", GL_FRAGMENT_SHADER))
+	}
+	if (!m_shaderProgram->attachShader("fragment_basic.frag", GL_FRAGMENT_SHADER)) {
+		m_log.fatal("Could not attach shader: fragment_basic.frag");
 		return false;
+	}
 
 	float vertices[] = {
 		-0.5f,
@@ -369,6 +374,9 @@ void Renderer::vStartMainLoop()
 		glm::vec3(-1.3f, 1.0f, -1.5f)
 	};
 
+	// Center cursor now that we are ready to start the game
+	vCenterCursor();
+
 	m_log.info("Started main loop");
 	int previousTick = utility::timestampMs();
 	while (!glfwWindowShouldClose(m_window)) {
@@ -446,49 +454,7 @@ void Renderer::keyCallback(int key, int scancode, int action, int mode)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Normal mode on N
 		return;
 	}
-
-	//// Handle gameplay input
-	//if (key == GLFW_KEY_W && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("W");
-	//if (key == GLFW_KEY_A && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("A");
-	//if (key == GLFW_KEY_S && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("S");
-	//if (key == GLFW_KEY_D && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("D");
-	//
-	////Handle additional gameplay input
-	//if (key == GLFW_KEY_LEFT_SHIFT && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("LEFT_SHIFT");
-	//if (key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("LEFT_CTRL");
-	//if (key == GLFW_KEY_LEFT_ALT && (action == GLFW_PRESS || action == GLFW_REPEAT)) 
-	//	m_keyInput.emplace_back("LEFT_ALT");
 }
-
-//void Renderer::staticMouseCallback(GLFWwindow* window, double xpos, double ypos)
-//{
-//	REQUIRE(window != nullptr);
-//	if (window == nullptr) {
-//		return;
-//	}
-//
-//	Renderer* r = static_cast<Renderer*>(glfwGetWindowUserPointer(window));
-//	r->mouseCallback(xpos, ypos);
-//}
-//
-//void Renderer::mouseCallback(double xpos, double ypos)
-//{
-//	if (m_firstMouseMovement) {
-//		m_mousexPos = xpos;
-//		m_mouseyPos = ypos;
-//		m_firstMouseMovement = false;
-//	}
-//	m_mousexOffset = xpos - m_mousexPos;
-//	m_mouseyOffset = m_mouseyPos - ypos; // Reversed since y-coordinates go from bottom to up
-//	m_mousexPos = xpos;
-//	m_mouseyPos = ypos;
-//}
 
 void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -528,26 +494,40 @@ void Renderer::vSetViewMatrix(const glm::mat4& viewMatrix)
 	m_view = viewMatrix;
 }
 
-std::tuple<double, double> Renderer::vGetMousePosition()
+void Renderer::vGetCursorPosition(double& x, double& y) const
 {
 	REQUIRE(m_window);
 	if (!m_window) {
 		m_log.error("OpenGL not properly initialized before calling vGetMousePosition");
-		return {-1, -1};
+		return;
 	}
-	double xpos = 0;
-	double ypos = 0;
-	glfwGetCursorPos(m_window, &xpos, &ypos);
-	return {xpos, ypos};
+	glfwGetCursorPos(m_window, &x, &y);
 }
 
-bool Renderer::vKeyPressed(int key)
+void Renderer::vCenterCursor()
+{
+	REQUIRE(m_window);
+	if (!m_window) {
+		m_log.error("OpenGL not properly initialized before calling vSetMousePosition");
+		return;
+	}
+	glfwSetCursorPos(m_window, m_screenResolutionWidth / 2, m_screenResolutionHeight / 2);
+}
+
+bool Renderer::vKeyPressed(int key) const
 {
 	REQUIRE(m_window);
 	if (!m_window) {
 		m_log.error("OpenGL not properly initialized before calling vGetKeyState");
 		return false;
 	}
-
 	return glfwGetKey(m_window, key) == GLFW_PRESS;
 }
+
+void Renderer::vGetPhysicalScreenResolution(int& x, int& y) const
+{
+	x = m_screenResolutionWidth;
+	y = m_screenResolutionHeight;
+}
+
+

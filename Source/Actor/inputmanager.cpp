@@ -1,11 +1,9 @@
 #include "Actor/inputmanager.h"
 #include "Actor/player.h"
 
-#include <tuple>
-
-InputManager::InputManager() 
+InputManager::InputManager(int screenWidth, int screenHeight)
 	: m_tempPosition(), m_mouseSensitivity(0.1f), m_speedMultiplier(2.0f), 
-	m_firstMouseMovement(true), m_mousexPos(0), m_mouseyPos(0) {}
+	m_centerxPos(screenWidth / 2), m_centeryPos(screenHeight / 2) {}
 
 InputManager::~InputManager() {}
 
@@ -17,22 +15,14 @@ void InputManager::onUpdate(Player & player, IRenderer & renderer, Camera & came
 
 void InputManager::updateRotation(Player& player, IRenderer& renderer)
 {
-	auto mousePos = renderer.vGetMousePosition();
-	auto xpos = std::get<0>(mousePos);
-	auto ypos = std::get<1>(mousePos);
-
-	// Handle the first mouse movement
-	if (m_firstMouseMovement) {
-		m_mousexPos = xpos;
-		m_mouseyPos = ypos;
-		m_firstMouseMovement = false;
-	}
+	double xpos = 0.0;
+	double ypos = 0.0;
+	renderer.vGetCursorPosition(xpos, ypos); // Save mouse position to reference parameters
+	renderer.vCenterCursor();
 
 	// Reverse since y-coordinates go from bottom to up
-	auto xOffset = xpos - m_mousexPos;
-	auto yOffset = m_mouseyPos - ypos;
-	m_mousexPos = xpos;
-	m_mouseyPos = ypos;
+	auto xOffset = xpos - m_centerxPos;
+	auto yOffset = m_centeryPos - ypos;
 
 	//Check if it is necessary to update dirtyFlag
 	if (xOffset == 0 && yOffset == 0)
@@ -43,6 +33,12 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 
 	player.transform.rotation.x += static_cast<float>(yOffset);
 	player.transform.rotation.y += static_cast<float>(xOffset);
+
+	// Make yaw continuous between 0..360
+	if (player.transform.rotation.y < 0)
+		player.transform.rotation.y += 360;
+	if (player.transform.rotation.y > 360)
+		player.transform.rotation.y -= 360;
 
 	// Limit pitch value
 	if (player.transform.rotation.x > 89.0)

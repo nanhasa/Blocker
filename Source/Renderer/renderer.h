@@ -3,7 +3,6 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <vector>
 
 //GLEW must be included before GLFW
 #define GLEW_STATIC
@@ -107,12 +106,21 @@ public:
 	 */
 	void vSetViewMatrix(const glm::mat4& viewMatrix) override;
 
+
 	/**
-	 * \brief vGetMouseOffset
+	 * \brief vGetCursorPosition
+	 * \param x
+	 * \param y
 	 * \pre m_window
-	 * \return
 	 */
-	std::tuple<double, double> vGetMousePosition() override;
+	void vGetCursorPosition(double& x, double& y) const override;
+
+
+	/**
+	 * \brief vCenterCursor
+	 * \pre m_window
+	 */
+	void vCenterCursor() override;
 
 	/**
 	 * \brief vGetKeyInput
@@ -120,10 +128,19 @@ public:
 	 * \pre m_window
 	 * \return
 	 */
-	bool vKeyPressed(int key) override;
+	bool vKeyPressed(int key) const override;
+
+	/**
+	 * \brief vGetPhysicalScreenResolution
+	 * \param x
+	 * \param y
+	 */
+	void vGetPhysicalScreenResolution(int& x, int& y) const override;
 
 private:
-	GLFWwindow* m_window; //!< Pointer to GLFW window object
+	GLFWwindow* m_window;			//!< Pointer to GLFW window object
+	int m_screenResolutionWidth;	//!< Physical screen resolution width
+	int m_screenResolutionHeight;	//!< Physical screen resolution height
 
 	std::unique_ptr<ShaderProgram> m_shaderProgram;	//!< Shader program used to access shaders
 

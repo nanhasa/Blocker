@@ -33,6 +33,6 @@ public:
 
 private:
 	std::unique_ptr<IRenderer> m_renderer;	//!< Pointer to renderer component
-	Player m_player;
+	std::unique_ptr<Player> m_player;
 	Logger m_log;							//!< Logger object used to write log entries
 };
