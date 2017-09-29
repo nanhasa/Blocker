@@ -14,10 +14,8 @@ public:
 
 	/**
 	 * \brief InputManager
-	 * \param screenWidth
-	 * \param screenHeight
 	 */
-	InputManager(int screenWidth, int screenHeight);
+	InputManager();
 
 	/**
 	 * \brief ~InputManager
@@ -38,8 +36,8 @@ private:
 
 	const float m_mouseSensitivity;	//!< Multiplier used to make camera movement more or less sensitive
 	const float m_speedMultiplier;	//!< Multiplier used to make player movement more or less fast
-	const double m_centerxPos;		//!< Last recorded mouse position on x-axis
-	const double m_centeryPos;		//!< Last recorded mouse position on y-axis
+	double m_lastCursorxPos;		//!< Last recorded mouse position on x-axis
+	double m_lastCursoryPos;		//!< Last recorded mouse position on y-axis
 
 	/**
 	 * \brief updateRotation

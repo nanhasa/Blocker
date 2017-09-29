@@ -15,10 +15,8 @@ public:
 	/**
 	 * \brief Player
 	 * \param transform
-	 * \param screenResX
-	 * \param screenResY
 	 */
-	Player(const Transform& transform, int screenResX, int screenResY);
+	explicit Player(const Transform& transform);
 
 	/**
 	 * \brief ~Player

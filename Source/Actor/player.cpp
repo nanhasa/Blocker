@@ -4,8 +4,8 @@
 
 #include <iostream>
 
-Player::Player(const Transform& transform, int screenResX, int screenResY) 
-	: transform(transform), m_camera(transform), m_input(screenResX, screenResY) {}
+Player::Player(const Transform& transform) 
+	: transform(transform), m_camera(transform), m_input() {}
 
 Player::~Player() {}
 

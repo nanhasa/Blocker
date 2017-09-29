@@ -11,8 +11,8 @@
 #include "Utility/utility.h"
 
 Renderer::Renderer()
-	: m_window(nullptr), m_shaderProgram(nullptr),
-	m_VBO(0), m_VAO(0), m_EBO(0), m_log("Renderer") {}
+	: m_window(nullptr), m_width(0), m_height(0), m_sizeChanged(false), 
+	m_shaderProgram(nullptr), m_VBO(0), m_VAO(0), m_EBO(0), m_log("Renderer") {}
 
 Renderer::~Renderer()
 {
@@ -43,10 +43,6 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-	const GLFWvidmode* m = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	m_screenResolutionWidth = m->width;
-	m_screenResolutionHeight = m->height;
-
 	// Create a GLFWwindow object to for GLFW's functions
 	// TODO - read the size from config file
 	m_window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
@@ -62,10 +58,9 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 		m_log.fatal("Failed to initialize GLEW");
 		return false;
 	}
-	int frameBufferWidth = 0;
-	int frameBufferHeight = 0;
-	glfwGetFramebufferSize(m_window, &frameBufferWidth, &frameBufferHeight);
-	glViewport(0, 0, frameBufferWidth, frameBufferHeight);
+
+	glfwGetFramebufferSize(m_window, &m_width, &m_height);
+	glViewport(0, 0, m_width, m_height);
 
 	// Set callback functions to static functions
 	glfwSetFramebufferSizeCallback(m_window, Renderer::staticFramebufferSizeCallback); // Resize
@@ -413,6 +408,8 @@ void Renderer::vStartMainLoop()
 		glBindVertexArray(0); // Unbind
 		glfwSwapBuffers(m_window);
 
+		m_sizeChanged = false; // Reset sizeChanged variable
+
 		previousTick = currentTick;
 	}
 	m_log.info("Leaving from main loop");
@@ -472,7 +469,7 @@ void Renderer::staticFramebufferSizeCallback(GLFWwindow* window, int width, int 
 	r->framebufferSizeCallback(width, height);
 }
 
-void Renderer::framebufferSizeCallback(int width, int height) const
+void Renderer::framebufferSizeCallback(int width, int height)
 {
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
@@ -482,11 +479,11 @@ void Renderer::framebufferSizeCallback(int width, int height) const
 
 	// Adjust viewport for window changes
 	glViewport(0, 0, width, height);
-	int framebufferWidth = 0, framebufferHeight = 0;
-	glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
+	glfwGetFramebufferSize(m_window, &m_width, &m_height);
+	m_sizeChanged = true;
 
-	ENSURE(framebufferWidth == width);
-	ENSURE(framebufferHeight == height);
+	ENSURE(m_width == width);
+	ENSURE(m_height == height);
 }
 
 void Renderer::vSetViewMatrix(const glm::mat4& viewMatrix)
@@ -511,7 +508,7 @@ void Renderer::vCenterCursor()
 		m_log.error("OpenGL not properly initialized before calling vSetMousePosition");
 		return;
 	}
-	glfwSetCursorPos(m_window, m_screenResolutionWidth / 2, m_screenResolutionHeight / 2);
+	glfwSetCursorPos(m_window, m_width / 2, m_height / 2);
 }
 
 bool Renderer::vKeyPressed(int key) const
@@ -524,10 +521,7 @@ bool Renderer::vKeyPressed(int key) const
 	return glfwGetKey(m_window, key) == GLFW_PRESS;
 }
 
-void Renderer::vGetPhysicalScreenResolution(int& x, int& y) const
+bool Renderer::vScreenSizeChanged()
 {
-	x = m_screenResolutionWidth;
-	y = m_screenResolutionHeight;
+	return m_sizeChanged;
 }
-
-

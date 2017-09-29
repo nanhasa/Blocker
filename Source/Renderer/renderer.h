@@ -95,10 +95,10 @@ public:
 	 * \param width New frame buffer width
 	 * \param height New frame buffer height
 	 * \pre m_window != nullptr
-	 * \post framebufferWidth == width
-	 * \post framebufferHeight == height
+	 * \post m_width == width
+	 * \post m_height == height
 	 */
-	void framebufferSizeCallback(int width, int height) const;
+	void framebufferSizeCallback(int width, int height);
 
 	/**
 	 * \brief vSetViewMatrice
@@ -131,16 +131,16 @@ public:
 	bool vKeyPressed(int key) const override;
 
 	/**
-	 * \brief vGetPhysicalScreenResolution
-	 * \param x
-	 * \param y
+	 * \brief vScreenSizeChanged
+	 * \return 
 	 */
-	void vGetPhysicalScreenResolution(int& x, int& y) const override;
+	bool vScreenSizeChanged();
 
 private:
-	GLFWwindow* m_window;			//!< Pointer to GLFW window object
-	int m_screenResolutionWidth;	//!< Physical screen resolution width
-	int m_screenResolutionHeight;	//!< Physical screen resolution height
+	GLFWwindow* m_window;	//!< Pointer to GLFW window object
+	int m_width;			//!< Window width
+	int m_height;			//!< Window height
+	bool m_sizeChanged;		//!< Used to indicate if screen size has changed
 
 	std::unique_ptr<ShaderProgram> m_shaderProgram;	//!< Shader program used to access shaders
 

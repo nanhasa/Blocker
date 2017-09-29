@@ -1,9 +1,9 @@
 #include "Actor/inputmanager.h"
 #include "Actor/player.h"
 
-InputManager::InputManager(int screenWidth, int screenHeight)
+InputManager::InputManager()
 	: m_tempPosition(), m_mouseSensitivity(0.1f), m_speedMultiplier(2.0f), 
-	m_centerxPos(screenWidth / 2), m_centeryPos(screenHeight / 2) {}
+	m_lastCursorxPos(0.0), m_lastCursoryPos(0) {}
 
 InputManager::~InputManager() {}
 
@@ -15,31 +15,41 @@ void InputManager::onUpdate(Player & player, IRenderer & renderer, Camera & came
 
 void InputManager::updateRotation(Player& player, IRenderer& renderer)
 {
+	// Don't update rotation if screen size changed as it messes up the offset logic
+	if (renderer.vScreenSizeChanged()) {
+		renderer.vCenterCursor();
+		return;
+	}
+
+	// Save mouse position to reference parameters
 	double xpos = 0.0;
 	double ypos = 0.0;
-	renderer.vGetCursorPosition(xpos, ypos); // Save mouse position to reference parameters
+	renderer.vGetCursorPosition(xpos, ypos);
 	renderer.vCenterCursor();
+	renderer.vGetCursorPosition(m_lastCursorxPos, m_lastCursoryPos);
 
 	// Reverse since y-coordinates go from bottom to up
-	auto xOffset = xpos - m_centerxPos;
-	auto yOffset = m_centeryPos - ypos;
-
+	auto xOffset = xpos - m_lastCursorxPos;
+	auto yOffset = m_lastCursoryPos - ypos;
+	
 	//Check if it is necessary to update dirtyFlag
 	if (xOffset == 0 && yOffset == 0)
 		return;
-
+	
+	// Add sensitivity factor
 	xOffset *= m_mouseSensitivity;
 	yOffset *= m_mouseSensitivity;
-
+	
+	// Rotate player, no need to use temp as rotation should be allowed always
 	player.transform.rotation.x += static_cast<float>(yOffset);
 	player.transform.rotation.y += static_cast<float>(xOffset);
-
+	
 	// Make yaw continuous between 0..360
 	if (player.transform.rotation.y < 0)
 		player.transform.rotation.y += 360;
 	if (player.transform.rotation.y > 360)
 		player.transform.rotation.y -= 360;
-
+	
 	// Limit pitch value
 	if (player.transform.rotation.x > 89.0)
 		player.transform.rotation.x = 89.0;
