@@ -5,7 +5,7 @@
   },
   "Renderer": {
   "file": "renderer_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+  "detail": ["INFO", "WARN", "ERROR", "FATAL"]
   },
   "EventManager": {
   "file": "eventmanager_log.txt",
@@ -13,14 +13,18 @@
   },
   "GameManager": {
   "file": "gamemanager_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+  "detail": ["INFO", "WARN", "ERROR", "FATAL"]
   },
   "Contract": {
   "file": "contract_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+  "detail": ["FATAL"]
   },
   "ShaderProgram": {
   "file": "shaderprogram_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "InputManager": {
+  "file": "inputmanager_log.txt",
   "detail": ["INFO", "WARN", "ERROR"]
   }
 }
