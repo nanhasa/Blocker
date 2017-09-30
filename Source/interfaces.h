@@ -17,9 +17,9 @@ public:
 	virtual void vStartMainLoop() = 0;
 	virtual void vSetViewMatrix(const glm::mat4& viewMatrix) = 0;
 	virtual void vGetCursorPosition(double& x, double& y) const = 0;
-	virtual void vCenterCursor() = 0;
+	virtual void vCenterCursor() const = 0;
 	virtual bool vKeyPressed(int key) const = 0;
-	virtual bool vScreenSizeChanged() = 0;
+	virtual bool vWindowSizeChanged() const = 0;
 };
 
 class IImageType {

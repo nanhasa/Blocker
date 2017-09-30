@@ -501,7 +501,7 @@ void Renderer::vGetCursorPosition(double& x, double& y) const
 	glfwGetCursorPos(m_window, &x, &y);
 }
 
-void Renderer::vCenterCursor()
+void Renderer::vCenterCursor() const
 {
 	REQUIRE(m_window);
 	if (!m_window) {
@@ -521,7 +521,7 @@ bool Renderer::vKeyPressed(int key) const
 	return glfwGetKey(m_window, key) == GLFW_PRESS;
 }
 
-bool Renderer::vScreenSizeChanged()
+bool Renderer::vWindowSizeChanged() const
 {
 	return m_sizeChanged;
 }

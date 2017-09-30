@@ -21,7 +21,7 @@ class Renderer : public IRenderer {
 public:
 
 	/**
-	 * \brief Builder. Does not make valid object as vInitialize() call is needed to make object valid
+	 * \brief Constructor. Does not make valid object as vInitialize() call is needed to make object valid
 	 */
 	Renderer();
 
@@ -75,10 +75,6 @@ public:
 	 */
 	void keyCallback(int key, int scancode, int action, int mode);
 
-	//static void staticMouseCallback(GLFWwindow* window, double xpos, double ypos);
-
-	//void mouseCallback(double xpos, double ypos);
-
 	/**
 	 * \brief Callback for mouse events and movement
 	 * \param window Window that received input
@@ -101,40 +97,40 @@ public:
 	void framebufferSizeCallback(int width, int height);
 
 	/**
-	 * \brief vSetViewMatrice
-	 * \param viewMatrix
+	 * \brief Used to update view matrix
+	 * \param viewMatrix New view matrix
 	 */
 	void vSetViewMatrix(const glm::mat4& viewMatrix) override;
 
 
 	/**
-	 * \brief vGetCursorPosition
-	 * \param x
-	 * \param y
+	 * \brief Used to access cursor position on screen
+	 * \param x Position on x axis
+	 * \param y Position on y axis
 	 * \pre m_window
 	 */
 	void vGetCursorPosition(double& x, double& y) const override;
 
 
 	/**
-	 * \brief vCenterCursor
+	 * \brief Used to set cursor to the middle of the window on screen
 	 * \pre m_window
 	 */
-	void vCenterCursor() override;
+	void vCenterCursor() const override;
 
 	/**
-	 * \brief vGetKeyInput
-	 * \param key
+	 * \brief Used to test if key is pressed. Uses glfw key codes
+	 * \param key glfw code of key
 	 * \pre m_window
-	 * \return
+	 * \return True if key state is pressed, otherwise false
 	 */
 	bool vKeyPressed(int key) const override;
 
 	/**
-	 * \brief vScreenSizeChanged
-	 * \return 
+	 * \brief Used to test if window size has changed
+	 * \return True if window has changed, otherwise false
 	 */
-	bool vScreenSizeChanged();
+	bool vWindowSizeChanged() const override;
 
 private:
 	GLFWwindow* m_window;	//!< Pointer to GLFW window object
@@ -152,7 +148,7 @@ private:
 	glm::mat4 m_view;		//!< Matcice From world space to view space
 	glm::mat4 m_projection;	//!< Matrice From view space to clip space
 
-	Logger m_log;
+	Logger m_log; //!< Logger
 
 	std::function<void(float)> m_gameLogic; //!< Function object used to update game logic
 };
