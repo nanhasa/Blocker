@@ -16,6 +16,7 @@ bool GameManager::start()
 		m_renderer->vStartMainLoop(); //Start main loop
 		return true;
 	}
+	m_log.fatal("Renderer was not initialized properly");
 	return false;
 }
 
