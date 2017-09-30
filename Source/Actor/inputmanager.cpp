@@ -1,22 +1,28 @@
 #include "Actor/inputmanager.h"
 #include "Actor/player.h"
+#include "Utility/contract.h"
 
 InputManager::InputManager()
 	: m_tempPosition(), m_mouseSensitivity(0.1f), m_speedMultiplier(2.0f), 
-	m_lastCursorxPos(0.0), m_lastCursoryPos(0) {}
+	m_lastCursorxPos(0.0), m_lastCursoryPos(0), m_log("InputManager") {}
 
 InputManager::~InputManager() {}
 
-void InputManager::onUpdate(Player & player, IRenderer & renderer, Camera & camera, float deltatime)
+void InputManager::onUpdate(Player& player, IRenderer* renderer, float deltatime)
 {
-	updateRotation(player, renderer);
-	updatePosition(player, renderer, camera, deltatime);
+	REQUIRE(renderer);
+	if (!renderer) {
+		m_log.error("No pointer to renderer was provided in onUpdate");
+		return;
+	}
+	updateRotation(player, *renderer);
+	updatePosition(player, *renderer, deltatime);
 }
 
 void InputManager::updateRotation(Player& player, IRenderer& renderer)
 {
 	// Don't update rotation if screen size changed as it messes up the offset logic
-	if (renderer.vScreenSizeChanged()) {
+	if (renderer.vWindowSizeChanged()) {
 		renderer.vCenterCursor();
 		return;
 	}
@@ -32,7 +38,7 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 	auto xOffset = xpos - m_lastCursorxPos;
 	auto yOffset = m_lastCursoryPos - ypos;
 	
-	//Check if it is necessary to update dirtyFlag
+	//Check if it is necessary to update rotation
 	if (xOffset == 0 && yOffset == 0)
 		return;
 	
@@ -51,26 +57,23 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 		player.transform.rotation.y -= 360;
 	
 	// Limit pitch value
-	if (player.transform.rotation.x > 89.0)
-		player.transform.rotation.x = 89.0;
-	if (player.transform.rotation.x < -89.0)
-		player.transform.rotation.x = -89.0;
+	player.transform.rotation.x = glm::clamp(player.transform.rotation.x, -89.0f, 89.0f);
 }
 
-void InputManager::updatePosition(Player& player, IRenderer& renderer, Camera& camera, float deltatime)
+void InputManager::updatePosition(Player& player, IRenderer& renderer, float deltatime)
 {
 	m_tempPosition = player.transform.position;
 	if (renderer.vKeyPressed(static_cast<int>('W')))
-		m_tempPosition += camera.getCameraFront() * deltatime * m_speedMultiplier;
+		m_tempPosition += player.transform.getDirectionFront() * deltatime * m_speedMultiplier;
 	if (renderer.vKeyPressed(static_cast<int>('A')))
-		m_tempPosition -= camera.getCameraRight() * deltatime * m_speedMultiplier;
+		m_tempPosition -= player.transform.getDirectionRight() * deltatime * m_speedMultiplier;
 	if (renderer.vKeyPressed(static_cast<int>('S')))
-		m_tempPosition -= camera.getCameraFront() * deltatime * m_speedMultiplier;
+		m_tempPosition -= player.transform.getDirectionFront() * deltatime * m_speedMultiplier;
 	if (renderer.vKeyPressed(static_cast<int>('D')))
-		m_tempPosition += camera.getCameraRight() * deltatime * m_speedMultiplier;
+		m_tempPosition += player.transform.getDirectionRight() * deltatime * m_speedMultiplier;
 
 	// Test if tempPosition is legit
 	// TODO: actually test it
 
-	player.transform.position = m_tempPosition;
+	player.transform.position = std::move(m_tempPosition);
 }

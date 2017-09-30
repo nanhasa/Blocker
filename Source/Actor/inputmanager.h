@@ -5,31 +5,31 @@
 #pragma warning (pop)      // Restore back
 
 #include "interfaces.h"
-#include "Renderer/camera.h"
+#include "Utility/logger.h"
 
-class Player;
+class Player; // Forward declaration to avoid circular includes
 
 class InputManager {
 public:
 
 	/**
-	 * \brief InputManager
+	 * \brief Constructor
 	 */
 	InputManager();
 
 	/**
-	 * \brief ~InputManager
+	 * \brief Destructor
 	 */
 	~InputManager();
 
 	/**
-	 * \brief onUpdate
-	 * \param player
-	 * \param renderer
-	 * \param camera
-	 * \param deltatime
+	 * \brief Used to handle input on each frame
+	 * \param player Parent object to be updated
+	 * \param renderer Renderer used to access input
+	 * \param deltatime Time in seconds since last frame
+	 * \pre renderer
 	 */
-	void onUpdate(Player& player, IRenderer& renderer, Camera& camera, float deltatime);
+	void onUpdate(Player& player, IRenderer* renderer, float deltatime);
 
 private:
 	glm::vec3 m_tempPosition;		//!< Temp for new position to be checked before assigning it
@@ -39,19 +39,20 @@ private:
 	double m_lastCursorxPos;		//!< Last recorded mouse position on x-axis
 	double m_lastCursoryPos;		//!< Last recorded mouse position on y-axis
 
+	Logger m_log;
+
 	/**
-	 * \brief updateRotation
-	 * \param player
-	 * \param renderer
+	 * \brief Used to update parent object's rotation based on cursor movement
+	 * \param player Parent object to be updated
+	 * \param renderer Renderer used to access mouse movement
 	 */
 	void updateRotation(Player& player, IRenderer& renderer);
 
 	/**
-	 * \brief updatePosition
-	 * \param player
-	 * \param renderer
-	 * \param camera
-	 * \param deltatime
+	 * \brief Used to update parent object's position based on key input
+	 * \param player Parent object to be updated
+	 * \param renderer Renderer used to access key states
+	 * \param deltatime Time in seconds since last frame. Used to even out movement speed
 	 */
-	void updatePosition(Player& player, IRenderer& renderer, Camera& camera, float deltatime);
+	void updatePosition(Player& player, IRenderer& renderer, float deltatime);
 };
