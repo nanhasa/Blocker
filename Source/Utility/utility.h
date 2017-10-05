@@ -1,9 +1,5 @@
 #pragma once
 
-#pragma warning (push, 2)  // Temporarily set warning level 2
-#include <3rdParty/glm/glm.hpp>
-#pragma warning (pop)      // Restore back
-
 namespace utility {
 
 	/**
@@ -32,12 +28,4 @@ namespace utility {
 	 */
 	int deltaTimeMs(int timestamp);
 
-	/**
-	 * \brief lerp
-	 * \param start
-	 * \param end
-	 * \param percentage
-	 * \return 
-	 */
-	glm::vec3 lerp(const glm::vec3& start, const glm::vec3& end, float percentage);
 }

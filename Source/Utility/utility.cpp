@@ -28,16 +28,3 @@ int utility::deltaTimeMs(int timestamp)
 {
 	return static_cast<int>(timestampMs() - timestamp);
 }
-
-glm::vec3 utility::lerp(const glm::vec3 & start, const glm::vec3 & end, float percentage)
-{
-	// Clamp percentage between 0..1
-	if (percentage > 1.0f) percentage = 1.0f;
-	if (percentage < 0.0f) percentage = 0.0f;
-
-	// Start to end vector
-	auto startToEnd = end - start;
-
-	// Base vector to start and add percentage of startToEnd vector
-	return start + startToEnd * percentage;
-}
