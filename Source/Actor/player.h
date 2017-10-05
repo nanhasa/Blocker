@@ -3,7 +3,7 @@
 #include "Actor/inputmanager.h"
 #include "Actor/transform.h"
 #include "interfaces.h"
-#include "Renderer/camera.h"
+#include "Actor/camera.h"
 
 class Player {
 public:

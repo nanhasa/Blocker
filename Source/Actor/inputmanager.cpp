@@ -4,7 +4,7 @@
 
 InputManager::InputManager()
 	: m_tempPosition(), m_mouseSensitivity(0.1f), m_speedMultiplier(2.0f), 
-	m_lastCursorxPos(0.0), m_lastCursoryPos(0), m_log("InputManager") {}
+	m_lastCursorxPos(0), m_lastCursoryPos(0), m_log("InputManager") {}
 
 InputManager::~InputManager() {}
 
@@ -34,8 +34,7 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 	renderer.vCenterCursor();
 	renderer.vGetCursorPosition(m_lastCursorxPos, m_lastCursoryPos);
 
-	// Reverse since y-coordinates go from bottom to up
-	auto xOffset = xpos - m_lastCursorxPos;
+	auto xOffset = m_lastCursorxPos - xpos;
 	auto yOffset = m_lastCursoryPos - ypos;
 	
 	//Check if it is necessary to update rotation
@@ -49,28 +48,29 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 	// Rotate player, no need to use temp as rotation should be allowed always
 	player.transform.rotation.x += static_cast<float>(yOffset);
 	player.transform.rotation.y += static_cast<float>(xOffset);
-	
+
 	// Make yaw continuous between 0..360
 	if (player.transform.rotation.y < 0)
 		player.transform.rotation.y += 360;
 	if (player.transform.rotation.y > 360)
 		player.transform.rotation.y -= 360;
 	
-	// Limit pitch value
-	player.transform.rotation.x = glm::clamp(player.transform.rotation.x, -89.0f, 89.0f);
+	// Limit pitch value between -89..89 instead of 271..89 because then looking down would flip the camera
+	player.transform.rotation.x = glm::clamp(player.transform.rotation.x, -89.0, 89.0);
 }
 
 void InputManager::updatePosition(Player& player, IRenderer& renderer, float deltatime)
 {
 	m_tempPosition = player.transform.position;
+	auto multiplier = static_cast<double>(deltatime * m_speedMultiplier);
 	if (renderer.vKeyPressed(static_cast<int>('W')))
-		m_tempPosition += player.transform.getDirectionFront() * deltatime * m_speedMultiplier;
+		m_tempPosition += player.transform.getDirectionForward() * multiplier;
 	if (renderer.vKeyPressed(static_cast<int>('A')))
-		m_tempPosition -= player.transform.getDirectionRight() * deltatime * m_speedMultiplier;
+		m_tempPosition -= player.transform.getDirectionRight() * multiplier;
 	if (renderer.vKeyPressed(static_cast<int>('S')))
-		m_tempPosition -= player.transform.getDirectionFront() * deltatime * m_speedMultiplier;
+		m_tempPosition -= player.transform.getDirectionForward() * multiplier;
 	if (renderer.vKeyPressed(static_cast<int>('D')))
-		m_tempPosition += player.transform.getDirectionRight() * deltatime * m_speedMultiplier;
+		m_tempPosition += player.transform.getDirectionRight() * multiplier;
 
 	// Test if tempPosition is legit
 	// TODO: actually test it

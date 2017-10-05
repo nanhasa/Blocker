@@ -4,7 +4,7 @@
 
 #include "Renderer/renderer.h"
 
-GameManager::GameManager(): m_player(Transform(-7.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f)), m_log("GameManager") {}
+GameManager::GameManager(): m_player(Transform(0, 0, 7, 0, 0, 0)), m_log("GameManager") {}
 
 GameManager::~GameManager() {}
 
