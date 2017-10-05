@@ -78,9 +78,6 @@
     <ClCompile Include="..\..\Renderer\texture.cpp">
       <Filter>Source Files\Renderer\ImageLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Renderer\camera.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Event\eventmanager.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
@@ -114,6 +111,9 @@
     <ClCompile Include="..\..\Actor\inputmanager.cpp">
       <Filter>Source Files\Actor\Component</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Actor\camera.cpp">
+      <Filter>Source Files\Actor\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\interfaces.h">
@@ -133,9 +133,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Renderer\texture.h">
       <Filter>Header Files\Renderer\ImageLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Renderer\camera.h">
-      <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Event\eventmanager.h">
       <Filter>Header Files\Event</Filter>
@@ -168,6 +165,9 @@
       <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Actor\inputmanager.h">
+      <Filter>Header Files\Actor\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Actor\camera.h">
       <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
   </ItemGroup>

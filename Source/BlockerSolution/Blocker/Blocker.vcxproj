@@ -192,6 +192,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Actor\camera.cpp" />
     <ClCompile Include="..\..\Actor\inputmanager.cpp" />
     <ClCompile Include="..\..\Actor\player.cpp" />
     <ClCompile Include="..\..\Actor\transform.cpp" />
@@ -202,7 +203,6 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClCompile Include="..\..\GameManager\gamemanager.cpp" />
     <ClCompile Include="..\..\main.cpp" />
     <ClCompile Include="..\..\Renderer\bmp.cpp" />
-    <ClCompile Include="..\..\Renderer\camera.cpp" />
     <ClCompile Include="..\..\Renderer\renderer.cpp" />
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
     <ClCompile Include="..\..\Renderer\texture.cpp" />
@@ -212,6 +212,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClCompile Include="..\..\Utility\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Actor\camera.h" />
     <ClInclude Include="..\..\Actor\inputmanager.h" />
     <ClInclude Include="..\..\Actor\player.h" />
     <ClInclude Include="..\..\Actor\transform.h" />
@@ -222,7 +223,6 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClInclude Include="..\..\GameManager\gamemanager.h" />
     <ClInclude Include="..\..\interfaces.h" />
     <ClInclude Include="..\..\Renderer\bmp.h" />
-    <ClInclude Include="..\..\Renderer\camera.h" />
     <ClInclude Include="..\..\Renderer\renderer.h" />
     <ClInclude Include="..\..\Renderer\shaderprogram.h" />
     <ClInclude Include="..\..\Renderer\texture.h" />
