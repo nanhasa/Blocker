@@ -75,7 +75,7 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 void InputManager::updatePosition(Player& player, IRenderer& renderer, float deltatime)
 {
 	m_tempPosition = player.transform.position;
-	auto multiplier = static_cast<double>(deltatime * m_speedMultiplier);
+	auto multiplier = deltatime * m_speedMultiplier;
 	if (renderer.vKeyPressed(static_cast<int>('W')))
 		m_tempPosition += player.transform.getDirectionForward() * multiplier;
 	if (renderer.vKeyPressed(static_cast<int>('A')))
