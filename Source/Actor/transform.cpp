@@ -53,13 +53,15 @@ glm::dmat4 Transform::getModelMatrix()
 
 void Transform::updateDirections()
 {
+	clampRotations();
+
 	// Calculate quaternion axis angles
-	auto x = glm::angleAxis(glm::radians(rotation.x), glm::dvec3(1, 0, 0));
-	auto y = glm::angleAxis(glm::radians(rotation.y), glm::dvec3(0, 1, 0));
-	auto z = glm::angleAxis(glm::radians(rotation.z), glm::dvec3(0, 0, 1));
+	auto xAngle = glm::angleAxis(glm::radians(rotation.x), glm::dvec3(1, 0, 0));
+	auto yAngle = glm::angleAxis(glm::radians(rotation.y), glm::dvec3(0, 1, 0));
+	auto zAngle = glm::angleAxis(glm::radians(rotation.z), glm::dvec3(0, 0, 1));
 
 	// Build new quaternion
-	m_quaternion = glm::normalize(y * x * z);
+	m_quaternion = glm::normalize(yAngle * xAngle * zAngle);
 
 	// Update direction vectors
 	m_up = m_quaternion * glm::dvec3(0, 1, 0);
@@ -123,4 +125,23 @@ void Transform::fixNegativeZeros(glm::dmat4& mat)
 				mat[i][j] = 0;
 		}
 	}
+}
+
+void Transform::clampRotations()
+{
+	// Remove full circles
+	if (glm::abs(rotation.y) > 360)
+		rotation.y = glm::mod(rotation.y, 360.0);
+	if (glm::abs(rotation.x) > 360)
+		rotation.x = glm::mod(rotation.x, 360.0);
+	if (glm::abs(rotation.z) > 360)
+		rotation.z = glm::mod(rotation.z, 360.0);
+
+	// Turn negative angles to positive
+	if (rotation.y < 0)
+		rotation.y += 360;
+	if (rotation.x < 0)
+		rotation.x += 360;
+	if (rotation.z < 0)
+		rotation.z += 360;
 }

@@ -5,6 +5,16 @@
 #include <3rdParty/glm/gtx/quaternion.hpp>
 #pragma warning (pop)      // Restore back
 
+
+// Class to calculate object position and rotation in 3D world
+// The rotations work in left-handed coordinate (positie x goes right, positive y goes up, positive z goes towards camera)
+// Increasing pitch rotation value rotates object left around y axis
+// Increasing yaw rotation value rotates object up around x axis
+// Increasing roll rotation value rolls object left around z axis
+// Rotation values are clamped between 0..360, which is calculated whenever lazy calculation happens
+//
+// Rotations are publicly shown as euler angles, but under the hood it is stored as quaternion
+// Direction vectors and matrix are lazy calculated when called if rotation cache is not up to date
 class Transform {
 public:
 
@@ -36,8 +46,8 @@ public:
 	 */
 	~Transform();
 
-	glm::dvec3 position;
-	glm::dvec3 rotation;
+	glm::dvec3 position;				//!< Object's world position (x, y, z)
+	glm::dvec3 rotation;				//!< Object's euler angle rotation (pitch, yaw, roll)
 	static const glm::dvec3 worldUp;	//!< Normalized vector pointing up in world coordinates
 
 	/**
@@ -60,7 +70,7 @@ public:
 
 	/**
 	 * \brief getModelMatrix
-	 * \return
+	 * \return Matrix representing object rotation (position not included at the moment)
 	 */
 	glm::dmat4 getModelMatrix();
 
@@ -68,7 +78,7 @@ private:
 	glm::dvec3 m_up;			//!< Normalized vector of camera's up direction
 	glm::dvec3 m_right;			//!< Normalized vector of camera's right direction
 	glm::dvec3 m_forward;		//!< Normalized vector of where camera is looking at
-	glm::dmat4 m_modelMatrix;	//!< Matrix calculated from quaternion
+	glm::dmat4 m_modelMatrix;	//!< Matrix calculated from quaternion, at the moment only holds rotation (position should probably be also calculated in it)
 
 	glm::dquat m_quaternion;	//!< Rotation is managed in the back-end with a quaternion while the public one is in euler's angle
 
@@ -86,28 +96,33 @@ private:
 	bool isCacheDirty() const;
 
 	/**
-	 * \brief round
-	 * \param vector
-	 * \param decimals
-	 */
+	* \brief Used to round all values in vector to given decimals accuracy
+	* \param vector Vector to be updated
+	* \param decimals number of decimals to be saved
+	*/
 	static void round(glm::dvec3& vector, int decimals);
 
 	/**
-	 * \brief round
-	 * \param mat
-	 * \param decimals
+	 * \brief Used to round all values in matrice to given decimals accuracy
+	 * \param mat Matrice to be updated
+	 * \param decimals number of decimals to be saved
 	 */
 	static void round(glm::dmat4& mat, int decimals);
 
 	/**
-	 * \brief fixNegativeZeros
-	 * \param vector
+	 * \brief Used to fix this weird glm thing where there are -0.00000 values
+	 * \param vector Vector to be updated
 	 */
 	static void fixNegativeZeros(glm::dvec3& vector);
 
 	/**
-	 * \brief fixNegativeZeros
-	 * \param mat
+	 * \brief Used to fix this weird glm thing where there are -0.00000 values
+	 * \param mat Matrice to be updated
 	 */
 	static void fixNegativeZeros(glm::dmat4& mat);
+
+	/**
+	 * \brief Used to update rotations to between 0..360
+	 */
+	void clampRotations();
 };
