@@ -22,13 +22,11 @@ public:
 	// Clear all listeners
 	static void clearListeners() {
 		std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
-		std::cout << "Clearing all listeners" << std::endl;
 		m_eventListenerMap.clear();
 	}
 
 	static void flushQueue() {
 		std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
-		std::cout << "Flushing event queue" << std::endl;
 		while (!m_eventQueue.empty()) {
 			m_eventQueue.pop();
 		}

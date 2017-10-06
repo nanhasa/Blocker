@@ -31,6 +31,8 @@ namespace {
 
 	};
 
+	typedef EventManagerTest EventManagerDeathTest;
+
 	// Test removeListener function
 	TEST_F(EventManagerTest, removeOnlyListener) {
 		EXPECT_TRUE(m_testClass.unregisterListener());
@@ -138,13 +140,21 @@ namespace {
 	}
 #endif // RELEASE
 
+#ifdef DEBUG
+	TEST_F(EventManagerDeathTest, onUpdateInvalidProcessTime) {
+		EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
+		unsigned int queueBefore = DerivedEventManager::getQueueLength();
+		EXPECT_EXIT(EventManager::onUpdate(-1), ::testing::ExitedWithCode(EXIT_FAILURE), "");
+	}
+#endif // Debug
+
 	TEST_F(EventManagerTest, onUpdateProcessTime) {
 		// Populate queue
 		for (unsigned int i = 0; i < 100000; ++i) {
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent>()));
 			EXPECT_TRUE(DerivedEventManager::queueEvent(std::make_shared<TestEvent2>()));
 		}
-		const long startTime = utility::timestampMs();
+		const int startTime = utility::timestampMs();
 		const int processTime = 50;
 		DerivedEventManager::onUpdate(processTime);
 		const int delta = utility::deltaTimeMs(startTime);
