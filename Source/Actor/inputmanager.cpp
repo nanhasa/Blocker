@@ -49,14 +49,27 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 	player.transform.rotation.x += static_cast<float>(yOffset);
 	player.transform.rotation.y += static_cast<float>(xOffset);
 
-	// Make yaw continuous between 0..360
-	if (player.transform.rotation.y < 0)
+	auto y = player.transform.rotation.y;
+	auto x = player.transform.rotation.x;
+	// Make yaw continuous between 0..360 (looking left increases number)
+	if (y < 0)
 		player.transform.rotation.y += 360;
-	if (player.transform.rotation.y > 360)
+	if (y > 360)
+		player.transform.rotation.y -= 360;
+
+	// Make pitch continuous between 0..360 (Looking up increases number)
+	if (y < 0)
+		player.transform.rotation.y += 360;
+	if (y > 360)
 		player.transform.rotation.y -= 360;
 	
-	// Limit pitch value between -89..89 instead of 271..89 because then looking down would flip the camera
-	player.transform.rotation.x = glm::clamp(player.transform.rotation.x, -89.0, 89.0);
+	// Limit pitch value between 271..89 (271 looks down, 89 looks up)
+	if (x > 89 && x < 271) {
+		if (glm::abs(x - 89) < glm::abs(x - 271))
+			player.transform.rotation.x = 89;
+		else
+			player.transform.rotation.x = 271;
+	}
 }
 
 void InputManager::updatePosition(Player& player, IRenderer& renderer, float deltatime)
