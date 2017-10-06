@@ -143,7 +143,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;gtest.lib;gtest_main.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;gamemanager.obj;inputcommandevent.obj;logger.obj;player.obj;renderer.obj;shaderprogram.obj;texture.obj;transform.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;gtest.lib;gtest_main.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;gamemanager.obj;inputcommandevent.obj;inputmanager.obj;logger.obj;player.obj;renderer.obj;shaderprogram.obj;texture.obj;transform.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
       <Command>if exist $(SolutionDir)..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat</Command>
@@ -170,14 +170,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Event\eventmanager_test.h" />
+    <ClInclude Include="..\Source\stdafx.h" />
+    <ClInclude Include="..\Source\targetver.h" />
     <ClInclude Include="..\Source\testexception.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Actor\transform_test.cpp" />
+    <ClCompile Include="..\Source\BlockerTest.cpp" />
     <ClCompile Include="..\Source\Event\eventmanager_test.cpp" />
-    <ClCompile Include="BlockerTest.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\Source\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\BlockerSolution\Blocker\Blocker.vcxproj">
