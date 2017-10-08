@@ -26,5 +26,9 @@
   "InputManager": {
   "file": "inputmanager_log.txt",
   "detail": ["INFO", "WARN", "ERROR"]
+  },
+  "Config": {
+  "file": "config_log.txt",
+  "detail": ["INFO", "WARN", "ERROR"]
   }
 }
