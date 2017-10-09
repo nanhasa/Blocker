@@ -1,19 +1,17 @@
 #include "Actor/transform.h"
 
-#include "Utility/contract.h"
-
 const glm::vec3 Transform::worldUp(0, 1, 0);
 
 Transform::Transform() 
-	: position(), rotation(), m_up(), m_right(), m_forward(), m_quaternion(), m_rotationMatrix() {}
+	: position(), rotation(), m_up(), m_right(), m_forward(), m_rotationMatrix(), m_quaternion() {}
 
 Transform::Transform(glm::vec3 position, glm::vec3 rotation) 
 	: position(position), rotation(rotation),
-	m_up(), m_right(), m_forward(), m_quaternion(), m_rotationMatrix() {}
+	m_up(), m_right(), m_forward(), m_rotationMatrix(), m_quaternion() {}
 
 Transform::Transform(float xPos, float yPos, float zPos, float pitch, float yaw, float roll) 
 	: position(xPos, yPos, zPos), rotation(pitch, yaw, roll),
-	m_up(), m_right(), m_forward(), m_quaternion(), m_rotationMatrix() {}
+	m_up(), m_right(), m_forward(), m_rotationMatrix(), m_quaternion() {}
 
 Transform::~Transform() {}
 
@@ -56,9 +54,9 @@ void Transform::updateDirections()
 	clampRotations();
 
 	// Calculate quaternion axis angles
-	auto xAngle = glm::angleAxis(glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	auto yAngle = glm::angleAxis(glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	auto zAngle = glm::angleAxis(glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	const auto xAngle = glm::angleAxis(glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	const auto yAngle = glm::angleAxis(glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	const auto zAngle = glm::angleAxis(glm::radians(rotation.z), glm::vec3(0, 0, 1));
 
 	// Build new quaternion
 	m_quaternion = glm::normalize(yAngle * xAngle * zAngle);

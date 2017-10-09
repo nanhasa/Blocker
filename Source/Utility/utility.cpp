@@ -15,7 +15,7 @@ long utility::timeSinceEpoch()
 int utility::timestampMs()
 {
 	using namespace std::chrono;
-	auto now = system_clock::now();
+	const auto now = system_clock::now();
 	return static_cast<int>(duration_cast<milliseconds>(now - gameStartTime).count());
 }
 

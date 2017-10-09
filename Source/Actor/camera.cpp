@@ -4,8 +4,6 @@
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
 #pragma warning (pop)      // Restore back
 
-#include "Utility/contract.h"
-
 Camera::Camera(Transform transform) : transform(transform){}
 
 Camera::~Camera() {}

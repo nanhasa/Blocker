@@ -78,14 +78,14 @@ private:
 	 * \brief Used to get timestamp in string
 	 * \return Timestamp in yyyy-mm-dd 24hh:mm:ss
 	 */
-	std::string datetime() const;
+	static std::string datetime();
 
 	/**
 	 * \brief Used to transform logging level to string format
 	 * \param lvl Logging level to be transformed
 	 * \return String format of logging level
 	 */
-	std::string levelToFixedString(LOGGING_LEVEL lvl) const;
+	static std::string levelToFixedString(LOGGING_LEVEL lvl);
 };
 
 // Utility function to return hex format of a number

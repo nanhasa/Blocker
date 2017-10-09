@@ -146,7 +146,7 @@ void Logger::write(LOGGING_LEVEL lvl, const std::string& message) const
 	ENSURE(!ostream.is_open());
 }
 
-std::string Logger::datetime() const
+std::string Logger::datetime()
 {
 	using namespace std::chrono;
 	const auto now = system_clock::now();
@@ -158,7 +158,7 @@ std::string Logger::datetime() const
 	return ss.str();
 }
 
-std::string Logger::levelToFixedString(LOGGING_LEVEL lvl) const
+std::string Logger::levelToFixedString(LOGGING_LEVEL lvl)
 {
 	static const std::vector<std::string> lookup {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 	auto output = lookup[lvl];

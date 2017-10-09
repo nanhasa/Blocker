@@ -5,7 +5,6 @@
 #pragma warning (pop)      // Restore back
 
 #include "Event/eventmanager.h"
-#include "Event/inputcommandevent.h"
 #include "Renderer/texture.h"
 #include "Utility/contract.h"
 #include "Utility/utility.h"

@@ -27,7 +27,7 @@ bool Config::loadFromFile()
 		if (line.empty())
 			continue;
 
-		separator = line.find(':');
+		separator = line.find('=');
 		if (separator == std::string::npos) {
 			// There were no separator between name and value
 			// Create a copy of line and remove all white spaces of to see if 
@@ -41,10 +41,10 @@ bool Config::loadFromFile()
 		}
 
 		// Use separator to extract value name and value to map
-		auto name = line.substr(0, separator);
-		auto value = line.substr(separator + 1);
+		const auto name = line.substr(0, separator);
+		const auto value = line.substr(separator + 1);
 		// TODO: trim name and value of whitespaces
-		auto it = m_valuemap.find(name);
+		const auto it = m_valuemap.find(name);
 		if (it != m_valuemap.end()) {
 			m_log.warn("Value pair \"" + it->first + ":" + it->second + "\" already exists. Overwriting the value with \"" + value + "\"");
 		}
@@ -57,14 +57,14 @@ bool Config::loadFromFile()
 int Config::get(std::string&& valueName, int defaultValue)
 {
 	std::lock_guard<std::mutex> lock(m_mtx);
-	auto it = m_valuemap.find(valueName);
+	const auto it = m_valuemap.find(valueName);
 	if (it == m_valuemap.end()) {
 		return defaultValue;
 	}
 
 	// Try to convert value to int
 	try {
-		auto output = std::stof(it->second);
+		const auto output = std::stof(it->second);
 		return output;
 	}
 	catch (std::invalid_argument& ia) {
@@ -80,14 +80,14 @@ int Config::get(std::string&& valueName, int defaultValue)
 float Config::get(std::string&& valueName, float defaultValue)
 {
 	std::lock_guard<std::mutex> lock(m_mtx);
-	auto it = m_valuemap.find(valueName);
+	const auto it = m_valuemap.find(valueName);
 	if (it == m_valuemap.end()) {
 		return defaultValue;
 	}
 
 	// Try to convert value to float
 	try {
-		auto output = std::stof(it->second);
+		const auto output = std::stof(it->second);
 		return output;
 	}
 	catch (std::invalid_argument& ia) {
@@ -103,7 +103,7 @@ float Config::get(std::string&& valueName, float defaultValue)
 bool Config::get(std::string&& valueName, bool defaultValue)
 {
 	std::lock_guard<std::mutex> lock(m_mtx);
-	auto it = m_valuemap.find(valueName);
+	const auto it = m_valuemap.find(valueName);
 	if (it == m_valuemap.end()) {
 		return defaultValue;
 	}
@@ -124,7 +124,7 @@ bool Config::get(std::string&& valueName, bool defaultValue)
 std::string Config::get(std::string&& valueName, std::string defaultValue)
 {
 	std::lock_guard<std::mutex> lock(m_mtx);
-	auto it = m_valuemap.find(valueName);
+	const auto it = m_valuemap.find(valueName);
 	if (it == m_valuemap.end()) {
 		return defaultValue;
 	}
@@ -134,7 +134,7 @@ std::string Config::get(std::string&& valueName, std::string defaultValue)
 glm::vec3 Config::get(std::string&& valueName, glm::vec3 defaultValue)
 {
 	std::lock_guard<std::mutex> lock(m_mtx);
-	auto it = m_valuemap.find(valueName);
+	const auto it = m_valuemap.find(valueName);
 	if (it == m_valuemap.end()) {
 		return defaultValue;
 	}
@@ -143,15 +143,15 @@ glm::vec3 Config::get(std::string&& valueName, glm::vec3 defaultValue)
 	try {
 		std::string::size_type st; // Used to get the position after the number extracted
 		auto str = it->second;
-		float x = std::stof(str, &st);
+		const float x = std::stof(str, &st);
 		if (st == str.length() - 1)
 			throw std::invalid_argument("Invalid data to create glm::vec3: " + it->second);
 		str = str.substr(st);
-		float y = std::stof(str, &st);
+		const float y = std::stof(str, &st);
 		if (st == str.length() - 1)
 			throw std::invalid_argument("Invalid data to create glm::vec3: " + it->second);
 		str = str.substr(st);
-		float z = std::stof(str);
+		const float z = std::stof(str);
 
 		return glm::vec3(x, y, z);
 	}

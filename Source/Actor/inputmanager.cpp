@@ -49,8 +49,8 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 	player.transform.rotation.x += static_cast<float>(yOffset);
 	player.transform.rotation.y += static_cast<float>(xOffset);
 
-	auto y = player.transform.rotation.y;
-	auto x = player.transform.rotation.x;
+	const auto y = player.transform.rotation.y;
+	const auto x = player.transform.rotation.x;
 	// Make yaw continuous between 0..360 (looking left increases number)
 	if (y < 0)
 		player.transform.rotation.y += 360;
@@ -75,7 +75,7 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 void InputManager::updatePosition(Player& player, IRenderer& renderer, float deltatime)
 {
 	m_tempPosition = player.transform.position;
-	auto multiplier = deltatime * m_speedMultiplier;
+	const auto multiplier = deltatime * m_speedMultiplier;
 	if (renderer.vKeyPressed(static_cast<int>('W')))
 		m_tempPosition += player.transform.getDirectionForward() * multiplier;
 	if (renderer.vKeyPressed(static_cast<int>('A')))
