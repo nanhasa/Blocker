@@ -21,12 +21,15 @@ Contents:
    
    
 How to build:   
-install python, make sure it is in path (https://www.python.org/downloads/)    
-install doxygen, make sure it is in path (https://sourceforge.net/projects/doxygen/)    
+
+To enable build event scripts and documentation generation (optional):     
+- Install python, make sure it is in environment path (https://www.python.org/downloads/)    
+- Install doxygen, make sure it is in environment path (https://sourceforge.net/projects/doxygen/)    
     
 Build dependencies     
-- release build multi-threaded dll, debug multi-threaded debug dll     
-- only win32 target    
+- Set release build multi-threaded dll    
+- Set debug multi-threaded debug dll     
+- Only win32 target is supported    
 - Place .lib files to Libs/x86/[Debug|Release]/    
     
 Following above instruction build    
@@ -36,13 +39,18 @@ Following above instruction build
 - googletest (https://github.com/google/googletest)     
      
 Add main project dependency include files to Source/3rdParty/x/     
-- glew (GL)    
-- glfw (GLFW)    
-- glm (glm)     
-- rapidjson (rapidjson)    
+- glew (x = GL)    
+- glfw (x = GLFW)    
+- glm (x = glm)     
+- rapidjson (x = rapidjson)  
+        
 Add test project dependency include files to Test/Source/3rdParty/x/   
 - googletest (gtest)  
      
 If Blocker is being run through Visual Studio:
 - In Visual Studio, change the working directory for Blocker project
+	Settings > Project Settings > Debugging > Working Directory to $(TargetDir)
+	
+For unit tests in Visual Studio:
+- In Visual Studio, change the working directory for BlockerTest project
 	Settings > Project Settings > Debugging > Working Directory to $(TargetDir)
