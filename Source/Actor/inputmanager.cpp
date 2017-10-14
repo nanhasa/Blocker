@@ -1,12 +1,27 @@
 #include "Actor/inputmanager.h"
 #include "Actor/player.h"
 #include "Utility/contract.h"
+#include "Utility/locator.h"
 
 InputManager::InputManager()
-	: m_tempPosition(), m_mouseSensitivity(0.1f), m_speedMultiplier(2.0f), 
-	m_lastCursorxPos(0), m_lastCursoryPos(0), m_log("InputManager") {}
+	: m_tempPosition(), m_lastCursorxPos(0), m_lastCursoryPos(0), m_log("InputManager")
+{
+	m_mouseSensitivity = Locator::getConfig()->get("MouseSensitivity", 0.1f);
+	m_speedMultiplier = Locator::getConfig()->get("MovementSpeedMultiplier", 2.0f);
+}
 
 InputManager::~InputManager() {}
+
+InputManager & InputManager::operator=(InputManager && rhs) noexcept
+{
+	m_tempPosition = std::move(rhs.m_tempPosition);
+	m_mouseSensitivity = std::move(rhs.m_mouseSensitivity);
+	m_speedMultiplier = std::move(rhs.m_speedMultiplier);
+	m_lastCursorxPos = std::move(rhs.m_lastCursorxPos);
+	m_lastCursoryPos = std::move(rhs.m_lastCursoryPos);
+	m_log = std::move(m_log);
+	return *this;
+}
 
 void InputManager::onUpdate(Player& player, IRenderer* renderer, float deltatime)
 {

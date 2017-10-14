@@ -22,6 +22,16 @@ public:
 	 */
 	~InputManager();
 
+	InputManager(InputManager const&) = delete;
+	InputManager& operator=(const InputManager& rhs) = delete;
+
+	/**
+	 * \brief operator=
+	 * \param rhs
+	 * \return 
+	 */
+	InputManager& operator=(InputManager&& rhs) noexcept;
+
 	/**
 	 * \brief Used to handle input on each frame
 	 * \param player Parent object to be updated
@@ -34,8 +44,8 @@ public:
 private:
 	glm::vec3 m_tempPosition;		//!< Temp for new position to be checked before assigning it
 
-	const float m_mouseSensitivity;	//!< Multiplier used to make camera movement more or less sensitive
-	const float m_speedMultiplier;	//!< Multiplier used to make player movement more or less fast
+	float m_mouseSensitivity;		//!< Multiplier used to make camera movement more or less sensitive
+	float m_speedMultiplier;		//!< Multiplier used to make player movement more or less fast
 	double m_lastCursorxPos;		//!< Last recorded mouse position on x-axis
 	double m_lastCursoryPos;		//!< Last recorded mouse position on y-axis
 
