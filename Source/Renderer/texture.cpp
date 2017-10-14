@@ -6,14 +6,16 @@
 
 #include "Renderer/bmp.h"
 #include "Utility/contract.h"
-#include "Utility/logger.h"
+#include "Utility/locator.h"
+#include "Utility/staticsafelogger.h"
+#include "Utility/utility.h"
 
 namespace texture {
 
 	//Anonymous namespace to hide factory method from namespace interface
 	namespace {
 
-		Logger g_log("Texture");
+		StaticSafeLogger g_log("Texture");
 
 		/**
 		* \brief Tests if stream is empty or at the end
@@ -46,9 +48,8 @@ namespace texture {
 			}
 
 			const auto size = getFileSize(stream);
-			if (size > 5120000) {
-				// Hard limit the file size TODO read from config 
-				g_log.error("File is too big to load : " + toStr(size) + " bytes");
+			if (size > Locator::getConfig()->get("MaxByteFileSizeToLoad", 5120000)) {
+				g_log.error("File is too big to load : " + utility::toStr(size) + " bytes");
 				return false;
 			}
 
@@ -60,7 +61,7 @@ namespace texture {
 		* \param filename File name without file path
 		* \return Pointer to ImageType matching the parameter file extension, nullptr if file is not supported
 		*/
-		std::unique_ptr<IImageType> getImageType(const std::string& filename, const Logger& log)
+		std::unique_ptr<IImageType> getImageType(const std::string& filename)
 		{
 			const std::size_t found = filename.find_last_of(".");
 			if (found == std::string::npos || found == filename.length()) {
@@ -71,7 +72,7 @@ namespace texture {
 			std::string ext = filename.substr(found + 1);
 			std::for_each(ext.begin(), ext.end(), ::tolower);
 			if (ext == "bmp")
-				return std::make_unique<BMP>(log);
+				return std::make_unique<BMP>(g_log);
 
 			g_log.error("Extension " + ext + " is not supported file type");
 			return nullptr;
@@ -137,15 +138,21 @@ namespace texture {
 
 	std::unique_ptr<Image> load(const std::string& file)
 	{
+		REQUIRE(!file.empty());
+		if (file.empty()) {
+			g_log.error("Load(): No filename was provided");
+			return nullptr;
+		}
+
 		g_log.info("Loading file " + file);
-		std::ifstream stream("../Data/Images/" + file, std::ios::binary); // TODO: read path from config 
+		std::ifstream stream(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Images/" + file, std::ios::binary);
 
 		if (!validateFile(stream)) {
 			g_log.error("Could not open file " + file);
 			return nullptr;
 		}
 
-		auto type = getImageType(file, g_log);
+		auto type = getImageType(file);
 		type->vLoadFile(stream);
 		stream.close();
 		return std::make_unique<Image>(std::move(type));

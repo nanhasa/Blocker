@@ -9,6 +9,9 @@
 #pragma warning (pop)      // Restore back
 
 #include "Utility/contract.h"
+#include "Utility/config.h"
+#include "Utility/locator.h"
+#include "Utility/utility.h"
 
 ShaderProgram::ShaderProgram() : m_id(glCreateProgram()), m_log("ShaderProgram") {}
 
@@ -43,7 +46,7 @@ bool ShaderProgram::attachShader(const std::string& filename, GLenum shaderType)
 	glAttachShader(m_id, shader);
 	glDeleteShader(shader);
 
-	m_log.info(filename + " successfully attached to shaderprogram " + toStr(m_id));
+	m_log.info(filename + " successfully attached to shaderprogram " + utility::toStr(m_id));
 
 	glLinkProgram(m_id);
 
@@ -208,7 +211,7 @@ bool ShaderProgram::loadShader(const std::string& name, std::string& shaderSourc
 	if (!shaderSource.empty())
 		shaderSource.clear();
 
-	std::ifstream file("../Data/Shaders/" + name); // TODO: load path from config
+	std::ifstream file(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Shaders/" + name);
 	if (!file.is_open()) {
 		m_log.error("Could not open shader: " + name);
 		return false;

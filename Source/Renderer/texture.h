@@ -68,6 +68,7 @@ namespace texture {
 	/**
 	 * \brief Load file and get image RGB byte array
 	 * \param file Filename without filepath
+	 * \pre !file.empty()
 	 * \return Pointer to texture::Image which holds image RGB byte array, width, and height
 	 */
 	std::unique_ptr<Image> load(const std::string& file);
