@@ -9,15 +9,24 @@ class Player {
 public:
 
 	/**
+	 * \brief Constructor that initializes Player to 0, 0, 0 position and rotation
+	 */
+	Player();
+
+	/**
 	 * \brief Constructor that initializes object to certain position and rotation
 	 * \param transform Used to set the position and rotation
 	 */
-	explicit Player(const Transform& transform);
+	Player(const Transform& transform);
 
 	/**
 	 * \brief Destructor
 	 */
 	~Player();
+
+	Player(Player const&) = delete;
+	Player& operator=(const Player& rhs) = delete;
+	Player& operator=(Player&& rhs) noexcept;
 
 	Transform transform;
 
