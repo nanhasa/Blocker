@@ -4,8 +4,9 @@
 
 #include "Renderer/texture.h"
 #include "Utility/contract.h"
+#include "Utility/utility.h"
 
-BMP::BMP(const Logger& log) : m_fileheader(nullptr), m_infoheader(nullptr), m_data(nullptr), m_log(&log) {}
+BMP::BMP(StaticSafeLogger& log) : m_fileheader(nullptr), m_infoheader(nullptr), m_data(nullptr), m_log(&log) {}
 
 BMP::~BMP() {}
 
@@ -22,7 +23,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	const auto size = texture::getFileSize(stream);
 	if (size < 54) {
 		// Offset of BMP file
-		m_log->error("Cannot read file, because file is smaller than BMP header size (54B): " + toStr(size) + "B");
+		m_log->error("Cannot read file, because file is smaller than BMP header size (54B): " + utility::toStr(size) + "B");
 		return false;
 	}
 
@@ -110,7 +111,6 @@ std::unique_ptr<uint8_t[]> BMP::vDecode()
 			decode[i + 2] = std::move(m_data[i + row * pad]);
 		}
 	}
-
 	return std::move(decode);
 }
 

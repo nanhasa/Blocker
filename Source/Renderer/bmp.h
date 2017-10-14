@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Interfaces.h"
-
 #include <memory>
-#include "Utility/logger.h"
 
+#include "Interfaces.h"
+#include "Utility/staticsafelogger.h"
 
 // Without the pragma, the unsigned short fields are being padded to 4 bytes.
 // The size of BITMAPFILEHEADER (w/o pragma) is 20, but in the file it is written sequentially as 14 bytes.
@@ -45,7 +44,7 @@ public:
 	 * \brief Constructor. Call loadFile afterwards to actually initialize.
 	 * \param log Initialized Logger used to write log entries
 	 */
-	explicit BMP(const Logger& log);
+	explicit BMP(StaticSafeLogger& log);
 
 	/**
 	 * \brief Destructor
@@ -90,5 +89,5 @@ private:
 	std::unique_ptr<BITMAPFILEHEADER> m_fileheader; //!< Pointer to file header object
 	std::unique_ptr<BITMAPINFOHEADER> m_infoheader; //!< Pointer to info header object
 	std::unique_ptr<uint8_t[]> m_data;				//!< Pointer to image payload BGR byte array
-	const Logger* const m_log;						//!< Pointer to texture logging, is not managed here
+	StaticSafeLogger* m_log;						//!< Pointer to texture logging, is not managed here
 };
