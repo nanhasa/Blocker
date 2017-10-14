@@ -7,6 +7,7 @@
 #include "Event/eventmanager.h"
 #include "Renderer/texture.h"
 #include "Utility/contract.h"
+#include "Utility/locator.h"
 #include "Utility/utility.h"
 
 Renderer::Renderer()
@@ -21,16 +22,8 @@ Renderer::~Renderer()
 	glDeleteBuffers(1, &m_EBO);
 }
 
-bool Renderer::vInitialize(std::string&& windowName, int width, int height,
-                           std::function<void(float)>&& gameLogic)
+bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&& gameLogic)
 {
-	REQUIRE(width >= 0);
-	REQUIRE(height >= 0);
-	if (width < 0 || height < 0) {
-		m_log.fatal("Invalid screen size");
-		return false;
-	}
-
 	m_log.info("Starting GLFW context, OpenGL 3.3");
 
 	m_gameLogic = gameLogic;
@@ -43,8 +36,10 @@ bool Renderer::vInitialize(std::string&& windowName, int width, int height,
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	// Create a GLFWwindow object to for GLFW's functions
-	// TODO - read the size from config file
+	const int width = Locator::getConfig()->get("ScreenWidth", 1600);
+	const int height = Locator::getConfig()->get("ScreenHeight", 1200);
 	m_window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
+	
 	if (m_window == nullptr) {
 		m_log.fatal("Failed to create GLFW window");
 		return false;

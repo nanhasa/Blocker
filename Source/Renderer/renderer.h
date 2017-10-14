@@ -33,18 +33,13 @@ public:
 	/**
 	 * \brief Initializes the render by opening the window. Must be run before anything else.
 	 * \param windowName Name of window
-	 * \param width Width of window
-	 * \param height Height of window
 	 * \param gameLogic Callback function used to update game logic on every tick
-	 * \pre width >= 0
-	 * \pre height >= 0
 	 * \post m_shaderProgram != nullptr
 	 * \post m_shaderProgram->validate()
 	 * \post m_window != nullptr
 	 * \return true if successful, otherwise false
 	 */
-	bool vInitialize(std::string&& windowName, int width, int height,
-		std::function<void(float)>&& gameLogic) override;
+	bool vInitialize(std::string&& windowName, std::function<void(float)>&& gameLogic) override;
 
 	/**
 	 * \brief The main Loop. Renders, gets device input and calls gameLogic onUpdate
