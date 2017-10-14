@@ -6,20 +6,83 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 
 #include <3rdParty/rapidjson/document.h>
 #include <3rdParty/rapidjson/istreamwrapper.h>
 
+#include "interfaces.h"
+#include "Utility/config.h"
 #include "Utility/contract.h"
+#include "Utility/locator.h"
 
+namespace {
 
-Logger::Logger(const std::string & name) : m_enabledLogLevels(), m_logName(name), m_filename(""), m_configFilename("logconfig.json")
+	/**
+	* \brief Used to get timestamp in string
+	* \return Timestamp in yyyy-mm-dd 24hh:mm:ss
+	*/
+	std::string datetime()
+	{
+		using namespace std::chrono;
+		const auto now = system_clock::now();
+		const std::time_t now_t = system_clock::to_time_t(now);
+		tm timeinfo;
+		localtime_s(&timeinfo, &now_t);
+		std::stringstream ss;
+		ss << std::put_time(&timeinfo, "%F %X");
+		return ss.str();
+	}
+
+	/**
+	* \brief Used to transform logging level to string format
+	* \param lvl Logging level to be transformed
+	* \return String format of logging level
+	*/
+	std::string levelToFixedString(LOGGING_LEVEL lvl)
+	{
+		static const std::vector<std::string> lookup{ "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
+		auto output = lookup[lvl];
+		while (output.length() < 5) {
+			output += " ";
+		}
+		return output;
+	}
+
+} // Anonymous namespace
+
+Logger::Logger() : m_enabledLogLevels(), m_logName(""), m_filename(""), m_configFilename("logconfig.json") {}
+
+Logger::Logger(const std::string & name)
+	: m_enabledLogLevels(), m_logName(""),  m_filename(""), m_configFilename("logconfig.json")
 {
+	initialize(name);
+}
+
+Logger::~Logger() {}
+
+Logger & Logger::operator=(Logger && rhs) noexcept
+{
+	m_enabledLogLevels = std::move(rhs.m_enabledLogLevels);
+	m_logName = std::move(rhs.m_logName);
+	m_filename = std::move(m_filename);
+	m_configFilename = std::move(m_configFilename);
+	return *this;
+}
+
+void Logger::initialize(const std::string & name)
+{
+	REQUIRE(!name.empty());
+	if (!m_logName.empty() || name.empty())
+		return;
+
+	m_logName = name;
+
 	std::ifstream stream;
 	// Builder should not emit exceptions so wrap the 3rd party code in try catch
 	try {
 		// Open config file
-		stream.open("../Data/Log/" + m_configFilename);
+		stream.open(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Log/" + m_configFilename);
 		if (!stream.is_open()) {
 			std::cerr << "Could not open file " << m_configFilename << std::endl;
 			return;
@@ -30,7 +93,7 @@ Logger::Logger(const std::string & name) : m_enabledLogLevels(), m_logName(name)
 		rapidjson::Document doc;
 		doc.ParseStream(isw);
 		stream.close(); // rapidjson has parsed file so close stream
-		// Check for parse errors
+						// Check for parse errors
 		if (doc.HasParseError()) {
 			std::cerr << "Parse error in: " << m_configFilename << std::endl;
 			return;
@@ -77,23 +140,17 @@ Logger::Logger(const std::string & name) : m_enabledLogLevels(), m_logName(name)
 		}
 
 		// Create or truncate log file
-		std::ofstream ofs("../Data/Log/" + m_filename, std::ofstream::out | std::ofstream::trunc);
-		if (!ofs.is_open()) {
-			std::cerr << "Error opening file " << m_filename << std::endl;
-			return;
-		}
-		ofs.close();
+		std::ofstream ofs(
+			Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Log/" + m_filename, 
+			std::ofstream::out | std::ofstream::trunc);
+
+		if (!ofs.is_open()) 
+			std::cerr << "Error opening file " << m_filename << " when truncating" << std::endl;
 	}
-	catch(...) {
+	catch (...) {
 		std::cerr << "Something went terribly wrong in Logger builder" << std::endl;
-		// Make sure the stream is not left open in case of exception
-		if (stream.is_open()) {
-			stream.close();
-		}
 	}
 }
-
-Logger::~Logger() {}
 
 void Logger::debug(const std::string & message) const
 {
@@ -136,34 +193,12 @@ bool Logger::isEnabled(LOGGING_LEVEL lvl) const
 void Logger::write(LOGGING_LEVEL lvl, const std::string& message) const
 {
 	if (m_filename.empty()) return;
+	
+	std::ofstream ostream(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Log/" + m_filename, 
+		std::ofstream::out | std::ofstream::app);
 
-	std::ofstream ostream("../Data/Log/" + m_filename, std::ofstream::out | std::ofstream::app);
 	if (!ostream.is_open()) {
 		return;
 	}
 	ostream << datetime() << " " << levelToFixedString(lvl) << " - " << message << std::endl;
-	ostream.close();
-	ENSURE(!ostream.is_open());
-}
-
-std::string Logger::datetime()
-{
-	using namespace std::chrono;
-	const auto now = system_clock::now();
-	const std::time_t now_t = system_clock::to_time_t(now);
-	tm timeinfo;
-	localtime_s(&timeinfo, &now_t);
-	std::stringstream ss;
-	ss << std::put_time(&timeinfo, "%F %X");
-	return ss.str();
-}
-
-std::string Logger::levelToFixedString(LOGGING_LEVEL lvl)
-{
-	static const std::vector<std::string> lookup {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
-	auto output = lookup[lvl];
-	while (output.length() < 5) {
-		output += " ";
-	}
-	return output;
 }
