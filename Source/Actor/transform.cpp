@@ -1,5 +1,61 @@
 #include "Actor/transform.h"
 
+namespace {
+	
+	/**
+	* \brief Used to round all values in vector to given decimals accuracy
+	* \param vector Vector to be updated
+	* \param decimals number of decimals to be saved
+	*/
+	void round(glm::vec3& vector, int decimals)
+	{
+		vector.x = static_cast<float>(glm::round(vector.x * glm::pow(10, decimals)) / glm::pow(10, decimals));
+		vector.y = static_cast<float>(glm::round(vector.y * glm::pow(10, decimals)) / glm::pow(10, decimals));
+		vector.z = static_cast<float>(glm::round(vector.z * glm::pow(10, decimals)) / glm::pow(10, decimals));
+	}
+
+	/**
+	* \brief Used to round all values in matrice to given decimals accuracy
+	* \param mat Matrice to be updated
+	* \param decimals number of decimals to be saved
+	*/
+	void round(glm::mat4& mat, int decimals)
+	{
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				mat[i][j] = static_cast<float>(glm::round(mat[i][j] * glm::pow(10, decimals)) / glm::pow(10, decimals));
+			}
+		}
+	}
+
+	/**
+	* \brief Used to fix negative zeros that rid floats
+	* \param vector Vector to be updated
+	*/
+	void fixNegativeZeros(glm::vec3& vector)
+	{
+		if (vector.x == 0) vector.x = 0;
+		if (vector.y == 0) vector.y = 0;
+		if (vector.z == 0) vector.z = 0;
+	}
+
+	/**
+	* \brief Used to fix negative zeros that rid floats
+	* \param mat Matrice to be updated
+	*/
+	void fixNegativeZeros(glm::mat4& mat)
+	{
+		for (int i = 0; i < 4; ++i) {
+			for (int j = 0; j < 4; ++j) {
+				if (mat[i][j] == 0)
+					mat[i][j] = 0;
+			}
+		}
+	}
+
+} // anonymous namespace
+
+
 const glm::vec3 Transform::worldUp(0, 1, 0);
 
 Transform::Transform() 
@@ -70,8 +126,6 @@ void Transform::updateDirections()
 	round(m_up, 5);
 	round(m_right, 5);
 	round(m_forward, 5);
-
-	// Something beyond me in glm creates -0.00000 numbers, let's update those to good ol' regular zeros
 	fixNegativeZeros(m_up);
 	fixNegativeZeros(m_right);
 	fixNegativeZeros(m_forward);
@@ -90,56 +144,21 @@ bool Transform::isCacheDirty() const
 	return m_cacheRotation != rotation;
 }
 
-void Transform::round(glm::vec3& vector, int decimals)
-{
-	vector.x = static_cast<float>(glm::round(vector.x * glm::pow(10, decimals)) / glm::pow(10, decimals));
-	vector.y = static_cast<float>(glm::round(vector.y * glm::pow(10, decimals)) / glm::pow(10, decimals));
-	vector.z = static_cast<float>(glm::round(vector.z * glm::pow(10, decimals)) / glm::pow(10, decimals));
-}
-
-void Transform::round(glm::mat4 & mat, int decimals)
-{
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			mat[i][j] = static_cast<float>(glm::round(mat[i][j] * glm::pow(10, decimals)) / glm::pow(10, decimals));
-		}
-	}
-}
-
-void Transform::fixNegativeZeros(glm::vec3& vector)
-{
-	// For some reason glm::cross may create -0.000000 values
-	// Fix them by assigning 0 on them
-	if (vector.x == 0) vector.x = 0;
-	if (vector.y == 0) vector.y = 0;
-	if (vector.z == 0) vector.z = 0;
-}
-
-void Transform::fixNegativeZeros(glm::mat4& mat)
-{
-	for (int i = 0; i < 4; ++i) {
-		for (int j = 0; j < 4; ++j) {
-			if (mat[i][j] == 0)
-				mat[i][j] = 0;
-		}
-	}
-}
-
 void Transform::clampRotations()
 {
 	// Remove full circles
-	if (glm::abs(rotation.y) > 360)
-		rotation.y = glm::mod(rotation.y, 360.0f);
 	if (glm::abs(rotation.x) > 360)
 		rotation.x = glm::mod(rotation.x, 360.0f);
+	if (glm::abs(rotation.y) > 360)
+		rotation.y = glm::mod(rotation.y, 360.0f);
 	if (glm::abs(rotation.z) > 360)
 		rotation.z = glm::mod(rotation.z, 360.0f);
 
 	// Turn negative angles to positive
-	if (rotation.y < 0)
-		rotation.y += 360;
 	if (rotation.x < 0)
 		rotation.x += 360;
+	if (rotation.y < 0)
+		rotation.y += 360;
 	if (rotation.z < 0)
 		rotation.z += 360;
 }

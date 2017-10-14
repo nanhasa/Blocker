@@ -76,13 +76,12 @@ public:
 
 private:
 	glm::vec3 m_up;				//!< Normalized vector of camera's up direction
-	glm::vec3 m_right;				//!< Normalized vector of camera's right direction
-	glm::vec3 m_forward;			//!< Normalized vector of where camera is looking at
+	glm::vec3 m_right;			//!< Normalized vector of camera's right direction
+	glm::vec3 m_forward;		//!< Normalized vector of where camera is looking at
 	glm::mat4 m_rotationMatrix;	//!< Matrix calculated from quaternion, at the moment only holds rotation
-
 	glm::quat m_quaternion;		//!< Rotation is managed in the back-end with a quaternion while the public one is in euler's angle
 
-	glm::vec3 m_cacheRotation;		//!< Holds rotation when directions were last calculated
+	glm::vec3 m_cacheRotation;	//!< Holds rotation when directions were last calculated
 
 	/**
 	 * \brief Used to update direction and cache vectors
@@ -94,32 +93,6 @@ private:
 	 * \return true if either cache vector is different from the public ones
 	 */
 	bool isCacheDirty() const;
-
-	/**
-	 * \brief Used to round all values in vector to given decimals accuracy
-	 * \param vector Vector to be updated
-	 * \param decimals number of decimals to be saved
-	 */
-	static void round(glm::vec3& vector, int decimals);
-
-	/**
-	 * \brief Used to round all values in matrice to given decimals accuracy
-	 * \param mat Matrice to be updated
-	 * \param decimals number of decimals to be saved
-	 */
-	static void round(glm::mat4& mat, int decimals);
-
-	/**
-	 * \brief Used to fix this weird glm thing where there are -0.00000 values
-	 * \param vector Vector to be updated
-	 */
-	static void fixNegativeZeros(glm::vec3& vector);
-
-	/**
-	 * \brief Used to fix this weird glm thing where there are -0.00000 values
-	 * \param mat Matrice to be updated
-	 */
-	static void fixNegativeZeros(glm::mat4& mat);
 
 	/**
 	 * \brief Used to update rotations to between 0..360
