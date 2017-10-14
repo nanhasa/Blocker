@@ -10,8 +10,13 @@ class Camera {
 public:
 
 	/**
-	 * \brief Camera
-	 * \param transform
+	 * \brief Constructor to set camera start at 0, 0, 0 position and rotation
+	 */
+	Camera();
+
+	/**
+	 * \brief Constructor to set camera start at certain position and rotation
+	 * \param transform Transform where camera starts
 	 */
 	Camera(Transform transform);
 
@@ -25,6 +30,7 @@ public:
 	// Prevent copy and assignment
 	Camera(const Camera&) = delete;
 	Camera& operator=(const Camera&) = delete;
+	Camera& operator=(Camera&& rhs) = delete;
 
 	/**
 	 * \brief Used to access view matrix of this camera
