@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Event">
       <UniqueIdentifier>{0ef3a9bc-f364-40c6-8c2c-02f1f2032fae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{b7d1dfcc-aa81-450a-a347-676dae7739e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\testexception.h">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\Actor\transform_test.cpp">
       <Filter>Source Files\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Utility\config_test.cpp">
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
