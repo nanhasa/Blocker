@@ -9,8 +9,8 @@
 class DerivedEventManager : public EventManager {
 public:
 	// Return listener count for given event type
-	static unsigned int getEventListenerCount(const EventType evtType) {
-		std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
+	unsigned int getEventListenerCount(const EventType evtType) {
+		std::lock_guard<std::mutex> lock(m_mapMtx);
 
 		const auto it = m_eventListenerMap.find(evtType);
 		if (it != m_eventListenerMap.end()) {
@@ -20,13 +20,13 @@ public:
 	}
 
 	// Clear all listeners
-	static void clearListeners() {
-		std::lock_guard<std::mutex> lock(EventManager::m_mapMtx);
+	void clearListeners() {
+		std::lock_guard<std::mutex> lock(m_mapMtx);
 		m_eventListenerMap.clear();
 	}
 
-	static void flushQueue() {
-		std::lock_guard<std::mutex> lock(EventManager::m_queueMtx);
+	void flushQueue() {
+		std::lock_guard<std::mutex> lock(m_queueMtx);
 		while (!m_eventQueue.empty()) {
 			m_eventQueue.pop();
 		}
