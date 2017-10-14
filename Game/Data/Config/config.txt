@@ -1,0 +1,15 @@
+# Global
+DataPath=../Data/
+
+# Renderer
+ScreenWidth=1600
+ScreenHeight=1200
+
+#FileLoader
+MaxByteFileSizeToLoad=5120000
+
+# Player
+PlayerStartPosition=0,0,10
+PlayerStartRotation=0,0,0
+MouseSensitivity=0.1f
+MovementSpeedMultiplier=4.0f
