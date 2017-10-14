@@ -208,7 +208,9 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClCompile Include="..\..\Renderer\texture.cpp" />
     <ClCompile Include="..\..\Utility\config.cpp" />
     <ClCompile Include="..\..\Utility\contract.cpp" />
+    <ClCompile Include="..\..\Utility\locator.cpp" />
     <ClCompile Include="..\..\Utility\logger.cpp" />
+    <ClCompile Include="..\..\Utility\staticsafelogger.cpp" />
     <ClCompile Include="..\..\Utility\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -228,13 +230,19 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClInclude Include="..\..\Renderer\texture.h" />
     <ClInclude Include="..\..\Utility\config.h" />
     <ClInclude Include="..\..\Utility\contract.h" />
+    <ClInclude Include="..\..\Utility\locator.h" />
     <ClInclude Include="..\..\Utility\logger.h" />
+    <ClInclude Include="..\..\Utility\staticsafelogger.h" />
     <ClInclude Include="..\..\Utility\utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\Game\Data\Log\logconfig.json" />
     <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag" />
     <None Include="..\..\..\Game\Data\Shaders\vertex_basic.vert" />
     <None Include="..\..\..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\..\Game\Data\Config\config.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
