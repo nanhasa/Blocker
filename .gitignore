@@ -17,6 +17,7 @@ Game/Data/Log/**
 # Test build results
 Test/Output/Win32Debug/
 Test/Output/Win32Release/
+Test/Data/
 
 
 # 3rd Party headers but allow readme files
