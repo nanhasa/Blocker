@@ -62,10 +62,13 @@ bool Config::get(std::string&& valueName, bool defaultValue)
 	const auto it = m_valuemap.find(valueName);
 	if (it == m_valuemap.end()) { return defaultValue; }
 
-	// Try to convert value to bool
 	auto str = it->second;
+	// Remove spaces
+	str.erase(std::remove_if(str.begin(), str.end(), isspace), str.end());
+	// Set letters to lower letters, Wrap ::tolower in lambda to avoid warning
 	std::transform(str.begin(), str.end(), str.begin(),
-	               [](char c) { return static_cast<char>(::tolower(c)); }); // Wrap ::tolower in lambda to avoid warning
+	               [](char c) { return static_cast<char>(::tolower(c)); });
+
 	if (str == "1" || str == "true")
 		return true;
 	if (str == "0" || str == "false")
@@ -93,14 +96,19 @@ glm::vec3 Config::get(std::string&& valueName, glm::vec3 defaultValue)
 	try {
 		std::string::size_type st; // Used to get the position after the number extracted
 		auto str = it->second;
+
 		const float x = std::stof(str, &st);
 		if (st >= str.length() - 1)
 			throw std::invalid_argument("Invalid data to create glm::vec3: " + it->second);
-		str = str.substr(st + 1);
+
+		auto next = str.find(',', st);
+		str = str.substr(next + 1);
 		const float y = std::stof(str, &st);
 		if (st >= str.length() - 1)
 			throw std::invalid_argument("Invalid data to create glm::vec3: " + it->second);
-		str = str.substr(st + 1);
+
+		next = str.find(',', st);
+		str = str.substr(next + 1);
 		const float z = std::stof(str);
 
 		return glm::vec3(x, y, z);
