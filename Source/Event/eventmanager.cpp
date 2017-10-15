@@ -15,7 +15,8 @@ bool EventManager::addListener(const EventType evtType, const ListenerId listene
 {
 	REQUIRE(evtDelegate);
 	if (!evtDelegate) {
-		m_log.error("EventManager::addListener - Attempted to add uncallable event delegate for " + utility::toHex(evtType));
+		m_log.error("EventManager::addListener - Attempted to add uncallable event delegate for " 
+			+ utility::toHex(evtType));
 		return false;
 	}
 
@@ -32,14 +33,16 @@ bool EventManager::addListener(const EventType evtType, const ListenerId listene
 	else {
 		// Event type already exists, make sure that the delegate does not already exist
 		if (std::any_of(it->second.begin(), it->second.end(), compare)) {
-			m_log.warn("Attempted to add listener " + utility::toStr(listener) + " twice for event type " + utility::toHex(evtType));
+			m_log.warn("Attempted to add listener " + utility::toStr(listener) 
+				+ " twice for event type " + utility::toHex(evtType));
 			return false;
 		}
 		// Existing event type but it doesnt have this listener
 		it->second.emplace_back(listener, evtDelegate);
 	}
 
-	m_log.info("Added new listener " + utility::toStr(listener) + " for event type " + utility::toHex(evtType) + " and a delegate for it");
+	m_log.info("Added new listener " + utility::toStr(listener) 
+		+ " for event type " + utility::toHex(evtType) + " and a delegate for it");
 
 	ENSURE(m_eventListenerMap.find(evtType) != m_eventListenerMap.end());
 	ENSURE(std::count_if(m_eventListenerMap[evtType].begin(), m_eventListenerMap[evtType].end(), compare) == 1);
@@ -73,13 +76,12 @@ bool EventManager::removeListener(const EventType evtType, const ListenerId list
 
 	// Erase event type if no listeners are active for it
 	if (it->second.empty()) {
-		m_log.info("Removing event type " + utility::toHex(evtType) + " because there are no delegates left after remove");
+		m_log.info("Removing event type " + utility::toHex(evtType) 
+			+ " because there are no delegates left after remove");
 		m_eventListenerMap.erase(it);
 	}
 
-	ENSURE(std::all_of(m_eventListenerMap.begin(), m_eventListenerMap.end(), [](auto pair) { return !pair.second.empty(); }
-	));
-
+	ENSURE(std::all_of(m_eventListenerMap.begin(), m_eventListenerMap.end(), [](auto pair) { return !pair.second.empty(); }));
 	return true;
 }
 

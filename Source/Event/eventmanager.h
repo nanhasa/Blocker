@@ -10,6 +10,7 @@
 #include "interfaces.h"
 #include "Utility/logger.h"
 
+// This class is accessed through Service Locator pattern (Locator class), DO NOT CONSTRUCT EXPLICITLY
 // All functions are thread safe
 // Allows objects to have only one delegate per event type
 class EventManager : public IEventManager {
@@ -88,7 +89,7 @@ protected: // Protected for testing purposes
 	std::queue<EventDataPtr> m_eventQueue;								//!< Queue for events
 	std::mutex m_mapMtx;												//!< Mutex used when accessing m_eventListenerMap
 	std::mutex m_queueMtx;												//!< Mutex used when accessing m_eventQueue
-	Logger m_log;
+	Logger m_log;														//!< Used to write to log
 };
 
 // Null class for Service Locator
