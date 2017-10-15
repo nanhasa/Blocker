@@ -72,12 +72,17 @@ namespace {
 		}
 	};
 
-	TEST_F(ConfigTest, GetMissingInt)
+	TEST_F(ConfigTest, StringGet)
+	{
+		EXPECT_EQ(Locator::getConfig()->get("String", std::string("value")), "value");
+	}
+
+	TEST_F(ConfigTest, IntGetMissing)
 	{
 		EXPECT_EQ(Locator::getConfig()->get("IntMissing", 0), 0);
 	}
 
-	TEST_F(ConfigTest, GetInt)
+	TEST_F(ConfigTest, IntGet)
 	{
 		EXPECT_EQ(Locator::getConfig()->get("IntOneDigitPositive", 0), 1);
 		EXPECT_EQ(Locator::getConfig()->get("IntTwoDigitPositive", 0), 11);
@@ -85,25 +90,47 @@ namespace {
 		EXPECT_EQ(Locator::getConfig()->get("IntTwoDigitNegative", 0), -11);
 	}
 
-	TEST_F(ConfigTest, GetMissingFloat)
+	TEST_F(ConfigTest, IntWithSpaces)
+	{
+		EXPECT_EQ(Locator::getConfig()->get("IntLeadingSpace", 0), 1);
+		EXPECT_EQ(Locator::getConfig()->get("IntTrailingSpace", 0), 1);
+	}
+
+	TEST_F(ConfigTest, IntGetNotInt)
+	{
+		EXPECT_EQ(Locator::getConfig()->get("String", 0), 0);
+	}
+
+	TEST_F(ConfigTest, FloatGetMissing)
 	{
 		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatMissing", 0.0f), 0.0f);
 	}
 
-	TEST_F(ConfigTest, GetFloat)
+	TEST_F(ConfigTest, FloatGet)
 	{
 		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatInteger", 0.0f), 1);
 		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatNegative", 0.0f), -1.2345f);
 		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatPositive", 0.0f), 1.2345f);
 	}
 
-	TEST_F(ConfigTest, GetMissingBool)
+	TEST_F(ConfigTest, FloatWithSpaces)
+	{
+		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatLeadingSpace", 0.0f), 0.123f);
+		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatTrailingSpace", 0.0f), 0.123f);
+	}
+	
+	TEST_F(ConfigTest, FloatGetNotFloat)
+	{
+		EXPECT_FLOAT_EQ(Locator::getConfig()->get("String", 0.0f), 0.0f);
+	}
+
+	TEST_F(ConfigTest, BoolGetMissing)
 	{
 		EXPECT_FALSE(Locator::getConfig()->get("BoolMissing", false));
 		EXPECT_TRUE(Locator::getConfig()->get("BoolMissing", true));
 	}
 
-	TEST_F(ConfigTest, GetBool)
+	TEST_F(ConfigTest, BoolGet)
 	{
 		EXPECT_TRUE(Locator::getConfig()->get("BoolTrue", false));
 		EXPECT_TRUE(Locator::getConfig()->get("BoolCapitalTrue", false));
@@ -113,12 +140,23 @@ namespace {
 		EXPECT_FALSE(Locator::getConfig()->get("BoolFalseDigit", true));
 	}
 
-	TEST_F(ConfigTest, GetMissingVec3)
+	TEST_F(ConfigTest, BoolWithSpaces)
+	{
+		EXPECT_TRUE(Locator::getConfig()->get("BoolLeadingSpace", false));
+		EXPECT_TRUE(Locator::getConfig()->get("BoolTrailingSpace", false));
+	}
+
+	TEST_F(ConfigTest, BoolGetNotBool)
+	{
+		EXPECT_FALSE(Locator::getConfig()->get("String", false));
+	}
+
+	TEST_F(ConfigTest, Vec3GetMissing)
 	{
 		EXPECT_EQ(Locator::getConfig()->get("Vec3Missing", glm::vec3(3.0f, 2.0f, 1.0f)), glm::vec3(3.0f, 2.0f, 1.0f));
 	}
 
-	TEST_F(ConfigTest, GetVec3)
+	TEST_F(ConfigTest, Vec3Get)
 	{
 		EXPECT_EQ(Locator::getConfig()->get("Vec3OneIntegerPositive", glm::vec3()), glm::vec3(1, 2, 3));
 		EXPECT_EQ(Locator::getConfig()->get("Vec3TwoIntegerPositive", glm::vec3()), glm::vec3(11, 22, 33));
@@ -134,24 +172,6 @@ namespace {
 		EXPECT_EQ(Locator::getConfig()->get("NoEquals", std::string("")), "");
 	}
 
-	TEST_F(ConfigTest, IntWithSpaces)
-	{
-		EXPECT_EQ(Locator::getConfig()->get("IntLeadingSpace", 0), 1);
-		EXPECT_EQ(Locator::getConfig()->get("IntTrailingSpace", 0), 1);
-	}
-
-	TEST_F(ConfigTest, FloatWithSpaces)
-	{
-		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatLeadingSpace", 0.0f), 0.123f);
-		EXPECT_FLOAT_EQ(Locator::getConfig()->get("FloatTrailingSpace", 0.0f), 0.123f);
-	}
-
-	TEST_F(ConfigTest, BoolWithSpaces)
-	{
-		EXPECT_TRUE(Locator::getConfig()->get("BoolLeadingSpace", false));
-		EXPECT_TRUE(Locator::getConfig()->get("BoolTrailingSpace", false));
-	}
-
 	TEST_F(ConfigTest, Vec3WithDifferentNotations)
 	{
 		EXPECT_EQ(Locator::getConfig()->get("Vec3TooFewValues", glm::vec3()), glm::vec3());
@@ -162,5 +182,10 @@ namespace {
 		EXPECT_EQ(Locator::getConfig()->get("Vec3TrailingSpace", glm::vec3()), glm::vec3(1, 2, 3));
 		EXPECT_EQ(Locator::getConfig()->get("Vec3SpacesBetween", glm::vec3()), glm::vec3(1, 2, 3));
 		EXPECT_EQ(Locator::getConfig()->get("Vec3MoreThanOneSpacesBetween", glm::vec3()), glm::vec3(1, 2, 3));
+	}
+
+	TEST_F(ConfigTest, Vec3GetNotVec3)
+	{
+		EXPECT_EQ(Locator::getConfig()->get("String", glm::vec3()), glm::vec3());
 	}
 }
