@@ -6,9 +6,9 @@
 #include "interfaces.h"
 
 // Namespace to group image loading functionality
-namespace texture {
+namespace fileloader {
 
-	// Class used to return from texture namespace with function load()
+	// Class used to return from fileloader namespace with function loadTexture()
 	class Image {
 	public:
 
@@ -69,9 +69,9 @@ namespace texture {
 	 * \brief Load file and get image RGB byte array
 	 * \param file Filename without filepath
 	 * \pre !file.empty()
-	 * \return Pointer to texture::Image which holds image RGB byte array, width, and height
+	 * \return Pointer to fileloader::Image which holds image RGB byte array, width, and height
 	 */
-	std::unique_ptr<Image> load(const std::string& file);
+	std::unique_ptr<Image> loadTexture(const std::string& file);
 
 	/**
 	 * \brief Get byte size of file
@@ -82,4 +82,4 @@ namespace texture {
 	 */
 	std::streampos getFileSize(std::ifstream & stream);
 
-} // namespace texture
+} // namespace fileloader

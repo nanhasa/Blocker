@@ -5,7 +5,7 @@
 #pragma warning (pop)      // Restore back
 
 #include "Event/eventmanager.h"
-#include "Renderer/texture.h"
+#include "Renderer/fileloader.h"
 #include "Utility/contract.h"
 #include "Utility/locator.h"
 #include "Utility/utility.h"
@@ -334,15 +334,15 @@ void Renderer::vStartMainLoop()
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
-	// Set the texture wrapping parameters
+	// Set the fileloader wrapping parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// Set texture filtering parameters
+	// Set fileloader filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	// Load texture data
-	std::unique_ptr<texture::Image> txrData = texture::load("square.bmp");
+	// Load fileloader data
+	std::unique_ptr<fileloader::Image> txrData = fileloader::loadTexture("square.bmp");
 	const unsigned int width = txrData->getWidth();
 	const unsigned int height = txrData->getHeight();
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, txrData->getData());

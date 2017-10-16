@@ -1,4 +1,4 @@
-#include "Renderer/texture.h"
+#include "Renderer/fileloader.h"
 
 #include <algorithm>
 #include <cctype>
@@ -10,7 +10,7 @@
 #include "Utility/staticsafelogger.h"
 #include "Utility/utility.h"
 
-namespace texture {
+namespace fileloader {
 
 	//Anonymous namespace to hide factory method from namespace interface
 	namespace {
@@ -49,7 +49,7 @@ namespace texture {
 
 			const auto size = getFileSize(stream);
 			if (size > Locator::getConfig()->get("MaxByteFileSizeToLoad", 5120000)) {
-				g_log.error("File is too big to load : " + utility::toStr(size) + " bytes");
+				g_log.error("File is too big to loadTexture : " + utility::toStr(size) + " bytes");
 				return false;
 			}
 
@@ -57,7 +57,7 @@ namespace texture {
 		}
 
 		/**
-		* \brief Recognizes file type from file extension and returns correct image type to load the file
+		* \brief Recognizes file type from file extension and returns correct image type to loadTexture the file
 		* \param filename File name without file path
 		* \return Pointer to ImageType matching the parameter file extension, nullptr if file is not supported
 		*/
@@ -136,7 +136,7 @@ namespace texture {
 		m_data = std::move(temp);
 	}
 
-	std::unique_ptr<Image> load(const std::string& file)
+	std::unique_ptr<Image> loadTexture(const std::string& file)
 	{
 		REQUIRE(!file.empty());
 		if (file.empty()) {
@@ -175,4 +175,4 @@ namespace texture {
 		return size;
 	}
 
-} // namespace texture
+} // namespace fileloader

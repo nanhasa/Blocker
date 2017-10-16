@@ -205,7 +205,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClCompile Include="..\..\Renderer\bmp.cpp" />
     <ClCompile Include="..\..\Renderer\renderer.cpp" />
     <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
-    <ClCompile Include="..\..\Renderer\texture.cpp" />
+    <ClCompile Include="..\..\Renderer\fileloader.cpp" />
     <ClCompile Include="..\..\Utility\config.cpp" />
     <ClCompile Include="..\..\Utility\contract.cpp" />
     <ClCompile Include="..\..\Utility\locator.cpp" />
@@ -227,7 +227,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     <ClInclude Include="..\..\Renderer\bmp.h" />
     <ClInclude Include="..\..\Renderer\renderer.h" />
     <ClInclude Include="..\..\Renderer\shaderprogram.h" />
-    <ClInclude Include="..\..\Renderer\texture.h" />
+    <ClInclude Include="..\..\Renderer\fileloader.h" />
     <ClInclude Include="..\..\Utility\config.h" />
     <ClInclude Include="..\..\Utility\contract.h" />
     <ClInclude Include="..\..\Utility\locator.h" />

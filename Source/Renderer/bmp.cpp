@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#include "Renderer/texture.h"
+#include "Renderer/fileloader.h"
 #include "Utility/contract.h"
 #include "Utility/utility.h"
 
@@ -20,7 +20,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 
 	// Test if file is long enough to have headers
 	stream.seekg(std::ios::beg); // Make sure the cursor is at the beginning of file
-	const auto size = texture::getFileSize(stream);
+	const auto size = fileloader::getFileSize(stream);
 	if (size < 54) {
 		// Offset of BMP file
 		m_log->error("Cannot read file, because file is smaller than BMP header size (54B): " + utility::toStr(size) + "B");

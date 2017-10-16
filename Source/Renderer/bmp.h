@@ -36,7 +36,7 @@ struct BITMAPINFOHEADER {			 /* BMP file info structure */
 	unsigned int   biClrImportant;   //!< Number of important colors
 };
 
-// Class used to load BMP files and decode them to RGB byte array
+// Class used to loadTexture BMP files and decode them to RGB byte array
 class BMP : public IImageType {
 public:
 
@@ -89,5 +89,5 @@ private:
 	std::unique_ptr<BITMAPFILEHEADER> m_fileheader; //!< Pointer to file header object
 	std::unique_ptr<BITMAPINFOHEADER> m_infoheader; //!< Pointer to info header object
 	std::unique_ptr<uint8_t[]> m_data;				//!< Pointer to image payload BGR byte array
-	StaticSafeLogger* m_log;						//!< Pointer to texture logging, is not managed here
+	StaticSafeLogger* m_log;						//!< Pointer to fileloader logging, is not managed here
 };

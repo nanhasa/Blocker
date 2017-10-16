@@ -75,9 +75,6 @@
     <ClCompile Include="..\..\Renderer\bmp.cpp">
       <Filter>Source Files\Renderer\FileLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Renderer\texture.cpp">
-      <Filter>Source Files\Renderer\FileLoader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Event\eventmanager.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
@@ -120,6 +117,9 @@
     <ClCompile Include="..\..\Utility\staticsafelogger.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Renderer\fileloader.cpp">
+      <Filter>Source Files\Renderer\FileLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\interfaces.h">
@@ -135,9 +135,6 @@
       <Filter>Header Files\GameManager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Renderer\bmp.h">
-      <Filter>Header Files\Renderer\FileLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Renderer\texture.h">
       <Filter>Header Files\Renderer\FileLoader</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Event\eventmanager.h">
@@ -181,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Utility\staticsafelogger.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Renderer\fileloader.h">
+      <Filter>Header Files\Renderer\FileLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
