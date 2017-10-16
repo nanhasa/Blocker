@@ -12,21 +12,24 @@
 #include "interfaces.h"
 #include "Utility/logger.h"
 
+
+// This class is accessed through Service Locator pattern (Locator class)
+// DO NOT BUILD EXPLICITLY
 class Config : public IConfig {
 public:
 
 	/**
-	 * \brief Config
+	 * \brief Constructor. Only to be used when providing this class to Locator class
 	 */
 	Config();
 
 	/**
-	 * \brief ~Config
+	 * \brief Destructor
 	 */
 	~Config();
 
 	/**
-	 * \brief Used to load values from config file to memory. Clears old values after successfully opening file stream
+	 * \brief Used to loadTexture values from config file to memory. Clears old values after successfully opening file stream
 	 * \param valueName Value name in config file used to search for the value
 	 * \param defaultValue Default value returned if error occured or value was not found
 	 * \return True if successful, otherwise false
@@ -72,15 +75,15 @@ private:
 	bool m_initialized;
 
 	/**
-	 * \brief loadFromFile
+	 * \brief Used to initialize m_valuemap with contents of config file
 	 */
 	void loadFromFile();
 
 	/**
-	 * \brief readFile
-	 * \param contents
-	 * \param path
-	 * \return
+	 * \brief Used to read files contents to content vector
+	 * \param contents Output parameter that will hold file contents
+	 * \param path Filepath to config file
+	 * \return True if load was successful, otherwise false
 	 */
 	bool readFile(std::vector<std::string>& contents, const std::string& path) const;
 };
