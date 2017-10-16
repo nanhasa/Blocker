@@ -41,7 +41,6 @@ def main():
         return
     try:
         os.chdir(projectpath)
-        break
     except (WindowsError, OSError):
         print('Oops, invalid project path. Exiting...')
         return
