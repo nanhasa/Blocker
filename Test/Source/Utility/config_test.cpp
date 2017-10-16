@@ -1,15 +1,15 @@
 #include "3rdParty/gtest/gtest.h"
 
+#include <fstream>
 #include <Windows.h>
 
-#include <fstream>
 #include "Utility/config.h"
 #include "Utility/locator.h"
 
 //Hide functions from other files
 namespace {
 
-	class ConfigTest : public testing::Test {
+	class ConfigTest : public ::testing::Test {
 	protected:
 
 		// Function called before every TEST_F call

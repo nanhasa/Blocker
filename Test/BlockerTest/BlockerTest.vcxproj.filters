@@ -27,8 +27,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\testexception.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Source\Event\eventmanager_test.h">
+      <Filter>Header Files\Event</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\stdafx.h">
       <Filter>Header Files</Filter>
@@ -36,28 +36,28 @@
     <ClInclude Include="..\Source\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Event\eventmanager_test.h">
-      <Filter>Header Files\Event</Filter>
+    <ClInclude Include="..\Source\testexception.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\BlockerTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\stdafx.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Source\Utility\config_test.cpp">
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Event\eventmanager_test.cpp">
       <Filter>Source Files\Event</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\Source\Actor\transform_test.cpp">
       <Filter>Source Files\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Utility\config_test.cpp">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md" />
+    <None Include="Test\README.md" />
   </ItemGroup>
 </Project>

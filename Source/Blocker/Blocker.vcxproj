@@ -72,35 +72,35 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\..\Game\$(PlatformName)$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Game\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\Libs\x86\Debug\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Source\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libs\x86\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(SolutionDir)..\..\Libs\x64\Debug\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)..\..\Game\$(PlatformName)$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)Libs\x64\Debug\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Source\;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Game\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\..\Game\$(PlatformName)$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Game\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\Libs\x86\Release\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Source\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libs\x86\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\..\Game\$(PlatformName)$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Game\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\Libs\x64\Release\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Source\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libs\x64\Release\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,9 +119,9 @@
       <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if exist $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat
+      <Command>if exist $(SolutionDir)Scripts\BatchFiles\blocker_post_build_code_commenting.bat call $(SolutionDir)Scripts\BatchFiles\blocker_post_build_code_commenting.bat
 cd $(SolutionDir)
-if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_start_doxygen.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_start_doxygen.bat</Command>
+if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blocker_post_build_start_doxygen.bat call $(SolutionDir)Scripts\BatchFiles\blocker_post_build_start_doxygen.bat</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>If they exist, runs codeCommenter.py and in release run doxygen</Message>
@@ -164,9 +164,9 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
       <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if exist $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_code_commenting.bat
+      <Command>if exist $(SolutionDir)Scripts\BatchFiles\blocker_post_build_code_commenting.bat call $(SolutionDir)Scripts\BatchFiles\blocker_post_build_code_commenting.bat
 cd $(SolutionDir)
-if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_start_doxygen.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blocker_post_build_start_doxygen.bat</Command>
+if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blocker_post_build_start_doxygen.bat call $(SolutionDir)Scripts\BatchFiles\blocker_post_build_start_doxygen.bat</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>If they exist, runs codeCommenter.py and in release run doxygen</Message>
@@ -192,57 +192,57 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)..\..\Scripts\BatchFil
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Actor\camera.cpp" />
-    <ClCompile Include="..\..\Actor\inputmanager.cpp" />
-    <ClCompile Include="..\..\Actor\player.cpp" />
-    <ClCompile Include="..\..\Actor\transform.cpp" />
-    <ClCompile Include="..\..\Event\event.cpp" />
-    <ClCompile Include="..\..\Event\eventlistener.cpp" />
-    <ClCompile Include="..\..\Event\eventmanager.cpp" />
-    <ClCompile Include="..\..\Event\inputcommandevent.cpp" />
-    <ClCompile Include="..\..\GameManager\gamemanager.cpp" />
-    <ClCompile Include="..\..\main.cpp" />
-    <ClCompile Include="..\..\Renderer\bmp.cpp" />
-    <ClCompile Include="..\..\Renderer\renderer.cpp" />
-    <ClCompile Include="..\..\Renderer\shaderprogram.cpp" />
-    <ClCompile Include="..\..\Renderer\fileloader.cpp" />
-    <ClCompile Include="..\..\Utility\config.cpp" />
-    <ClCompile Include="..\..\Utility\contract.cpp" />
-    <ClCompile Include="..\..\Utility\locator.cpp" />
-    <ClCompile Include="..\..\Utility\logger.cpp" />
-    <ClCompile Include="..\..\Utility\staticsafelogger.cpp" />
-    <ClCompile Include="..\..\Utility\utility.cpp" />
+    <ClCompile Include="..\Actor\camera.cpp" />
+    <ClCompile Include="..\Actor\inputmanager.cpp" />
+    <ClCompile Include="..\Actor\player.cpp" />
+    <ClCompile Include="..\Actor\transform.cpp" />
+    <ClCompile Include="..\Event\event.cpp" />
+    <ClCompile Include="..\Event\eventlistener.cpp" />
+    <ClCompile Include="..\Event\eventmanager.cpp" />
+    <ClCompile Include="..\Event\inputcommandevent.cpp" />
+    <ClCompile Include="..\GameManager\gamemanager.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\Renderer\bmp.cpp" />
+    <ClCompile Include="..\Renderer\renderer.cpp" />
+    <ClCompile Include="..\Renderer\shaderprogram.cpp" />
+    <ClCompile Include="..\Renderer\fileloader.cpp" />
+    <ClCompile Include="..\Utility\config.cpp" />
+    <ClCompile Include="..\Utility\contract.cpp" />
+    <ClCompile Include="..\Utility\locator.cpp" />
+    <ClCompile Include="..\Utility\logger.cpp" />
+    <ClCompile Include="..\Utility\staticsafelogger.cpp" />
+    <ClCompile Include="..\Utility\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Actor\camera.h" />
-    <ClInclude Include="..\..\Actor\inputmanager.h" />
-    <ClInclude Include="..\..\Actor\player.h" />
-    <ClInclude Include="..\..\Actor\transform.h" />
-    <ClInclude Include="..\..\Event\event.h" />
-    <ClInclude Include="..\..\Event\eventlistener.h" />
-    <ClInclude Include="..\..\Event\eventmanager.h" />
-    <ClInclude Include="..\..\Event\inputcommandevent.h" />
-    <ClInclude Include="..\..\GameManager\gamemanager.h" />
-    <ClInclude Include="..\..\interfaces.h" />
-    <ClInclude Include="..\..\Renderer\bmp.h" />
-    <ClInclude Include="..\..\Renderer\renderer.h" />
-    <ClInclude Include="..\..\Renderer\shaderprogram.h" />
-    <ClInclude Include="..\..\Renderer\fileloader.h" />
-    <ClInclude Include="..\..\Utility\config.h" />
-    <ClInclude Include="..\..\Utility\contract.h" />
-    <ClInclude Include="..\..\Utility\locator.h" />
-    <ClInclude Include="..\..\Utility\logger.h" />
-    <ClInclude Include="..\..\Utility\staticsafelogger.h" />
-    <ClInclude Include="..\..\Utility\utility.h" />
+    <ClInclude Include="..\Actor\camera.h" />
+    <ClInclude Include="..\Actor\inputmanager.h" />
+    <ClInclude Include="..\Actor\player.h" />
+    <ClInclude Include="..\Actor\transform.h" />
+    <ClInclude Include="..\Event\event.h" />
+    <ClInclude Include="..\Event\eventlistener.h" />
+    <ClInclude Include="..\Event\eventmanager.h" />
+    <ClInclude Include="..\Event\inputcommandevent.h" />
+    <ClInclude Include="..\GameManager\gamemanager.h" />
+    <ClInclude Include="..\interfaces.h" />
+    <ClInclude Include="..\Renderer\bmp.h" />
+    <ClInclude Include="..\Renderer\renderer.h" />
+    <ClInclude Include="..\Renderer\shaderprogram.h" />
+    <ClInclude Include="..\Renderer\fileloader.h" />
+    <ClInclude Include="..\Utility\config.h" />
+    <ClInclude Include="..\Utility\contract.h" />
+    <ClInclude Include="..\Utility\locator.h" />
+    <ClInclude Include="..\Utility\logger.h" />
+    <ClInclude Include="..\Utility\staticsafelogger.h" />
+    <ClInclude Include="..\Utility\utility.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Game\Data\Log\logconfig.json" />
-    <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag" />
-    <None Include="..\..\..\Game\Data\Shaders\vertex_basic.vert" />
-    <None Include="..\..\..\README.md" />
+    <None Include="..\Game\Data\Log\logconfig.json" />
+    <None Include="..\Game\Data\Shaders\fragment_basic.frag" />
+    <None Include="..\Game\Data\Shaders\vertex_basic.vert" />
+    <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\Game\Data\Config\config.txt" />
+    <Text Include="..\Game\Data\Config\config.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

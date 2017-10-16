@@ -7,7 +7,7 @@
 //Hide functions from other files
 namespace { 
 
-	class EventManagerTest : public testing::Test {
+	class EventManagerTest : public ::testing::Test {
 	protected:
 		EventManagerTest() : m_evtMgr(nullptr)
 		{

@@ -60,143 +60,143 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\main.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Renderer\bmp.cpp">
+      <Filter>Source Files\Renderer\FileLoader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Renderer\shaderprogram.cpp">
+    <ClCompile Include="..\Renderer\fileloader.cpp">
+      <Filter>Source Files\Renderer\FileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer\shaderprogram.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Renderer\renderer.cpp">
+    <ClCompile Include="..\Renderer\renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GameManager\gamemanager.cpp">
+    <ClCompile Include="..\Actor\camera.cpp">
+      <Filter>Source Files\Actor\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utility\config.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utility\contract.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Event\event.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Event\eventlistener.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Event\eventmanager.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Event\inputcommandevent.cpp">
+      <Filter>Source Files\Event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameManager\gamemanager.cpp">
       <Filter>Source Files\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Renderer\bmp.cpp">
-      <Filter>Source Files\Renderer\FileLoader</Filter>
+    <ClCompile Include="..\Actor\inputmanager.cpp">
+      <Filter>Source Files\Actor\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Event\eventmanager.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Event\event.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Event\inputcommandevent.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Event\eventlistener.cpp">
-      <Filter>Source Files\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Utility\config.cpp">
+    <ClCompile Include="..\Utility\locator.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Utility\contract.cpp">
+    <ClCompile Include="..\Utility\logger.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Utility\utility.cpp">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Utility\logger.cpp">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Actor\player.cpp">
+    <ClCompile Include="..\Actor\player.cpp">
       <Filter>Source Files\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Actor\transform.cpp">
-      <Filter>Source Files\Actor\Component</Filter>
+    <ClCompile Include="..\main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Actor\inputmanager.cpp">
-      <Filter>Source Files\Actor\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Actor\camera.cpp">
-      <Filter>Source Files\Actor\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Utility\locator.cpp">
+    <ClCompile Include="..\Utility\staticsafelogger.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Utility\staticsafelogger.cpp">
-      <Filter>Source Files\Utility</Filter>
+    <ClCompile Include="..\Actor\transform.cpp">
+      <Filter>Source Files\Actor\Component</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Renderer\fileloader.cpp">
-      <Filter>Source Files\Renderer\FileLoader</Filter>
+    <ClCompile Include="..\Utility\utility.cpp">
+      <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\interfaces.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\Renderer\bmp.h">
+      <Filter>Header Files\Renderer\FileLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Renderer\renderer.h">
-      <Filter>Header Files\Renderer</Filter>
+    <ClInclude Include="..\Renderer\fileloader.h">
+      <Filter>Header Files\Renderer\FileLoader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Renderer\shaderprogram.h">
-      <Filter>Header Files\Renderer</Filter>
+    <ClInclude Include="..\Actor\camera.h">
+      <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GameManager\gamemanager.h">
+    <ClInclude Include="..\Utility\config.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utility\contract.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Event\event.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Event\eventlistener.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Event\eventmanager.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Event\inputcommandevent.h">
+      <Filter>Header Files\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameManager\gamemanager.h">
       <Filter>Header Files\GameManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Renderer\bmp.h">
-      <Filter>Header Files\Renderer\FileLoader</Filter>
+    <ClInclude Include="..\Actor\inputmanager.h">
+      <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Event\eventmanager.h">
-      <Filter>Header Files\Event</Filter>
+    <ClInclude Include="..\interfaces.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Event\event.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Event\inputcommandevent.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Event\eventlistener.h">
-      <Filter>Header Files\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Utility\config.h">
+    <ClInclude Include="..\Utility\locator.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Utility\contract.h">
+    <ClInclude Include="..\Utility\logger.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Utility\logger.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Actor\player.h">
+    <ClInclude Include="..\Actor\player.h">
       <Filter>Header Files\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Utility\utility.h">
+    <ClInclude Include="..\Renderer\renderer.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer\shaderprogram.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utility\staticsafelogger.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Actor\transform.h">
+    <ClInclude Include="..\Actor\transform.h">
       <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Actor\inputmanager.h">
-      <Filter>Header Files\Actor\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Actor\camera.h">
-      <Filter>Header Files\Actor\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Utility\locator.h">
+    <ClInclude Include="..\Utility\utility.h">
       <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Utility\staticsafelogger.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Renderer\fileloader.h">
-      <Filter>Header Files\Renderer\FileLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Game\Data\Shaders\vertex_basic.vert">
+    <None Include="..\README.md" />
+    <None Include="..\Game\Data\Shaders\fragment_basic.frag">
       <Filter>Resource Files\Shader Files</Filter>
     </None>
-    <None Include="..\..\..\Game\Data\Shaders\fragment_basic.frag">
-      <Filter>Resource Files\Shader Files</Filter>
-    </None>
-    <None Include="..\..\..\README.md" />
-    <None Include="..\..\..\Game\Data\Log\logconfig.json">
+    <None Include="..\Game\Data\Log\logconfig.json">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\Game\Data\Shaders\vertex_basic.vert">
+      <Filter>Resource Files\Shader Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\Game\Data\Config\config.txt">
+    <Text Include="..\Game\Data\Config\config.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

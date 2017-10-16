@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="15.0">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -72,22 +72,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)..\..\Test\Output\$(PlatformName)$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Test\Output\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)..\..\Test\Source\3rdParty\;$(SolutionDir)..\..\Test\Source\;$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\Temp\Blocker$(PlatformName)$(Configuration)\;$(SolutionDir)..\..\Libs\x86\Debug\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Test\Source\;$(SolutionDir)Test\Source\3rdParty\;$(SolutionDir)Source\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>opengl32.lib;glfw3.lib;$(SolutionDir)Temp\Blocker$(PlatformName)$(Configuration)\;$(SolutionDir)Libs\x86\Debug\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)..\..\Test\Output\$(PlatformName)$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)..\..\Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Test\Output\$(PlatformName)$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Temp\$(ProjectName)$(PlatformName)$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)$(PlatformName)$(Configuration)</TargetName>
-    <IncludePath>$(SolutionDir)..\..\Test\Source\3rdParty\;$(SolutionDir)..\..\Test\Source\;$(SolutionDir)..\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\Libs\x86\Release\;$(SolutionDir)..\..\Temp\Blocker$(PlatformName)$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Test\Source\;$(SolutionDir)Test\Source\3rdParty\;$(SolutionDir)Source\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>opengl32.lib;glfw3.lib;$(SolutionDir)Libs\x86\Release\;$(SolutionDir)Temp\Blocker$(PlatformName)$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -104,16 +104,24 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;gtestd.lib;gtest_maind.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;gamemanager.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;player.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;texture.obj;transform.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;gtestd.lib;gtest_maind.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;fileloader.obj;gamemanager.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;player.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;transform.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
     </Link>
     <PreLinkEvent>
-      <Command>if exist $(SolutionDir)..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat</Command>
+      <Command>
+      </Command>
     </PreLinkEvent>
     <PreLinkEvent>
-      <Message>Updates additional dependencies with the main project's .obj files</Message>
+      <Message>
+      </Message>
     </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>if exist $(SolutionDir)Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat call $(SolutionDir)Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Updates additional dependencies with the main project's .obj files</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -143,14 +151,22 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;gtest.lib;gtest_main.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;gamemanager.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;player.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;texture.obj;transform.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;gtest.lib;gtest_main.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;fileloader.obj;gamemanager.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;player.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;transform.obj;utility.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
-      <Command>if exist $(SolutionDir)..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat call $(SolutionDir)..\..\Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat</Command>
+      <Command>
+      </Command>
     </PreLinkEvent>
     <PreLinkEvent>
-      <Message>Updates additional dependencies with the main project's .obj files</Message>
+      <Message>
+      </Message>
     </PreLinkEvent>
+    <PreBuildEvent>
+      <Command>if exist $(SolutionDir)Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat call $(SolutionDir)Scripts\BatchFiles\blockertest_pre_build_update_dependencies.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Updates additional dependencies with the main project's .obj files</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -182,12 +198,12 @@
     <ClCompile Include="..\Source\Utility\config_test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\BlockerSolution\Blocker\Blocker.vcxproj">
+    <ProjectReference Include="..\..\Source\Blocker\Blocker.vcxproj">
       <Project>{8732b38d-5b16-46a5-bc9a-a10b4d8a84c1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md" />
+    <None Include="Test\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
