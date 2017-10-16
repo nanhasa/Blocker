@@ -27,57 +27,40 @@ import xml.etree.ElementTree as ET
 
 #Main function for this script
 def main():
+    if (len(sys.argv) < 5):
+        print('Not enough parameters provided. Exiting...')
+        return
 
-    if (len(sys.argv) > 1):
-        projectname = sys.argv[1]
-        print('Project name: ' + projectname)
-    else:
-        projectname = input('Project name: ')
+    projectname = sys.argv[1]
+    print('Project name: ' + projectname)
 
-    projectpath = ''
-    if (len(sys.argv) > 2):
-        projectpath = sys.argv[2]
-        print('Path to project file: ' + projectpath)
-    while True:
-        if (len(projectpath) == 0):
-            projectpath = input('Path to project file: ')
-        try:
-            os.chdir(projectpath)
-            break
-        except (WindowsError, OSError):
-            print('Oops, no such folder found')
-            projectpath = ''
+    projectpath = sys.argv[2]
+    print('Path to project file: ' + projectpath)
+    if (len(projectpath) == 0):
+        print('No path to project file provided. Exiting...')
+        return
+    try:
+        os.chdir(projectpath)
+        break
+    except (WindowsError, OSError):
+        print('Oops, invalid project path. Exiting...')
+        return
 
-    debugpath = ''
-    if (len(sys.argv) > 3):
-        debugpath = sys.argv[3]
-        print('Path to debug .obj files: ' + debugpath)
-    while True:
-        if (len(debugpath) == 0):
-            debugpath = input('Path to debug .obj files: ')
-        try:
-            os.chdir(debugpath)
-            break
-        except (WindowsError, OSError):
-            print('Oops, no such folder found')
-            debugpath = ''
+    debugpath = sys.argv[3]
+    print('Path to debug .obj files: ' + debugpath)
+    try:
+        os.chdir(debugpath)
+        updateProjectFile(projectname, projectpath, debugpath, 'Debug')
+    except (WindowsError, OSError):
+        print('Oops, no debug folder found')
 
-    releasepath = ''
-    if (len(sys.argv) > 4):
-        releasepath = sys.argv[4]
-        print('Path to release .obj files: ' + releasepath)
-    while True:
-        if (len(releasepath) == 0):
-            releasepath = input('Path to release .obj files: ')
-        try:
-            os.chdir(releasepath)
-            break
-        except (WindowsError, OSError):
-            print('Oops, no such folder found')
-            releasepath = ''
-
-    updateProjectFile(projectname, projectpath, debugpath, 'Debug')
-    updateProjectFile(projectname, projectpath, releasepath, 'Release')
+    releasepath = sys.argv[4]
+    print('Path to release .obj files: ' + releasepath)
+    try:
+        os.chdir(releasepath)
+        updateProjectFile(projectname, projectpath, releasepath, 'Release')
+    except (WindowsError, OSError):
+        print('Oops, no release folder found')
 
 
 # Updates the project file with .obj file names found from the given folder
