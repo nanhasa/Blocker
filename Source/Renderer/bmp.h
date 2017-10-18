@@ -36,7 +36,7 @@ struct BITMAPINFOHEADER {			 /* BMP file info structure */
 	unsigned int   biClrImportant;   //!< Number of important colors
 };
 
-// Class used to loadTexture BMP files and decode them to RGB byte array
+// Class used to load BMP files and decode them to RGB byte array
 class BMP : public IImageType {
 public:
 
