@@ -36,7 +36,7 @@ Following above instruction build
 - glew 2.1.0 (http://glew.sourceforge.net/)      
 - glfw 3.2.1 (http://www.glfw.org/)    
 - glm 0.9.8.4 (https://glm.g-truc.net/0.9.8/index.html)    
-- googletest (https://github.com/google/googletest)     
+- googletest 1.8.0 (https://github.com/google/googletest)     
      
 Add main project dependency include files to Source/3rdParty/x/     
 - glew (x = GL)    
