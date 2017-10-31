@@ -2,8 +2,10 @@
 
 #include <memory>
 
-#include "Actor/player.h"
 #include "interfaces.h"
+#include "GameManager/worldmanager.h"
+#include "Object/player.h"
+#include "Renderer/modelmanager.h"
 #include "Utility/logger.h"
 
 class GameManager {
@@ -14,13 +16,10 @@ public:
 	 */
 	GameManager();
 
-	/**
-	 * \brief Destructor
-	 */
-	~GameManager();
+	~GameManager() = default;
 
 	/**
-	 * \brief Initialize game and start main loop
+	 * \brief Destructor
 	 * \return True if initializations were successful, otherwise false
 	 */
 	bool start();
@@ -29,10 +28,12 @@ public:
 	 * \brief Function called on every frame to update game logic
 	 * \param deltatime Time in seconds since last main loop started
 	 */
-	void onUpdate(float deltatime);
+	void onUpdate(const float deltatime);
 
 private:
 	std::unique_ptr<IRenderer> m_renderer;	//!< Pointer to renderer component
 	Player m_player;
 	Logger m_log;							//!< Logger object used to write log entries
+	std::unique_ptr<WorldManager> m_world;
+	std::unique_ptr<ModelManager> m_modelManager;
 };

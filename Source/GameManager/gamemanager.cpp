@@ -6,20 +6,22 @@
 #include "Utility/config.h"
 #include "Utility/locator.h"
 
-GameManager::GameManager() : m_log("GameManager")
-{
-	m_player = Player(
-		Transform(Locator::getConfig()->get("PlayerStartPosition", glm::vec3(0, 0, 7)),
-				Locator::getConfig()->get("PlayerStartRotation", glm::vec3()))
-	);
-}
-
-GameManager::~GameManager() {}
+GameManager::GameManager() 
+	: m_renderer(nullptr), m_player(), m_log("GameManager"), m_world(nullptr), m_modelManager(nullptr) {}
 
 bool GameManager::start()
 {
 	m_renderer = std::make_unique<Renderer>();
 	if (m_renderer->vInitialize("Blocker", std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
+
+		m_player = Player(
+			Transform(Locator::getConfig()->get("PlayerStartPosition", glm::vec3(0, 0, 7)),
+				Locator::getConfig()->get("PlayerStartRotation", glm::vec3()))
+		);
+
+		m_modelManager = std::make_unique<ModelManager>();
+		m_world = std::make_unique<WorldManager>(*m_modelManager.get());
+
 		m_renderer->vStartMainLoop(); //Start main loop
 		return true;
 	}
@@ -27,7 +29,8 @@ bool GameManager::start()
 	return false;
 }
 
-void GameManager::onUpdate(float deltatime)
+void GameManager::onUpdate(const float deltatime)
 {
 	m_player.onUpdate(*m_renderer.get(), deltatime);
+	m_world->onUpdate(*m_renderer.get(), deltatime);
 }
