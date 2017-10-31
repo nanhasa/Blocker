@@ -10,13 +10,15 @@
 #include <3rdParty/glm/glm.hpp>
 #pragma warning (pop)      // Restore back
 
+#include "Renderer/model.h"
+
 class IRenderer {
 public:
 	virtual ~IRenderer() {};
 
 	virtual bool vInitialize(std::string&& windowName, std::function<void(float)>&& gameLogic) = 0;
 	virtual void vStartMainLoop() = 0;
-	virtual void vSetViewMatrix(const glm::mat4& viewMatrix) = 0;
+	virtual ShaderProgram* vGetShaderProgram() const = 0;
 	virtual void vGetCursorPosition(double& x, double& y) const = 0;
 	virtual void vCenterCursor() const = 0;
 	virtual bool vKeyPressed(int key) const = 0;

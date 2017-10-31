@@ -68,7 +68,7 @@ public:
 	 * \param mode Mode of key input
 	 * \pre m_window != nullptr
 	 */
-	void keyCallback(int key, int scancode, int action, int mode);
+	void keyCallback(int key, int scancode, int action, int mode) const;
 
 	/**
 	 * \brief Callback for mouse events and movement
@@ -92,11 +92,10 @@ public:
 	void framebufferSizeCallback(int width, int height);
 
 	/**
-	 * \brief Used to update view matrix
-	 * \param viewMatrix New view matrix
+	 * \brief vGetShaderProgram
+	 * \return 
 	 */
-	void vSetViewMatrix(const glm::mat4& viewMatrix) override;
-
+	ShaderProgram* vGetShaderProgram() const override;
 
 	/**
 	 * \brief Used to access cursor position on screen
@@ -135,12 +134,6 @@ private:
 
 	std::unique_ptr<ShaderProgram> m_shaderProgram;	//!< Shader program used to access shaders
 
-	GLuint m_VBO; //!< vertex buffer object
-	GLuint m_VAO; //!< vertex array object
-	GLuint m_EBO; //!< vertex element object
-
-	glm::mat4 m_model;		//!< Matrice From local space to world space
-	glm::mat4 m_view;		//!< Matcice From world space to view space
 	glm::mat4 m_projection;	//!< Matrice From view space to clip space
 
 	Logger m_log; //!< Logger
