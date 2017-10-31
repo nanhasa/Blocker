@@ -4,11 +4,16 @@
 #include <cctype>
 #include <fstream>
 
+#pragma warning (push, 2)  // Temporarily set warning level 2
+#include <3rdParty/glm/glm.hpp>
+#pragma warning (pop)      // Restore back
+
 #include "Renderer/bmp.h"
 #include "Utility/contract.h"
 #include "Utility/locator.h"
 #include "Utility/staticsafelogger.h"
 #include "Utility/utility.h"
+
 
 namespace fileloader {
 
@@ -78,63 +83,9 @@ namespace fileloader {
 			return nullptr;
 		}
 
+
 	} // anonymous namespace
 
-
-	Image::Image(std::unique_ptr<uint8_t[]> data, int width, int height)
-		: m_data(std::move(data)), m_width(width), m_height(height) {}
-
-	Image::Image(std::unique_ptr<IImageType> imagetype) 
-		: m_data(imagetype->vDecode()), m_width(imagetype->vGetWidth()), m_height(imagetype->vGetHeight()) {}
-
-	Image::~Image() {}
-
-	int Image::getWidth() const { return m_width; }
-
-	int Image::getHeight() const { return m_height; }
-
-	uint8_t* Image::getData() const { return m_data.get(); }
-
-	void Image::flipVertically()
-	{
-		// Create temp pointer to store the changes
-		const int width = m_width * 3; // Each pixel has RGB bytes
-		auto temp = std::make_unique<uint8_t[]>(width * m_height);
-
-		// Read from current data to temp in reverse row order
-		for (int from = width * (m_height - 1), to = 0;
-		     from >= 0;
-		     from -= width , to += width) {
-			// Read bytes of one row
-			for (int i = 0; i < width; ++i) { std::swap(temp[to + i], m_data[from + i]); }
-		}
-
-		// Replace the old data with altered temp
-		m_data = std::move(temp);
-	}
-
-	void Image::flipHorizontally()
-	{
-		const int width = m_width * 3; // Each pixel has RGB (=3) bytes
-
-		// Create temp pointer to store the changes
-		auto temp = std::make_unique<uint8_t[]>(width * m_height);
-
-		// Process rows
-		for (int i = 0; i < m_height; ++i) {
-			// Invert bytes within one row
-			int from = (i + 1) * width - 3;
-			int to = i * width;
-			for (int j = 0; j < width; j += 3) {
-				temp[to++] = m_data[from++];
-				temp[to++] = m_data[from++];
-				temp[to++] = m_data[from++];
-				from -= 6; // Move to start of previous pixel
-			}
-		}
-		// Replace the old data with altered temp
-		m_data = std::move(temp);
-	}
 
 	std::unique_ptr<Image> loadTexture(const std::string& file)
 	{
@@ -145,7 +96,9 @@ namespace fileloader {
 		}
 
 		g_log.info("Loading file " + file);
-		std::ifstream stream(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Images/" + file, std::ios::binary);
+		std::ifstream stream(
+			Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Images/" + file, 
+			std::ios::binary);
 
 		if (!validateFile(stream)) {
 			g_log.error("Could not open file " + file);
@@ -156,6 +109,124 @@ namespace fileloader {
 		type->vLoadFile(stream);
 		stream.close();
 		return std::make_unique<Image>(std::move(type));
+	}
+
+	// TODO: this function is still not finished
+	bool loadModel(const std::string& file, std::vector<Mesh>& meshes, bool useFlatShading)
+	{
+		//REQUIRE(!file.empty());
+		//if (file.empty()) {
+		//	g_log.error("loadMode(): file parameter empty");
+		//	return false;
+		//}
+		//
+		//// Open stream
+		//std::ifstream stream(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Models/" + file);
+		//if (!stream.is_open()) {
+		//	g_log.error("loadModel(): Could not open file: " + file);
+		//	return false;
+		//}
+		//
+		//// Clear reference parameters
+		//glm::vec3 vertices;
+		//glm::vec2 uvs;
+		//glm::vec3 normals;
+		//(void)useFlatShading; // Not used just yet TODO: implement useFlatShading
+		(void)meshes; 
+		//
+		//// Loop through file
+		//std::string line;
+		//for (int row = 1; std::getline(stream, line); ++row) {
+		//	std::string header = line.substr(0, 2);
+		//	if (header == "v ") {
+		//		
+		//	}
+		//	else if (header[0] == 'f') {
+		//		
+		//	}
+		//	else if (header[0] == '#') {
+		//		
+		//	}
+		//}
+		//return false;
+
+		(void)useFlatShading;
+		(void)file;
+
+
+		float vertices[] = {
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+			0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		};
+
+		std::vector<unsigned int> indices = {
+			// note that we start from 0!
+			0, 1, 3,
+			// first Triangle
+			1, 2, 3 // second Triangle
+		};
+
+		std::vector<Vertex> mesh;
+		for (int i = 0; i < 180; ) {
+			
+			const float v1 = vertices[i++];
+			const float v2 = vertices[i++];
+			const float v3 = vertices[i++];
+			const glm::vec3 vert(v1, v2, v3);
+		
+			const float uv1 = vertices[i++];
+			const float uv2 = vertices[i++];
+			const glm::vec2 uv(uv1, uv2);
+		
+			Vertex v;
+			v.position = vert;
+			v.normal = glm::vec3();
+			v.uvCoord = uv;
+		
+			mesh.emplace_back(std::move(v));
+			
+		}
+		meshes.emplace_back(Mesh(std::move(mesh), std::move(indices)));
+		return true;
 	}
 
 	std::streampos getFileSize(std::ifstream& stream)
