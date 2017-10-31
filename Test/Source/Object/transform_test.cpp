@@ -1,6 +1,6 @@
 #include "3rdParty/gtest/gtest.h"
 
-#include "Actor/transform.h"
+#include "Object/transform.h"
 
 namespace {
 
