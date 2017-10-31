@@ -1,7 +1,8 @@
 #version 330 core
 
 layout (location = 0) in vec3 iPosition_modelspace;
-layout (location = 1) in vec2 iVertexUV;
+layout (location = 1) in vec3 iNormal;
+layout (location = 2) in vec2 iVertexUV;
 
 out vec2 UVCoord;
 
