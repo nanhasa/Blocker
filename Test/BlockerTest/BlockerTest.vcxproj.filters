@@ -16,14 +16,14 @@
     <Filter Include="Source Files\Event">
       <UniqueIdentifier>{1b161db9-f201-488d-8eb5-0dd9009014e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Actor">
-      <UniqueIdentifier>{8dd49c21-d9f9-4e61-ba18-1642dfe851de}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Event">
       <UniqueIdentifier>{0ef3a9bc-f364-40c6-8c2c-02f1f2032fae}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Utility">
       <UniqueIdentifier>{b7d1dfcc-aa81-450a-a347-676dae7739e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{8dd49c21-d9f9-4e61-ba18-1642dfe851de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,8 +53,8 @@
     <ClCompile Include="..\Source\stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Actor\transform_test.cpp">
-      <Filter>Source Files\Actor</Filter>
+    <ClCompile Include="..\Source\Object\transform_test.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
