@@ -1,5 +1,5 @@
-#include "Actor/inputmanager.h"
-#include "Actor/player.h"
+#include "Object/inputmanager.h"
+#include "Object/player.h"
 #include "Utility/contract.h"
 #include "Utility/locator.h"
 

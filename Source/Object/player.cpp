@@ -1,11 +1,9 @@
-#include "Actor/player.h"
+#include "Object/player.h"
 
-Player::Player() : transform(), m_camera(), m_input() {}
+Player::Player() : Object(), m_camera(), m_input() {}
 
 Player::Player(const Transform& transform)
-	: transform(transform), m_camera(transform), m_input() {}
-
-Player::~Player() {}
+	: Object(transform), m_camera(transform), m_input() {}
 
 Player & Player::operator=(Player && other) noexcept
 {
@@ -15,12 +13,12 @@ Player & Player::operator=(Player && other) noexcept
 	return *this;
 }
 
-void Player::onUpdate(IRenderer& renderer, float deltatime)
+void Player::onUpdate(IRenderer& renderer, const float deltatime)
 {
 	// Process input
 	m_input.onUpdate(*this, &renderer, deltatime);
 	// Update camera
 	m_camera.onUpdate(transform);
-	// Render using camera
-	renderer.vSetViewMatrix(m_camera.getViewMatrix());
+	// Set the view matrix
+	renderer.vGetShaderProgram()->setMat4("view", m_camera.getViewMatrix());
 }

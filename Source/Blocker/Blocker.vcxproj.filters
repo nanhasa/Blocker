@@ -37,18 +37,6 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{73d0978c-6c86-4e4f-8249-7e9fe42f0f9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Actor">
-      <UniqueIdentifier>{730433a5-f347-470b-a4a0-21e3acfd7d0b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Actor">
-      <UniqueIdentifier>{43fb458b-af87-4f78-aeed-db8f15d31ee3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Actor\Component">
-      <UniqueIdentifier>{5dd40a89-1c1a-41e3-b64c-2838d67b6cf9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Actor\Component">
-      <UniqueIdentifier>{0e7cb19a-6dd9-4c1b-92a6-f42306550b45}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Shader Files">
       <UniqueIdentifier>{bb2c9b50-58a4-4031-980f-c1b25b21179e}</UniqueIdentifier>
     </Filter>
@@ -57,6 +45,18 @@
     </Filter>
     <Filter Include="Source Files\Renderer\FileLoader">
       <UniqueIdentifier>{8e80b5fd-622b-4863-9153-1ded5a2edbd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Object">
+      <UniqueIdentifier>{730433a5-f347-470b-a4a0-21e3acfd7d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Object\Component">
+      <UniqueIdentifier>{5dd40a89-1c1a-41e3-b64c-2838d67b6cf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{43fb458b-af87-4f78-aeed-db8f15d31ee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object\Component">
+      <UniqueIdentifier>{0e7cb19a-6dd9-4c1b-92a6-f42306550b45}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,9 +71,6 @@
     </ClCompile>
     <ClCompile Include="..\Renderer\renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Actor\camera.cpp">
-      <Filter>Source Files\Actor\Component</Filter>
     </ClCompile>
     <ClCompile Include="..\Utility\config.cpp">
       <Filter>Source Files\Utility</Filter>
@@ -96,17 +93,11 @@
     <ClCompile Include="..\GameManager\gamemanager.cpp">
       <Filter>Source Files\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Actor\inputmanager.cpp">
-      <Filter>Source Files\Actor\Component</Filter>
-    </ClCompile>
     <ClCompile Include="..\Utility\locator.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="..\Utility\logger.cpp">
       <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Actor\player.cpp">
-      <Filter>Source Files\Actor</Filter>
     </ClCompile>
     <ClCompile Include="..\main.cpp">
       <Filter>Source Files</Filter>
@@ -114,11 +105,41 @@
     <ClCompile Include="..\Utility\staticsafelogger.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="..\Actor\transform.cpp">
-      <Filter>Source Files\Actor\Component</Filter>
-    </ClCompile>
     <ClCompile Include="..\Utility\utility.cpp">
       <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer\mesh.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer\model.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer\modelmanager.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer\image.cpp">
+      <Filter>Source Files\Renderer\FileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GameManager\worldmanager.cpp">
+      <Filter>Source Files\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object\camera.cpp">
+      <Filter>Source Files\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object\inputmanager.cpp">
+      <Filter>Source Files\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object\renderable.cpp">
+      <Filter>Source Files\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object\transform.cpp">
+      <Filter>Source Files\Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object\player.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object\inanimateobject.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,9 +148,6 @@
     </ClInclude>
     <ClInclude Include="..\Renderer\fileloader.h">
       <Filter>Header Files\Renderer\FileLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Actor\camera.h">
-      <Filter>Header Files\Actor\Component</Filter>
     </ClInclude>
     <ClInclude Include="..\Utility\config.h">
       <Filter>Header Files\Utility</Filter>
@@ -152,9 +170,6 @@
     <ClInclude Include="..\GameManager\gamemanager.h">
       <Filter>Header Files\GameManager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Actor\inputmanager.h">
-      <Filter>Header Files\Actor\Component</Filter>
-    </ClInclude>
     <ClInclude Include="..\interfaces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -163,9 +178,6 @@
     </ClInclude>
     <ClInclude Include="..\Utility\logger.h">
       <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Actor\player.h">
-      <Filter>Header Files\Actor</Filter>
     </ClInclude>
     <ClInclude Include="..\Renderer\renderer.h">
       <Filter>Header Files\Renderer</Filter>
@@ -176,27 +188,60 @@
     <ClInclude Include="..\Utility\staticsafelogger.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\Actor\transform.h">
-      <Filter>Header Files\Actor\Component</Filter>
-    </ClInclude>
     <ClInclude Include="..\Utility\utility.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer\mesh.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer\model.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer\modelmanager.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer\image.h">
+      <Filter>Header Files\Renderer\FileLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameManager\worldmanager.h">
+      <Filter>Header Files\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\camera.h">
+      <Filter>Header Files\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\inputmanager.h">
+      <Filter>Header Files\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\renderable.h">
+      <Filter>Header Files\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\transform.h">
+      <Filter>Header Files\Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\player.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\object.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object\inanimateobject.h">
+      <Filter>Header Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
-    <None Include="..\Game\Data\Shaders\fragment_basic.frag">
+    <None Include="..\..\Game\Data\Shaders\fragment_basic.frag">
       <Filter>Resource Files\Shader Files</Filter>
     </None>
-    <None Include="..\Game\Data\Log\logconfig.json">
+    <None Include="..\..\Game\Data\Shaders\vertex_basic.vert">
+      <Filter>Resource Files\Shader Files</Filter>
+    </None>
+    <None Include="..\..\Game\Data\Log\logconfig.json">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\Game\Data\Shaders\vertex_basic.vert">
-      <Filter>Resource Files\Shader Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\Game\Data\Config\config.txt">
+    <Text Include="..\..\Game\Data\Config\config.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

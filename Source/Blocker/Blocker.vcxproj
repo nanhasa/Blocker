@@ -192,17 +192,24 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blo
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Actor\camera.cpp" />
-    <ClCompile Include="..\Actor\inputmanager.cpp" />
-    <ClCompile Include="..\Actor\player.cpp" />
-    <ClCompile Include="..\Actor\transform.cpp" />
     <ClCompile Include="..\Event\event.cpp" />
     <ClCompile Include="..\Event\eventlistener.cpp" />
     <ClCompile Include="..\Event\eventmanager.cpp" />
     <ClCompile Include="..\Event\inputcommandevent.cpp" />
     <ClCompile Include="..\GameManager\gamemanager.cpp" />
+    <ClCompile Include="..\GameManager\worldmanager.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\Object\camera.cpp" />
+    <ClCompile Include="..\Object\terrain.cpp" />
+    <ClCompile Include="..\Object\inputmanager.cpp" />
+    <ClCompile Include="..\Object\player.cpp" />
+    <ClCompile Include="..\Object\renderable.cpp" />
+    <ClCompile Include="..\Object\transform.cpp" />
     <ClCompile Include="..\Renderer\bmp.cpp" />
+    <ClCompile Include="..\Renderer\image.cpp" />
+    <ClCompile Include="..\Renderer\mesh.cpp" />
+    <ClCompile Include="..\Renderer\model.cpp" />
+    <ClCompile Include="..\Renderer\modelmanager.cpp" />
     <ClCompile Include="..\Renderer\renderer.cpp" />
     <ClCompile Include="..\Renderer\shaderprogram.cpp" />
     <ClCompile Include="..\Renderer\fileloader.cpp" />
@@ -214,17 +221,25 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blo
     <ClCompile Include="..\Utility\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Actor\camera.h" />
-    <ClInclude Include="..\Actor\inputmanager.h" />
-    <ClInclude Include="..\Actor\player.h" />
-    <ClInclude Include="..\Actor\transform.h" />
     <ClInclude Include="..\Event\event.h" />
     <ClInclude Include="..\Event\eventlistener.h" />
     <ClInclude Include="..\Event\eventmanager.h" />
     <ClInclude Include="..\Event\inputcommandevent.h" />
     <ClInclude Include="..\GameManager\gamemanager.h" />
+    <ClInclude Include="..\GameManager\worldmanager.h" />
     <ClInclude Include="..\interfaces.h" />
+    <ClInclude Include="..\Object\camera.h" />
+    <ClInclude Include="..\Object\terrain.h" />
+    <ClInclude Include="..\Object\inputmanager.h" />
+    <ClInclude Include="..\Object\object.h" />
+    <ClInclude Include="..\Object\player.h" />
+    <ClInclude Include="..\Object\renderable.h" />
+    <ClInclude Include="..\Object\transform.h" />
     <ClInclude Include="..\Renderer\bmp.h" />
+    <ClInclude Include="..\Renderer\image.h" />
+    <ClInclude Include="..\Renderer\mesh.h" />
+    <ClInclude Include="..\Renderer\model.h" />
+    <ClInclude Include="..\Renderer\modelmanager.h" />
     <ClInclude Include="..\Renderer\renderer.h" />
     <ClInclude Include="..\Renderer\shaderprogram.h" />
     <ClInclude Include="..\Renderer\fileloader.h" />
@@ -236,13 +251,13 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blo
     <ClInclude Include="..\Utility\utility.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Game\Data\Log\logconfig.json" />
-    <None Include="..\Game\Data\Shaders\fragment_basic.frag" />
-    <None Include="..\Game\Data\Shaders\vertex_basic.vert" />
+    <None Include="..\..\Game\Data\Log\logconfig.json" />
+    <None Include="..\..\Game\Data\Shaders\fragment_basic.frag" />
+    <None Include="..\..\Game\Data\Shaders\vertex_basic.vert" />
     <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\Game\Data\Config\config.txt" />
+    <Text Include="..\..\Game\Data\Config\config.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

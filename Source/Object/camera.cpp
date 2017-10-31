@@ -1,4 +1,4 @@
-#include "Actor/camera.h"
+#include "Object/camera.h"
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/gtc/matrix_transform.hpp>

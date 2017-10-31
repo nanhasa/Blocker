@@ -4,7 +4,7 @@
 #include <3rdParty/glm/glm.hpp>
 #pragma warning (pop)      // Restore back
 
-#include "Actor/transform.h"
+#include "Object/transform.h"
 
 class Camera {
 public:
