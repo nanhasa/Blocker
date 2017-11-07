@@ -52,7 +52,7 @@ namespace utility {
 	// Utility function to turn number to string
 	// Returns empty string if parameter is not integral or floating point
 	template<typename T>
-	std::string toStr(T&& num)
+	std::string toStr(T num)
 	{
 #pragma warning(suppress: 4127)
 		if (!std::is_integral<T>::value && !std::is_floating_point<T>::value)
