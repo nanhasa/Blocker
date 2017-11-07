@@ -5,7 +5,6 @@
 #include "interfaces.h"
 #include "GameManager/worldmanager.h"
 #include "Object/player.h"
-#include "Renderer/modelmanager.h"
 #include "Utility/logger.h"
 
 class GameManager {
@@ -32,8 +31,7 @@ public:
 
 private:
 	std::unique_ptr<IRenderer> m_renderer;	//!< Pointer to renderer component
-	Player m_player;
+	Player m_player;						//!< Player
 	Logger m_log;							//!< Logger object used to write log entries
-	std::unique_ptr<WorldManager> m_world;
-	std::unique_ptr<ModelManager> m_modelManager;
+	std::unique_ptr<WorldManager> m_world;	//!< Holds data of objects in the world
 };

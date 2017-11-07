@@ -10,9 +10,8 @@ public:
 
 	/**
 	 * \brief WorldManager
-	 * \param modelManager
 	 */
-	WorldManager(ModelManager& modelManager);
+	WorldManager();
 	~WorldManager() = default;
 
 	/**
@@ -23,5 +22,6 @@ public:
 	void onUpdate(IRenderer& renderer, const float deltatime);
 
 private:
-	std::vector<Terrain> m_objects;
+	std::vector<Terrain> m_objects;	//!< Objects in 3d world
+	ModelManager m_modelManager;	//!< Used to get references to textures and models
 };

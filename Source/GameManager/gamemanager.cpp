@@ -7,7 +7,7 @@
 #include "Utility/locator.h"
 
 GameManager::GameManager() 
-	: m_renderer(nullptr), m_player(), m_log("GameManager"), m_world(nullptr), m_modelManager(nullptr) {}
+	: m_renderer(nullptr), m_player(), m_log("GameManager"), m_world(nullptr) {}
 
 bool GameManager::start()
 {
@@ -19,8 +19,7 @@ bool GameManager::start()
 				Locator::getConfig()->get("PlayerStartRotation", glm::vec3()))
 		);
 
-		m_modelManager = std::make_unique<ModelManager>();
-		m_world = std::make_unique<WorldManager>(*m_modelManager.get());
+		m_world = std::make_unique<WorldManager>();
 
 		m_renderer->vStartMainLoop(); //Start main loop
 		return true;
