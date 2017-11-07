@@ -1,34 +1,38 @@
 {
-  "Texture": {
-  "file": "texture_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+  "FileLoader": {
+    "file": "fileloader.log",
+    "detail": [ "INFO", "WARN", "ERROR" ]
   },
   "Renderer": {
-  "file": "renderer_log.txt",
-  "detail": ["INFO", "WARN", "ERROR", "FATAL"]
+    "file": "renderer.log",
+    "detail": [ "INFO", "WARN", "ERROR", "FATAL" ]
   },
   "EventManager": {
-  "file": "eventmanager_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+    "file": "eventmanager.log",
+    "detail": [ "INFO", "WARN", "ERROR" ]
   },
   "GameManager": {
-  "file": "gamemanager_log.txt",
-  "detail": ["INFO", "WARN", "ERROR", "FATAL"]
+    "file": "gamemanager.log",
+    "detail": [ "INFO", "WARN", "ERROR", "FATAL" ]
   },
   "Contract": {
-  "file": "contract_log.txt",
-  "detail": ["FATAL"]
+    "file": "contract.log",
+    "detail": [ "FATAL" ]
   },
   "ShaderProgram": {
-  "file": "shaderprogram_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+    "file": "shaderprogram.log",
+    "detail": [ "INFO", "WARN", "ERROR" ]
   },
   "InputManager": {
-  "file": "inputmanager_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+    "file": "inputmanager.log",
+    "detail": [ "INFO", "WARN", "ERROR" ]
   },
   "Config": {
-  "file": "config_log.txt",
-  "detail": ["INFO", "WARN", "ERROR"]
+    "file": "config.log",
+    "detail": [ "INFO", "WARN", "ERROR" ]
+  },
+  "ModelManager": {
+    "file": "modelmanager.log",
+    "detail": [ "INFO", "ERROR" ]
   }
 }
