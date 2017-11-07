@@ -138,8 +138,8 @@
     <ClCompile Include="..\Object\player.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
-    <ClCompile Include="..\Object\inanimateobject.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\Object\terrain.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -224,7 +224,7 @@
     <ClInclude Include="..\Object\object.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="..\Object\inanimateobject.h">
+    <ClInclude Include="..\Object\terrain.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
   </ItemGroup>
