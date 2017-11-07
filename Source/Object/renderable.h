@@ -2,33 +2,27 @@
 
 #include "interfaces.h"
 #include "Object/transform.h"
-#include "Renderer/modelmanager.h"
 
 class Renderable {
 public:
 
 	/**
-	 * \brief Renderable
-	 * \param modelManager
-	 * \param textureFilename
-	 * \param modelFilename
+	 * \brief Constructor
+	 * \param model Pointer to model object holding the vertex data
+	 * \param textureId OpenGL id for the texture
 	 */
-	Renderable(ModelManager& modelManager,
-		const std::string& textureFilename, const std::string& modelFilename);
+	Renderable(std::shared_ptr<Model> model, unsigned int textureId);
+
+	~Renderable() = default;
 
 	/**
-	 * \brief ~Renderable
-	 */
-	~Renderable();
-
-	/**
-	 * \brief onUpdate
-	 * \param renderer
-	 * \param transform
+	 * \brief onUpdate Called on every tick to render object
+	 * \param renderer Reference to renderer
+	 * \param transform Reference to the transform of the object renderer
 	 */
 	void onUpdate(IRenderer& renderer, Transform& transform) const;
 
 private:
-	std::shared_ptr<Model> m_model;
-	unsigned int m_textureId;
+	std::shared_ptr<Model> m_model;	//!< Pointer to the model holding the vertex data
+	unsigned int m_textureId;		//!< OpenGL texture id
 };

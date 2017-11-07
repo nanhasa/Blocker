@@ -1,8 +1,7 @@
 #include "Renderer/model.h"
 
-Model::Model(std::vector<Mesh>&& meshes) : m_meshes(std::forward<std::vector<Mesh>>(meshes)) {}
-
-Model::~Model() {}
+Model::Model(std::vector<Mesh>&& meshes) 
+	: m_meshes(std::forward<std::vector<Mesh>>(meshes)) {}
 
 void Model::draw(const ShaderProgram & shader, const unsigned int textureId) const
 {

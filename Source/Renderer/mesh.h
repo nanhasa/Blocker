@@ -6,36 +6,37 @@
 #include <3rdParty/glm/glm.hpp>
 #pragma warning (pop)      // Restore back
 
+// Vertex object
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 uvCoord;
+
+	bool isEqual(const Vertex& rhs) const
+	{
+		return position == rhs.position 
+			&& normal == rhs.normal
+			&& uvCoord == rhs.uvCoord;
+	}
 };
 
 class Mesh {
 public:
 
 	/**
-	 * \brief Mesh
-	 * \param vertices
-	 * \param indices
+	 * \brief Constructor
+	 * \param vertices Mesh vertice data
+	 * \param indices Mesh indice data to vertices
 	 */
-	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices);
+	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned short>&& indices);
 
 	/**
-	 * \brief Mesh
+	 * \brief Destructor. Deletes buffer objects
 	 */
 	~Mesh();
 
-	//Mesh(Mesh const&) = delete;
-	//Mesh& operator=(const Mesh& rhs) = delete;
-	//Mesh& operator=(Mesh&& rhs) noexcept;
-
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-
 	/**
-	 * \brief draw
+	 * \brief draw Used to draw the mesh
 	 */
 	void draw() const;
 
@@ -44,8 +45,11 @@ private:
 	unsigned int m_VBO;
 	unsigned int m_EBO;
 
+	std::vector<Vertex> m_vertices;			//!< Vertice data
+	std::vector<unsigned short> m_indices;	//!< Indices to vertices
+
 	/**
-	 * \brief setupMesh
+	 * \brief Used to bind mesh to OpenGL
 	 */
 	void setupMesh();
 };

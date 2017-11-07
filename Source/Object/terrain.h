@@ -7,26 +7,30 @@ class Terrain : public Object {
 public:
 
 	/**
-	 * \brief Terrain
-	 * \param modelManager
+	 * \brief Constructor with default starting transform
+	 * \param model
+	 * \param textureId
 	 */
-	explicit Terrain(ModelManager& modelManager);
+	Terrain(std::shared_ptr<Model> model, unsigned int textureId);
 
 	/**
-	 * \brief Terrain
-	 * \param modelManager
+	 * \brief Constructor with custom starting transform
+	 * \param model
+	 * \param textureId
 	 * \param transform
 	 */
-	Terrain(ModelManager& modelManager, const Transform& transform);
+	Terrain(std::shared_ptr<Model> model, unsigned int textureId,
+		const Transform& transform);
+
 	~Terrain() = default;
 
 	/**
-	 * \brief onUpdate
-	 * \param renderer
-	 * \param deltatime
+	 * \brief onUpdate Called on every tick to render object
+	 * \param renderer Reference to renderer
+	 * \param deltatime Time since last tick
 	 */
 	void onUpdate(IRenderer& renderer, const float deltatime) override;
 
 private:
-	Renderable m_renderable;
+	Renderable m_renderable; //!< Used to render object
 };

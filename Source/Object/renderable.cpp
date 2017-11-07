@@ -5,14 +5,8 @@
 #include <3rdParty/glm/gtc/matrix_transform.hpp>
 #pragma warning (pop)      // Restore back
 
-Renderable::Renderable(ModelManager& modelManager,
-	const std::string& textureFilename, const std::string& modelFilename)
-{
-	m_textureId = modelManager.getTextureId(textureFilename);
-	m_model = modelManager.getModel(modelFilename);
-}
-
-Renderable::~Renderable() {}
+Renderable::Renderable(std::shared_ptr<Model> model, unsigned int textureId) 
+	: m_model(model), m_textureId(textureId) {}
 
 void Renderable::onUpdate(IRenderer& renderer, Transform& transform) const
 {

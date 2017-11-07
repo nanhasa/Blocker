@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
+#include <sstream>
 
 #pragma warning (push, 2)  // Temporarily set warning level 2
 #include <3rdParty/glm/glm.hpp>
@@ -20,7 +21,7 @@ namespace fileloader {
 	//Anonymous namespace to hide factory method from namespace interface
 	namespace {
 
-		StaticSafeLogger g_log("Texture");
+		StaticSafeLogger g_log("FileLoader");
 
 		/**
 		* \brief Tests if stream is empty or at the end
@@ -43,18 +44,18 @@ namespace fileloader {
 		bool validateFile(std::ifstream& stream)
 		{
 			if (!stream.is_open()) {
-				g_log.warn("Stream not open in validateFile");
+				g_log.warn("validateFile", "Stream not open in validateFile");
 				return false;
 			}
 
 			if (isStreamEmpty(stream)) {
-				g_log.warn("File empty in validateFile");
+				g_log.warn("validateFile", "File empty in validateFile");
 				return false;
 			}
 
 			const auto size = getFileSize(stream);
 			if (size > Locator::getConfig()->get("MaxByteFileSizeToLoad", 5120000)) {
-				g_log.error("File is too big to loadTexture : " + utility::toStr(size) + " bytes");
+				g_log.error("validateFile", "File is too big: " + utility::toStr(size) + " bytes");
 				return false;
 			}
 
@@ -70,7 +71,7 @@ namespace fileloader {
 		{
 			const std::size_t found = filename.find_last_of(".");
 			if (found == std::string::npos || found == filename.length()) {
-				g_log.error("Could not recognize file type from file extension");
+				g_log.error("getImageType", "Could not recognize file type from file extension");
 				return nullptr;
 			}
 
@@ -79,7 +80,7 @@ namespace fileloader {
 			if (ext == "bmp")
 				return std::make_unique<BMP>(g_log);
 
-			g_log.error("Extension " + ext + " is not supported file type");
+			g_log.error("getImageType", "Extension " + ext + " is not supported file type");
 			return nullptr;
 		}
 
@@ -91,7 +92,7 @@ namespace fileloader {
 	{
 		REQUIRE(!file.empty());
 		if (file.empty()) {
-			g_log.error("Load(): No filename was provided");
+			g_log.error("loadTexture", "No filename was provided");
 			return nullptr;
 		}
 
@@ -101,7 +102,7 @@ namespace fileloader {
 			std::ios::binary);
 
 		if (!validateFile(stream)) {
-			g_log.error("Could not open file " + file);
+			g_log.error("loadTexture", "Could not open file " + file);
 			return nullptr;
 		}
 
@@ -111,128 +112,126 @@ namespace fileloader {
 		return std::make_unique<Image>(std::move(type));
 	}
 
-	// TODO: this function is still not finished
-	bool loadModel(const std::string& file, std::vector<Mesh>& meshes, bool useFlatShading)
+	bool loadModel(const std::string& file, std::vector<Mesh>& meshes)
 	{
-		//REQUIRE(!file.empty());
-		//if (file.empty()) {
-		//	g_log.error("loadMode(): file parameter empty");
-		//	return false;
-		//}
-		//
-		//// Open stream
-		//std::ifstream stream(Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Models/" + file);
-		//if (!stream.is_open()) {
-		//	g_log.error("loadModel(): Could not open file: " + file);
-		//	return false;
-		//}
-		//
-		//// Clear reference parameters
-		//glm::vec3 vertices;
-		//glm::vec2 uvs;
-		//glm::vec3 normals;
-		//(void)useFlatShading; // Not used just yet TODO: implement useFlatShading
-		(void)meshes; 
-		//
-		//// Loop through file
-		//std::string line;
-		//for (int row = 1; std::getline(stream, line); ++row) {
-		//	std::string header = line.substr(0, 2);
-		//	if (header == "v ") {
-		//		
-		//	}
-		//	else if (header[0] == 'f') {
-		//		
-		//	}
-		//	else if (header[0] == '#') {
-		//		
-		//	}
-		//}
-		//return false;
-
-		(void)useFlatShading;
-		(void)file;
-
-
-		float vertices[] = {
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-			0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-		};
-
-		std::vector<unsigned int> indices = {
-			// note that we start from 0!
-			0, 1, 3,
-			// first Triangle
-			1, 2, 3 // second Triangle
-		};
-
-		std::vector<Vertex> mesh;
-		for (int i = 0; i < 180; ) {
-			
-			const float v1 = vertices[i++];
-			const float v2 = vertices[i++];
-			const float v3 = vertices[i++];
-			const glm::vec3 vert(v1, v2, v3);
-		
-			const float uv1 = vertices[i++];
-			const float uv2 = vertices[i++];
-			const glm::vec2 uv(uv1, uv2);
-		
-			Vertex v;
-			v.position = vert;
-			v.normal = glm::vec3();
-			v.uvCoord = uv;
-		
-			mesh.emplace_back(std::move(v));
-			
+		REQUIRE(!file.empty());
+		if (file.empty()) {
+			g_log.error("loadModel", "file parameter empty");
+			return false;
 		}
-		meshes.emplace_back(Mesh(std::move(mesh), std::move(indices)));
+		
+		// Open stream
+		std::ifstream stream(
+			Locator::getConfig()->get("DataPath", std::string("../Data/")) + "Models/" + file);
+		
+		// Validate stream
+		if (!validateFile(stream)) {
+			g_log.error("loadModel", "Could not load file: " + file);
+			return false;
+		}
+
+		// Create temp vectors to read contents from file
+		std::vector<glm::vec3> tempVertices;
+		std::vector<glm::vec2> tempUVs;
+		std::vector<glm::vec3> tempNormals;
+
+		// Vectors for indices
+		std::vector<unsigned short> vertexIndices;
+		std::vector<unsigned short> uvIndices;
+		std::vector<unsigned short> normalIndices;
+		
+		// Loop through file
+		std::string line;
+		for (int row = 1; std::getline(stream, line); ++row) {
+			if (line.length() < 2) // Row is not legit if it is shorter than 2 characters 
+				continue;
+
+			auto header = line.substr(0, 2);
+			if (header[0] == '#') 
+				continue; // Comment line, do nothing
+			
+			std::stringstream ss(line.substr(2));
+			try {
+				if (header == "vt") { // uv data
+					glm::vec2 v2;
+					ss >> v2.x;
+					ss >> v2.y;
+					tempUVs.emplace_back(std::move(v2));
+				}
+				else if (header == "vn") { // normal data
+					glm::vec3 v3;
+					ss >> v3.x;
+					ss >> v3.y;
+					ss >> v3.z;
+					tempNormals.emplace_back(std::move(v3));
+				}
+				else if (header[0] == 'v') { // vertice data
+					glm::vec3 v3;
+					ss >> v3.x;
+					ss >> v3.y;
+					ss >> v3.z;
+					tempVertices.emplace_back(std::move(v3));
+				}
+				else if (header[0] == 'f') { // face data
+					for (int i = 0; i < 3; ++i) { // For triangulated data there are 3 sets of 3 values in one row
+						unsigned short vertexId, uvId, normalId;
+						ss >> vertexId;
+						ss.ignore(1); // Ignore '/' character
+						ss >> uvId;
+						ss.ignore(1); // Ignore '/' character
+						ss >> normalId;
+
+						vertexIndices.emplace_back(vertexId);
+						uvIndices.emplace_back(uvId);
+						normalIndices.emplace_back(normalId);
+					}
+				}
+			}
+			catch(std::ios_base::failure f) {
+				g_log.error("loadModel", "Bad row " 
+					+ utility::toStr(row) + " in file " + file + ". What: " + f.what());
+				return false;
+			}
+		}
+
+		// File has been read now
+		// Process the three indexes into one
+		std::vector<Vertex> vertices;
+		std::vector<unsigned short> indices;
+		for (unsigned int i = 0; i < vertexIndices.size(); ++i) {
+			Vertex vert;
+			vert.position = tempVertices[vertexIndices[i] - 1]; // indexes in .obj start from 1
+			vert.normal = tempNormals[normalIndices[i] - 1];
+			vert.uvCoord = tempUVs[uvIndices[i] - 1];
+
+			// Search for existing vertex
+			auto it = std::find_if(
+				vertices.begin(), 
+				vertices.end(), 
+				[vert](const auto rhs) { return rhs.isEqual(vert); });
+
+			if (it == vertices.end()) {
+				// No unique vertex + uv + normal combo found
+				// add it to vertices and indices
+				vertices.emplace_back(std::move(vert));
+				indices.emplace_back(static_cast<unsigned short>(vertices.size() - 1)); // OpenGL wants indices to start from 0
+			}
+			else {
+				// Unique combo found
+				// Add it to indices only
+				indices.emplace_back(static_cast<unsigned short>(std::distance(vertices.begin(), it)));
+			}
+		}
+		meshes.clear();
+		meshes.emplace_back(std::move(vertices), std::move(indices));
+		g_log.info("modelLoader", "Succesfully loaded file: " + file);
 		return true;
 	}
 
 	std::streampos getFileSize(std::ifstream& stream)
 	{
 		REQUIRE(stream.is_open());
-		if (!stream) {
+		if (!stream.is_open()) {
 			g_log.error("Not valid stream in getFileSize");
 			return 0;
 		}

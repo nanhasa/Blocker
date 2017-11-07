@@ -10,17 +10,13 @@ class ModelManager {
 public:
 
 	/**
-	 * \brief ModelManager
+	 * \brief Constructor
 	 */
 	ModelManager();
+	~ModelManager() = default;
 
 	/**
-	 * \brief ~ModelManager
-	 */
-	~ModelManager();
-
-	/**
-	 * \brief getModel
+	 * \brief Used to get pointer to 3d model
 	 * \param modelFilename
 	 * \pre !modelFilename.empty()
 	 * \return
@@ -36,6 +32,7 @@ public:
 	unsigned int getTextureId(const std::string& textureFilename);
 
 private:
-	std::map<std::string, std::shared_ptr<Model>> m_models;
-	std::map<std::string, unsigned int> m_textureIds;
+	std::map<std::string, std::shared_ptr<Model>> m_models;	//!< Map pairing filename and pointer to model
+	std::map<std::string, unsigned int> m_textureIds;		//!< Map pairing filename and texture id
+	Logger m_log;											//!< Logger
 };

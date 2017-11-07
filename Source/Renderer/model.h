@@ -7,23 +7,20 @@ class Model {
 public:
 
 	/**
-	 * \brief Model
-	 * \param meshes
+	 * \brief Constructor
+	 * \param meshes Model meshes that consist of vertices
 	 */
 	explicit Model(std::vector<Mesh>&& meshes);
 
-	/**
-	 * \brief ~Model
-	 */
-	~Model();
+	~Model() = default;
 
 	/**
-	 * \brief draw
-	 * \param shader
-	 * \param textureId
+	 * \brief draw Used to draw the meshes of the model
+	 * \param shader Reference to shader used
+	 * \param textureId	OpenGL id to texture
 	 */
 	void draw(const ShaderProgram& shader, const unsigned int textureId) const;
 
 private:
-	std::vector<Mesh> m_meshes;
+	std::vector<Mesh> m_meshes;	//!< Meshes of the model
 };
