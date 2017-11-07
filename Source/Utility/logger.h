@@ -9,7 +9,7 @@ class Logger {
 public:
 
 	/**
-	 * \brief Logger
+	 * \brief Constructor. Creates an empty logger that does nothing until initialized.
 	 */
 	Logger();
 
@@ -37,46 +37,81 @@ public:
 
 	/**
 	 * \brief initialize
-	 * \param name
+	 * \param name Name of logger used when fetching initialization info from logconfig.json
 	 * \pre !name.empty()
 	 */
 	void initialize(const std::string& name);
 
 	/**
-	 * \brief Used write log entry for debug level. Does not do anything if DEBUG level is not initialized.
+	 * \brief Used to write debug level message to log. Does nothing if debug level is not active in logconfig.json
 	 * \param message Entry to be written to log
 	 */
 	void debug(const std::string& message) const;
 
 	/**
-	 * \brief Used write log entry for info level. Does not do anything if INFO level is not initialized.
+	 * \brief Used to write debug level message to log. Does nothing if debug level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void debug(const std::string& functionName, const std::string& message) const;
+
+	/**
+	 * \brief Used to write info level message to log. Does nothing if info level is not active in logconfig.json
 	 * \param message Entry to be written to log
 	 */
 	void info(const std::string& message) const;
 
 	/**
-	 * \brief Used write log entry for warn level. Does not do anything if WARN level is not initialized.
+	 * \brief Used to write info level message to log. Does nothing if info level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void info(const std::string& functionName, const std::string& message) const;
+
+	/**
+	 * \brief Used to write warn level message to log. Does nothing if warn level is not active in logconfig.json
 	 * \param message Entry to be written to log
 	 */
 	void warn(const std::string& message) const;
 
 	/**
-	 * \brief Used write log entry for error level. Does not do anything if ERROR level is not initialized.
+	 * \brief Used to write warn level message to log. Does nothing if warn level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void warn(const std::string& functionName, const std::string& message) const;
+
+	/**
+	 * \brief Used to write error level message to log. Does nothing if error level is not active in logconfig.json
 	 * \param message Entry to be written to log
 	 */
 	void error(const std::string& message) const;
 
 	/**
-	 * \brief Used write log entry for fatal level. Does not do anything if FATAL level is not initialized.
+	 * \brief Used to write error level message to log. Does nothing if error level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void error(const std::string& functionName, const std::string& message) const;
+
+	/**
+	 * \brief Used to write fatal level message to log. Does nothing if fatal level is not active in logconfig.json
 	 * \param message Entry to be written to log
 	 */
 	void fatal(const std::string& message) const;
 
+	/**
+	 * \brief Used to write fatal level message to log. Does nothing if fatal level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void fatal(const std::string& functionName, const std::string& message) const;
+
 private:
-	std::vector<LOGGING_LEVEL> m_enabledLogLevels;
-	std::string m_logName;
-	std::string m_filename;
-	std::string m_configFilename; // Cannot be static as it may not be initialized if logging is used as static object
+	std::vector<LOGGING_LEVEL> m_enabledLogLevels;	//!< Logging levels enabled for the logger
+	std::string m_logName;							//!< Name of logger, used to fetch data from log config file
+	std::string m_filename;							//!< Name of log output file
+	std::string m_configFilename;					//!< Name of config file for logger
 
 	/**
 	 * \brief Called to see if logging level is enabled for logger

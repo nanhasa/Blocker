@@ -158,10 +158,22 @@ void Logger::debug(const std::string & message) const
 		write(DEBUG, message);
 }
 
+void Logger::debug(const std::string & functionName, const std::string & message) const
+{
+	if (isEnabled(DEBUG))
+		write(DEBUG, functionName + "(): " + message);
+}
+
 void Logger::info(const std::string & message) const
 {
 	if (isEnabled(INFO))
 		write(INFO, message);
+}
+
+void Logger::info(const std::string & functionName, const std::string & message) const
+{
+	if (isEnabled(INFO))
+		write(INFO, functionName + "(): " + message);
 }
 
 void Logger::warn(const std::string & message) const
@@ -170,16 +182,34 @@ void Logger::warn(const std::string & message) const
 		write(WARN, message);
 }
 
+void Logger::warn(const std::string & functionName, const std::string & message) const
+{
+	if (isEnabled(WARN))
+		write(WARN, functionName + "(): " + message);
+}
+
 void Logger::error(const std::string & message) const
 {
 	if (isEnabled(ERR))
 		write(ERR, message);
 }
 
+void Logger::error(const std::string & functionName, const std::string & message) const
+{
+	if (isEnabled(ERR))
+		write(ERR, functionName + "(): " + message);
+}
+
 void Logger::fatal(const std::string & message) const
 {
 	if (isEnabled(FATAL))
 		write(FATAL, message);
+}
+
+void Logger::fatal(const std::string & functionName, const std::string & message) const
+{
+	if (isEnabled(FATAL))
+		write(FATAL, functionName + "(): " + message);
 }
 
 bool Logger::isEnabled(LOGGING_LEVEL lvl) const

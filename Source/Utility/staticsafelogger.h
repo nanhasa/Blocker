@@ -8,13 +8,13 @@ class StaticSafeLogger {
 public:
 
 	/**
-	 * \brief StaticSafeLogger
-	 * \param name
+	 * \brief Constructor. Creates empty Logger object which is initialized when logger is actually called
+	 * \param name Name of logger used when fetching initialization info from logconfig.json
 	 */
 	explicit StaticSafeLogger(const std::string& name);
 
 	/**
-	 * \brief ~StaticSafeLogger
+	 * \brief Destructor
 	 */
 	~StaticSafeLogger();
 
@@ -30,36 +30,71 @@ public:
 	StaticSafeLogger& operator=(StaticSafeLogger&& rhs) noexcept;
 
 	/**
-	 * \brief debug
-	 * \param message
+	 * \brief Used to write debug level message to log. Does nothing if debug level is not active in logconfig.json
+	 * \param message Entry to be written to log
 	 */
 	void debug(const std::string& message);
 
 	/**
-	 * \brief info
-	 * \param message
+	 * \brief Used to write debug level message to log. Does nothing if debug level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void debug(const std::string& functionName, const std::string& message);
+
+	/**
+	 * \brief Used to write info level message to log. Does nothing if info level is not active in logconfig.json
+	 * \param message Entry to be written to log
 	 */
 	void info(const std::string& message);
 
 	/**
-	 * \brief warn
-	 * \param message
+	 * \brief Used to write info level message to log. Does nothing if info level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void info(const std::string& functionName, const std::string& message);
+
+	/**
+	 * \brief Used to write warn level message to log. Does nothing if warn level is not active in logconfig.json
+	 * \param message Entry to be written to log
 	 */
 	void warn(const std::string& message);
 
 	/**
-	 * \brief error
-	 * \param message
+	 * \brief Used to write warn level message to log. Does nothing if warn level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void warn(const std::string& functionName, const std::string& message);
+
+	/**
+	 * \brief Used to write error level message to log. Does nothing if error level is not active in logconfig.json
+	 * \param message Entry to be written to log
 	 */
 	void error(const std::string& message);
 
 	/**
-	 * \brief fatal
-	 * \param message
+	 * \brief Used to write error level message to log. Does nothing if error level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void error(const std::string& functionName, const std::string& message);
+
+	/**
+	 * \brief Used to write fatal level message to log. Does nothing if fatal level is not active in logconfig.json
+	 * \param message Entry to be written to log
 	 */
 	void fatal(const std::string& message);
 
+	/**
+	 * \brief Used to write fatal level message to log. Does nothing if fatal level is not active in logconfig.json
+	 * \param functionName Function name written to file
+	 * \param message Entry to be written to log
+	 */
+	void fatal(const std::string& functionName, const std::string& message);
+
 private:
-	Logger m_log;
-	std::string m_name;
+	Logger m_log;		//!< Actual logger that is guarded against static usage
+	std::string m_name;	//!< Name of logger, used to fetch data from log config file
 };
