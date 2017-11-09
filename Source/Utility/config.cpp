@@ -26,11 +26,11 @@ int Config::get(std::string&& valueName, int defaultValue)
 		return output;
 	}
 	catch (std::invalid_argument& ia) {
-		m_log.error("Could not create float of: " + it->second + ". Exception thrown: " + ia.what());
+		m_log.error("get", "Could not create float of: " + it->second + ". Exception thrown: " + ia.what());
 		return defaultValue;
 	}
 	catch (std::out_of_range& oor) {
-		m_log.error("Could not create float of: " + it->second + ". Exception thrown: " + oor.what());
+		m_log.error("get", "Could not create float of: " + it->second + ". Exception thrown: " + oor.what());
 		return defaultValue;
 	}
 }
@@ -47,11 +47,11 @@ float Config::get(std::string&& valueName, float defaultValue)
 		return output;
 	}
 	catch (std::invalid_argument& ia) {
-		m_log.error("Could not create float of: " + it->second + ". Exception thrown: " + ia.what());
+		m_log.error("get", "Could not create float of: " + it->second + ". Exception thrown: " + ia.what());
 		return defaultValue;
 	}
 	catch (std::out_of_range& oor) {
-		m_log.error("Could not create float of: " + it->second + ". Exception thrown: " + oor.what());
+		m_log.error("get", "Could not create float of: " + it->second + ". Exception thrown: " + oor.what());
 		return defaultValue;
 	}
 }
@@ -74,7 +74,7 @@ bool Config::get(std::string&& valueName, bool defaultValue)
 	if (str == "0" || str == "false")
 		return false;
 
-	m_log.error("Could not create bool of: " + it->second);
+	m_log.error("get", "Could not create bool of: " + it->second);
 	return defaultValue;
 }
 
@@ -114,11 +114,13 @@ glm::vec3 Config::get(std::string&& valueName, glm::vec3 defaultValue)
 		return glm::vec3(x, y, z);
 	}
 	catch (std::invalid_argument& ia) {
-		m_log.error("Could not create floats to create glm::vec3 of: " + it->second + ". Exception thrown: " + ia.what());
+		m_log.error("get", "Could not create floats to create glm::vec3 of: " 
+			+ it->second + ". Exception thrown: " + ia.what());
 		return defaultValue;
 	}
 	catch (std::out_of_range& oor) {
-		m_log.error("Could not create floats to create glm::vec3 of: " + it->second + ". Exception thrown: " + oor.what());
+		m_log.error("get", "Could not create floats to create glm::vec3 of: " 
+			+ it->second + ". Exception thrown: " + oor.what());
 		return defaultValue;
 	}
 }
@@ -127,7 +129,7 @@ bool Config::readFile(std::vector<std::string>& contents, const std::string& pat
 {
 	std::ifstream stream(path);
 	if (!stream.is_open()) {
-		m_log.error("Could not open config file: " + path);
+		m_log.error("readFile", "Could not open config file: " + path);
 		return false;
 	}
 
@@ -168,7 +170,7 @@ void Config::loadFromFile()
 			temp.erase(std::remove_if(temp.begin(), temp.end(), isspace), temp.end());
 			if (temp.empty())
 				continue;
-			m_log.error("Invalid row " + utility::toStr(row) + ": " + file[row]);
+			m_log.error("loadFromFile", "Invalid row " + utility::toStr(row) + ": " + file[row]);
 			continue;
 		}
 
@@ -179,7 +181,10 @@ void Config::loadFromFile()
 		const auto it = m_valuemap.find(name);
 		if (it != m_valuemap.end()) {
 			m_log.warn(
-				"Value pair \"" + it->first + ":" + it->second + "\" already exists. Overwriting the value with \"" + value + "\"");
+				"loadFromFile",
+				"Value pair \"" + it->first + ":" + it->second 
+				+ "\" already exists. Overwriting the value with \"" + value + "\""
+			);
 		}
 		m_valuemap[name] = value;
 	}

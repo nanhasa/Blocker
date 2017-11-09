@@ -20,7 +20,7 @@ Renderer::~Renderer()
 
 bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&& gameLogic)
 {
-	m_log.info("Starting GLFW context, OpenGL 3.3");
+	m_log.info("vInitialize", "Starting GLFW context, OpenGL 3.3");
 
 	m_gameLogic = gameLogic;
 
@@ -37,7 +37,7 @@ bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&
 	m_window = glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
 	
 	if (m_window == nullptr) {
-		m_log.fatal("Failed to create GLFW window");
+		m_log.fatal("vInitialize", "Failed to create GLFW window");
 		return false;
 	}
 	glfwMakeContextCurrent(m_window);
@@ -45,7 +45,7 @@ bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&
 	glewExperimental = GL_TRUE; // Uses more modern techniques for managing OpenGL functionality
 	if (glewInit() != GLEW_OK) {
 		// Initialize GLEW to setup the OpenGL Function pointers
-		m_log.fatal("Failed to initialize GLEW");
+		m_log.fatal("vInitialize", "Failed to initialize GLEW");
 		return false;
 	}
 
@@ -67,11 +67,11 @@ bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&
 	// Create shader program by attaching and linking shaders to it
 	m_shaderProgram = std::make_unique<ShaderProgram>();
 	if (!m_shaderProgram->attachShader("vertex_basic.vert", GL_VERTEX_SHADER)) {
-		m_log.fatal("Could not attach shader: vertex_basic.vert");
+		m_log.fatal("vInitialize", "Could not attach shader: vertex_basic.vert");
 		return false;
 	}
 	if (!m_shaderProgram->attachShader("fragment_basic.frag", GL_FRAGMENT_SHADER)) {
-		m_log.fatal("Could not attach shader: fragment_basic.frag");
+		m_log.fatal("vInitialize", "Could not attach shader: fragment_basic.frag");
 		return false;
 	}
 
@@ -82,7 +82,7 @@ bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&
 	ENSURE(m_shaderProgram != nullptr);
 	ENSURE(m_shaderProgram->validate());
 	ENSURE(m_window != nullptr);
-	m_log.info("OpenGL initialized succesfully");
+	m_log.info("vInitialize", "OpenGL initialized succesfully");
 
 	return true;
 }
@@ -93,14 +93,14 @@ void Renderer::vStartMainLoop()
 	REQUIRE(m_shaderProgram != nullptr);
 	REQUIRE(m_shaderProgram->validate());
 	if (m_window == nullptr || m_shaderProgram == nullptr || !m_shaderProgram->validate()) {
-		m_log.error("OpenGL not properly initialized before calling vStartMainLoop");
+		m_log.error("vStartMainLoop", "OpenGL not properly initialized before calling vStartMainLoop");
 		return;
 	}
 
 	// Center cursor now that we are ready to start the game
 	vCenterCursor();
 
-	m_log.info("Started main loop");
+	m_log.info("vStartMainLoop", "Started main loop");
 	int previousTick = utility::timestampMs();
 	while (!glfwWindowShouldClose(m_window)) {
 		const int currentTick = utility::timestampMs();
@@ -126,7 +126,7 @@ void Renderer::vStartMainLoop()
 
 		previousTick = currentTick;
 	}
-	m_log.info("Leaving from main loop");
+	m_log.info("vStartMainLoop", "Leaving from main loop");
 }
 
 void Renderer::staticKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
@@ -144,7 +144,7 @@ void Renderer::keyCallback(int key, int scancode, int action, int mode) const
 {
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
-		m_log.error("OpenGL not properly initialized before calling keyCallback");
+		m_log.error("keyCallBack", "OpenGL not properly initialized before calling keyCallback");
 		return;
 	}
 
@@ -187,7 +187,7 @@ void Renderer::framebufferSizeCallback(int width, int height)
 {
 	REQUIRE(m_window != nullptr);
 	if (m_window == nullptr) {
-		m_log.error("OpenGL not properly initialized before calling framebufferSizeCallback");
+		m_log.error("framebufferSizeCallback", "OpenGL not properly initialized before calling framebufferSizeCallback");
 		return;
 	}
 
@@ -209,7 +209,7 @@ void Renderer::vGetCursorPosition(double& x, double& y) const
 {
 	REQUIRE(m_window);
 	if (!m_window) {
-		m_log.error("OpenGL not properly initialized before calling vGetMousePosition");
+		m_log.error("vGetCursorPosition", "OpenGL not properly initialized before calling vGetMousePosition");
 		return;
 	}
 	glfwGetCursorPos(m_window, &x, &y);
@@ -219,7 +219,7 @@ void Renderer::vCenterCursor() const
 {
 	REQUIRE(m_window);
 	if (!m_window) {
-		m_log.error("OpenGL not properly initialized before calling vSetMousePosition");
+		m_log.error("vGetCursor", "OpenGL not properly initialized before calling vSetMousePosition");
 		return;
 	}
 	glfwSetCursorPos(m_window, m_width / 2, m_height / 2);
@@ -229,7 +229,7 @@ bool Renderer::vKeyPressed(int key) const
 {
 	REQUIRE(m_window);
 	if (!m_window) {
-		m_log.error("OpenGL not properly initialized before calling vGetKeyState");
+		m_log.error("vKeyPressed", "OpenGL not properly initialized before calling vGetKeyState");
 		return false;
 	}
 	return glfwGetKey(m_window, key) == GLFW_PRESS;

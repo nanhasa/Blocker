@@ -232,7 +232,7 @@ namespace fileloader {
 	{
 		REQUIRE(stream.is_open());
 		if (!stream.is_open()) {
-			g_log.error("Not valid stream in getFileSize");
+			g_log.error("getFileSize", "Not valid stream in getFileSize");
 			return 0;
 		}
 

@@ -14,7 +14,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 {
 	REQUIRE(stream.is_open());
 	if (!stream.is_open()) {
-		m_log->error("Could not read BMP File, because stream provided is not open");
+		m_log->error("vLoadFile", "Could not read BMP File, because stream provided is not open");
 		return false;
 	}
 
@@ -23,7 +23,8 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	const auto size = fileloader::getFileSize(stream);
 	if (size < 54) {
 		// Offset of BMP file
-		m_log->error("Cannot read file, because file is smaller than BMP header size (54B): " + utility::toStr(size) + "B");
+		m_log->error("vLoadFile", "Cannot read file, because file is smaller than BMP header size (54B): " 
+			+ utility::toStr(size) + "B");
 		return false;
 	}
 
@@ -41,7 +42,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 
 	// Check if the file is a BMP file
 	if (m_fileheader->bfType != BF_TYPE_MB) {
-		m_log->error("File does not contain BMP file");
+		m_log->error("vLoadFile", "File does not contain BMP file");
 		m_fileheader = nullptr;
 		m_infoheader = nullptr;
 		return false;
@@ -49,7 +50,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 
 	// Check if file is 24 bits per pixel
 	if (m_infoheader->biBitCount != BIT_COUNT_24) {
-		m_log->error("Cannot read file, because only 24bit BMP files are supported");
+		m_log->error("vLoadFile", "Cannot read file, because only 24bit BMP files are supported");
 		m_fileheader = nullptr;
 		m_infoheader = nullptr;
 		return false;
@@ -59,7 +60,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	// If the size in header is zero, use calculated value based on offset to data and file size
 	unsigned int imageSize = m_infoheader->biSizeImage;
 	if (imageSize == 0) {
-		m_log->warn("Warning! BMP file header does not show the size of the file");
+		m_log->warn("vLoadFile", "Warning! BMP file header does not show the size of the file");
 		imageSize = m_fileheader->bfSize - m_fileheader->bfOffBits;
 		m_infoheader->biSizeImage = imageSize;
 	}
@@ -76,7 +77,7 @@ bool BMP::vLoadFile(std::ifstream& stream)
 	ENSURE(m_fileheader != nullptr);
 	ENSURE(m_infoheader != nullptr);
 	ENSURE(m_data != nullptr);
-	m_log->info("BMP file load was successful");
+	m_log->info("vLoadFile", "BMP file load was successful");
 
 	return true;
 }
@@ -88,7 +89,7 @@ std::unique_ptr<uint8_t[]> BMP::vDecode()
 	REQUIRE(m_data != nullptr);
 
 	if (m_fileheader == nullptr || m_infoheader == nullptr || m_data == nullptr) {
-		m_log->error("BMP not properly initialized before calling decode");
+		m_log->error("vDecode", "BMP not properly initialized before calling decode");
 		return nullptr;
 	}
 
@@ -118,7 +119,7 @@ int BMP::vGetHeight() const
 {
 	REQUIRE(m_infoheader != nullptr);
 	if (m_infoheader == nullptr) {
-		m_log->error("BMP not properly initialized before calling getHeight");
+		m_log->error("vGetHeight", "BMP not properly initialized before calling getHeight");
 		return 0;
 	}
 
@@ -129,7 +130,7 @@ int BMP::vGetWidth() const
 {
 	REQUIRE(m_infoheader != nullptr);
 	if (m_infoheader == nullptr) {
-		m_log->error("BMP not properly initialized before calling getWidth");
+		m_log->error("vGetWidth", "BMP not properly initialized before calling getWidth");
 		return 0;
 	}
 
