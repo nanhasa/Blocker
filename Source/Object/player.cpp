@@ -16,7 +16,7 @@ Player & Player::operator=(Player && other) noexcept
 void Player::onUpdate(IRenderer& renderer, const float deltatime)
 {
 	// Process input
-	m_input.onUpdate(*this, &renderer, deltatime);
+	m_input.onUpdate(*this, renderer, deltatime);
 	// Update camera
 	m_camera.onUpdate(transform);
 	// Set the view matrix

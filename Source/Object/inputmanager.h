@@ -37,9 +37,8 @@ public:
 	 * \param player Parent object to be updated
 	 * \param renderer Renderer used to access input
 	 * \param deltatime Time in seconds since last frame
-	 * \pre renderer
 	 */
-	void onUpdate(Player& player, IRenderer* renderer, float deltatime);
+	void onUpdate(Player& player, IRenderer& renderer, const float deltatime);
 
 private:
 	glm::vec3 m_tempPosition;		//!< Temp for new position to be checked before assigning it
@@ -64,5 +63,5 @@ private:
 	 * \param renderer Renderer used to access key states
 	 * \param deltatime Time in seconds since last frame. Used to even out movement speed
 	 */
-	void updatePosition(Player& player, IRenderer& renderer, float deltatime);
+	void updatePosition(Player& player, IRenderer& renderer, const float deltatime);
 };

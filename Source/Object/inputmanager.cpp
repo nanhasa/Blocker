@@ -23,15 +23,10 @@ InputManager & InputManager::operator=(InputManager && rhs) noexcept
 	return *this;
 }
 
-void InputManager::onUpdate(Player& player, IRenderer* renderer, float deltatime)
+void InputManager::onUpdate(Player& player, IRenderer& renderer, const float deltatime)
 {
-	REQUIRE(renderer);
-	if (!renderer) {
-		m_log.error("No pointer to renderer was provided in onUpdate");
-		return;
-	}
-	updateRotation(player, *renderer);
-	updatePosition(player, *renderer, deltatime);
+	updateRotation(player, renderer);
+	updatePosition(player, renderer, deltatime);
 }
 
 void InputManager::updateRotation(Player& player, IRenderer& renderer)
@@ -87,7 +82,7 @@ void InputManager::updateRotation(Player& player, IRenderer& renderer)
 	}
 }
 
-void InputManager::updatePosition(Player& player, IRenderer& renderer, float deltatime)
+void InputManager::updatePosition(Player& player, IRenderer& renderer, const float deltatime)
 {
 	m_tempPosition = player.transform.position;
 	const auto multiplier = deltatime * m_speedMultiplier;
