@@ -11,20 +11,24 @@ GameManager::GameManager()
 
 bool GameManager::start()
 {
+	m_log.info("start", "Started setting up game manager");
 	m_renderer = std::make_unique<Renderer>();
 	if (m_renderer->vInitialize("Blocker", std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
 
 		m_player = Player(
-			Transform(Locator::getConfig()->get("PlayerStartPosition", glm::vec3(0, 0, 7)),
-				Locator::getConfig()->get("PlayerStartRotation", glm::vec3()))
+			Transform(
+				Locator::getConfig()->get("PlayerStartPosition", glm::vec3(0, 0, 7)),
+				Locator::getConfig()->get("PlayerStartRotation", glm::vec3())
+			)
 		);
 
 		m_world = std::make_unique<WorldManager>();
+		m_log.info("start", "Finished setting up game manager");
 
 		m_renderer->vStartMainLoop(); //Start main loop
 		return true;
 	}
-	m_log.fatal("Renderer was not initialized properly");
+	m_log.fatal("start", "Renderer was not initialized properly");
 	return false;
 }
 
