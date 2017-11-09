@@ -141,6 +141,9 @@
     <ClCompile Include="..\Object\terrain.cpp">
       <Filter>Source Files\Object</Filter>
     </ClCompile>
+    <ClCompile Include="..\GameManager\terrainfactory.cpp">
+      <Filter>Source Files\GameManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Renderer\bmp.h">
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="..\Object\terrain.h">
       <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GameManager\terrainfactory.h">
+      <Filter>Header Files\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

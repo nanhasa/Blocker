@@ -197,6 +197,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blo
     <ClCompile Include="..\Event\eventmanager.cpp" />
     <ClCompile Include="..\Event\inputcommandevent.cpp" />
     <ClCompile Include="..\GameManager\gamemanager.cpp" />
+    <ClCompile Include="..\GameManager\terrainfactory.cpp" />
     <ClCompile Include="..\GameManager\worldmanager.cpp" />
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\Object\camera.cpp" />
@@ -226,6 +227,7 @@ if $(ConfigurationName) == Release if exist $(SolutionDir)Scripts\BatchFiles\blo
     <ClInclude Include="..\Event\eventmanager.h" />
     <ClInclude Include="..\Event\inputcommandevent.h" />
     <ClInclude Include="..\GameManager\gamemanager.h" />
+    <ClInclude Include="..\GameManager\terrainfactory.h" />
     <ClInclude Include="..\GameManager\worldmanager.h" />
     <ClInclude Include="..\interfaces.h" />
     <ClInclude Include="..\Object\camera.h" />
