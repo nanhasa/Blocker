@@ -104,7 +104,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;gtestd.lib;gtest_maind.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;fileloader.obj;gamemanager.obj;image.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;mesh.obj;model.obj;modelmanager.obj;player.obj;renderable.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;terrain.obj;transform.obj;utility.obj;worldmanager.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32sd.lib;gtestd.lib;gtest_maind.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;fileloader.obj;gamemanager.obj;image.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;mesh.obj;model.obj;modelmanager.obj;player.obj;renderable.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;terrain.obj;terrainfactory.obj;transform.obj;utility.obj;worldmanager.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>
       </AdditionalOptions>
     </Link>
