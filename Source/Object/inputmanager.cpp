@@ -1,6 +1,5 @@
 #include "Object/inputmanager.h"
 #include "Object/player.h"
-#include "Utility/contract.h"
 #include "Utility/locator.h"
 
 InputManager::InputManager()
