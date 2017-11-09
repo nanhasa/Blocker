@@ -19,15 +19,15 @@ public:
 	 * \brief Used to get pointer to 3d model
 	 * \param modelFilename
 	 * \pre !modelFilename.empty()
-	 * \return
+	 * \return Pointer to model, nullptr if it could not be loaded
 	 */
 	std::shared_ptr<Model> getModel(const std::string& modelFilename);
 
 	/**
-	 * \brief getTextureId
-	 * \param textureFilename
+	 * \brief Used to get OpenGL id of texture
+	 * \param textureFilename Filename
 	 * \pre !textureFilename.empty()
-	 * \return
+	 * \return OpenGL texture id, 0 if texture could not be loaded
 	 */
 	unsigned int getTextureId(const std::string& textureFilename);
 
