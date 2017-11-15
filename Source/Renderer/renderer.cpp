@@ -62,7 +62,11 @@ bool Renderer::vInitialize(std::string&& windowName, std::function<void(float)>&
 
 	// Do not let cursor out of the screen
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glEnable(GL_DEPTH_TEST); // Enable depth testing
+	// Enable depth testing
+	glEnable(GL_DEPTH_TEST);
+	// Cull back faces
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
 
 	// Create shader program by attaching and linking shaders to it
 	m_shaderProgram = std::make_unique<ShaderProgram>();
