@@ -8,8 +8,8 @@
 
 // Class to calculate object position and rotation in 3D world
 // The rotations work in left-handed coordinate (positie x goes right, positive y goes up, positive z goes towards camera)
-// Increasing pitch rotation value rotates object left around y axis
-// Increasing yaw rotation value rotates object up around x axis
+// Increasing pitch rotation value rotates object up around x axis
+// Increasing yaw rotation value rotates object left around y axis
 // Increasing roll rotation value rolls object left around z axis
 // Rotation values are clamped between 0..360, which is calculated whenever lazy calculation happens
 //
