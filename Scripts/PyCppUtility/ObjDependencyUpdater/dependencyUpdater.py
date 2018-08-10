@@ -8,7 +8,7 @@
 # adds them to additional dependencies in .vsxproj file
 #
 # This software asks for four parameters
-#   1. Project file name to be updated
+#   1. Project name to be updated
 #   2. Path to the project file
 #   3. Path to Debug .obj files
 #   4. Path to Release .obj files
@@ -21,101 +21,71 @@
 #
 #############################################################################################
 
+from os.path import isdir, join, splitext
+from os import listdir
 import sys
-import os
 import xml.etree.ElementTree as ET
 
-#Main function for this script
-def main():
-    if (len(sys.argv) < 5):
-        print('Not enough parameters provided. Exiting...')
-        return
+logging = True
 
-    projectname = sys.argv[1]
-    print('Project name: ' + projectname)
+def die(complaint):
+    print(complaint, file=sys.stderr)
+    sys.exit(1)
 
-    projectpath = sys.argv[2]
-    print('Path to project file: ' + projectpath)
-    if (len(projectpath) == 0):
-        print('No path to project file provided. Exiting...')
-        return
-    try:
-        os.chdir(projectpath)
-    except (WindowsError, OSError):
-        print('Oops, invalid project path. Exiting...')
-        return
+def log(message):
+    if logging: print(message)
 
-    debugpath = sys.argv[3]
-    print('Path to debug .obj files: ' + debugpath)
-    try:
-        os.chdir(debugpath)
+def main(args):
+    if (len(args) < 5): die('Not enough parameters provided. Exiting...')
+    _, projectname, projectpath, debugpath, releasepath = args
+    log('Project name: ' + projectname)
+    log('Path to project file: ' + projectpath)
+    log('Path to debug .obj files: ' + debugpath)
+    log('Path to release .obj files: ' + releasepath)
+
+    if not isdir(projectpath): die('Oops, invalid project path. Exiting...')
+    if isdir(debugpath):
         updateProjectFile(projectname, projectpath, debugpath, 'Debug')
-    except (WindowsError, OSError):
-        print('Oops, no debug folder found')
-
-    releasepath = sys.argv[4]
-    print('Path to release .obj files: ' + releasepath)
-    try:
-        os.chdir(releasepath)
+    else: die('Oops, no debug folder found')
+    if isdir(releasepath):
         updateProjectFile(projectname, projectpath, releasepath, 'Release')
-    except (WindowsError, OSError):
-        print('Oops, no release folder found')
+    else: die('Oops, no release folder found')
 
+ms_schema = "http://schemas.microsoft.com/developer/msbuild/2003"
 
 # Updates the project file with .obj file names found from the given folder
 # Expects projectname string, path to project file string, path to .obj files string and [Debug|Release] string
 def updateProjectFile(projectname, projectpath, objpath, runMode):
-    os.chdir(objpath)
-    objfiles = list()
-    contents = os.listdir()
-    for file in contents:
-        if ('.obj' in file):
-            if (file != 'main.obj'):
-                objfiles.append(file)
+    objfiles = [file for file in listdir(objpath)
+                if file.endswith('.obj') and file != 'main.obj']
+    projectfile = join(projectpath, projectname.lower() + '.vcxproj')
+    updated, newtree = updated_project(ET.parse(projectfile), objfiles, runMode)
+    if updated:
+        ET.register_namespace('', ms_schema)
+        newtree.write(projectfile, encoding="utf-8", xml_declaration=True)
+        log('Updated ' + runMode + ' dependencies in ' + projectname)
+    else:
+        log(runMode + ' dependencies in ' + projectname + ' were already up-to-date')
 
-    os.chdir(projectpath)
-    projectdirectory = os.listdir()
-    for file in projectdirectory:
-        fileUpdated = False
-        if (projectname.lower() + '.vcxproj' == file.lower()):
-            ET.register_namespace('', "http://schemas.microsoft.com/developer/msbuild/2003")
-            tree = ET.parse(file)
-            root = tree.getroot()
-            for itemDefinitionGroup in root.iter('{http://schemas.microsoft.com/developer/msbuild/2003}ItemDefinitionGroup'):
-                if (runMode in itemDefinitionGroup.attrib.get('Condition')):
-                    #Find additional dependencies
-                    for additionalDependencies in itemDefinitionGroup.iter('{http://schemas.microsoft.com/developer/msbuild/2003}AdditionalDependencies'):
-                        #Split dependencies into list
-                        dependencies = additionalDependencies.text.split(';')
-                        #Separate dependency types
-                        libs = [ x for x in dependencies if '.lib' in x ]
-                        additional = [ x for x in dependencies if '.lib' not in x and '.obj' not in x ]
-                        #Append items back to the list
-                        del dependencies[:]
-                        dependencies.extend(libs)
-                        dependencies.extend(objfiles)
-                        dependencies.extend(additional)
-                        #Turn list into string again
-                        tempstr = ';'.join(dependencies)
-                        original = additionalDependencies.text
-                        if (original != tempstr):
-                            additionalDependencies.text = tempstr
-                            fileUpdated = True
+def updated_project(tree, objfiles, runMode):
+    root = tree.getroot()
+    fileUpdated = False
+    for group in root.iter('{%s}ItemDefinitionGroup' % ms_schema):
+        if runMode not in group.attrib.get('Condition'): continue
+        for deps in group.iter('{%s}AdditionalDependencies' % ms_schema):
+            changed, deps.text = updated_deps(deps.text, objfiles)
+            fileUpdated |= changed
+    return (fileUpdated, tree)
 
+def is_additional(fname): return splitext(fname)[1] not in ['.lib', '.obj']
 
-            #Update file
-            if (fileUpdated):
-                tree.write(file, encoding="utf-8", xml_declaration=True)
-                print('Updated ' + runMode + ' dependencies in ' + file)
-            else:
-                print(runMode + ' dependencies in ' + file + ' were already up-to-date')
-            break
+def updated_deps(olddeps, objfiles):
+    dependencies = olddeps.split(';')
+    newdeps = ';'.join([f for f in dependencies if f.endswith('.lib')]
+                    + objfiles
+                    + [f for f in dependencies if is_additional(f)])
+    return (newdeps != olddeps, newdeps)
 
-
-###########################################
-#
-# Script entry point
-#
-###########################################
 if (__name__ == '__main__'):
-    main()
+    import sys
+    main(sys.argv)
