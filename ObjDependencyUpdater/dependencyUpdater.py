@@ -8,7 +8,7 @@
 # adds them to additional dependencies in .vsxproj file
 #
 # This software asks for four parameters
-#   1. Project file name to be updated
+#   1. Project name to be updated
 #   2. Path to the project file
 #   3. Path to Debug .obj files
 #   4. Path to Release .obj files
