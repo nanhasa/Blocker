@@ -9,7 +9,7 @@ ScreenHeight=1200
 MaxByteFileSizeToLoad=5120000
 
 # Player
-PlayerStartPosition=0,0,10
-PlayerStartRotation=0,0,0
+PlayerStartPosition=-10,0,0
+PlayerStartRotation=0,270,0
 MouseSensitivity=0.1f
 MovementSpeedMultiplier=4.0f
