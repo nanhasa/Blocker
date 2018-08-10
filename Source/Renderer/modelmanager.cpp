@@ -5,6 +5,13 @@
 
 ModelManager::ModelManager() : m_log("ModelManager") {}
 
+ModelManager::~ModelManager()
+{
+	for (const auto pair : m_textureIds) {
+		glDeleteTextures(1, &pair.second);
+	}
+}
+
 std::shared_ptr<Model> ModelManager::getModel(const std::string & modelFilename)
 {
 	REQUIRE(!modelFilename.empty());

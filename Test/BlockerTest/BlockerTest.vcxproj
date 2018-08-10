@@ -151,7 +151,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;gtest.lib;gtest_main.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;fileloader.obj;gamemanager.obj;image.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;mesh.obj;model.obj;modelmanager.obj;player.obj;renderable.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;terrain.obj;transform.obj;utility.obj;worldmanager.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32s.lib;gtest.lib;gtest_main.lib;bmp.obj;camera.obj;config.obj;contract.obj;event.obj;eventlistener.obj;eventmanager.obj;fileloader.obj;gamemanager.obj;image.obj;inputcommandevent.obj;inputmanager.obj;locator.obj;logger.obj;mesh.obj;model.obj;modelmanager.obj;player.obj;renderable.obj;renderer.obj;shaderprogram.obj;staticsafelogger.obj;terrain.obj;terrainfactory.obj;transform.obj;utility.obj;worldmanager.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreLinkEvent>
       <Command>

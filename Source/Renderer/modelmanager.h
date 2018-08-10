@@ -13,7 +13,11 @@ public:
 	 * \brief Constructor
 	 */
 	ModelManager();
-	~ModelManager() = default;
+
+	/**
+	 * \brief ~ModelManager
+	 */
+	~ModelManager();
 
 	/**
 	 * \brief Used to get pointer to 3d model

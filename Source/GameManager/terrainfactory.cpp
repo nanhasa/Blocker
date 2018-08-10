@@ -12,7 +12,7 @@ namespace terrainFactory {
 
 StaticSafeLogger g_logger("TerrainFactory");
 
-Terrain createCube(const TERRAIN_TYPE type, const Transform& transform, ModelManager& modelManager)
+std::unique_ptr<Terrain> createCube(const TERRAIN_TYPE type, const Transform& transform, ModelManager& modelManager)
 {
 	std::string textureFile;
 	std::string modelFile;
@@ -42,27 +42,34 @@ Terrain createCube(const TERRAIN_TYPE type, const Transform& transform, ModelMan
 			+ utility::toStr(transform.rotation.z) + ")"
 	);
 
-	return Terrain(
+	return std::make_unique<Terrain>(
 		model,
 		texture,
 		transform
 	);
 }
 
-bool initializeWorld(std::vector<Terrain>& objects, const unsigned int count, ModelManager& modelManager)
+bool initializeWorld(std::vector<std::unique_ptr<Terrain>>& objects, const unsigned int count, ModelManager& modelManager)
 {
 	g_logger.info("initializeWorld", "Started world creation");
 
-	Transform cubePositions[] = {
-		Transform(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3()),
-		Transform(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3()),
-		Transform(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3()),
-		Transform(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3()),
-		Transform(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3()),
-		Transform(glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3()),
-		Transform(glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3()),
-		Transform(glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3())
-	};
+	std::vector<Transform> cubePositions;
+	//= {
+	//	Transform(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3()),
+	//	Transform(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3()),
+	//	Transform(glm::vec3(2.0f, 0.0f, 0.0f), glm::vec3()),
+	//	Transform(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3()),
+	//	Transform(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3()),
+	//	Transform(glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3()),
+	//	Transform(glm::vec3(2.0f, 0.0f, -1.0f), glm::vec3()),
+	//	Transform(glm::vec3(1.0f, 1.0f, -1.0f), glm::vec3())
+	//};
+
+	for (float i = 0; i < 100; ++i) {
+		for (float j = 0; j < 200; ++j) {
+			cubePositions.emplace_back(glm::vec3(i, 0.0f, j), glm::vec3());
+		}
+	}
 
 	objects.clear();
 	for (unsigned int i = 0; i < count; ++i) {

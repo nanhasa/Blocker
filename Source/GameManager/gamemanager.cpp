@@ -13,7 +13,7 @@ bool GameManager::start()
 {
 	m_log.info("start", "Started setting up game manager");
 	m_renderer = std::make_unique<Renderer>();
-	if (m_renderer->vInitialize("Blocker", std::bind(&GameManager::onUpdate, this, std::placeholders::_1))) {
+	if (m_renderer->vInitialize("Blocker", [this](const float delta) { return onUpdate(delta); })) {
 
 		m_player = Player(
 			Transform(
@@ -35,5 +35,5 @@ bool GameManager::start()
 void GameManager::onUpdate(const float deltatime)
 {
 	m_player.onUpdate(*m_renderer.get(), deltatime);
-	m_world->onUpdate(*m_renderer.get(), deltatime);
+	m_world->onUpdate(m_player, *m_renderer.get(), deltatime);
 }
